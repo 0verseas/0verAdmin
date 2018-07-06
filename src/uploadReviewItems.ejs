@@ -1,0 +1,78 @@
+<% include components/_studentInfo %>
+
+<h2 class="text-center title">上傳系所備審資料</h2>
+<div class="alert alert-info">
+	<ul>
+		<li>請於<font color="red">西元 2018 年 3 月 24 日（星期六）臺灣時間下午 5 時前</font>完成志願校系審查資料上傳作業並提交。</li>
+		<li>一經按下「確認上傳資料並提交」按鍵後，上傳的檔案就無法再做任何變更。請務必檢視各志願校系上傳之檔案項目、內容及數量無誤後再提交。</li>
+		<li>按下『確認上傳資料並提交』按鍵後，系統將產生「志願校系審查資料上傳確認頁」，並發送電郵供留存參考。</li>
+		<li>未完成線上提交者，一律不予分發。</li>
+	</ul>
+</div>
+<div id="wrap-wishList">
+	<div class="row">
+		<div class="col-12">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>志願序</th>
+						<th>志願代碼</th>
+						<th>學系名稱</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="wishList">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div id="form-upload" style="display: none;">
+	<hr>
+	<dl class="row">
+		<dt class="col-4 col-md-2">
+			志願代碼
+		</dt>
+		<dd id="deptId" class="col-8 col-md-10"></dd>
+		<dt class="col-4 col-md-2">
+			學校名稱
+		</dt>
+		<dd id="schoolName" class="col-8 col-md-10"></dd>
+		<dt class="col-4 col-md-2">
+			系所名稱
+		</dt>
+		<dd id="deptName" class="col-8 col-md-10"></dd>
+	</dl>
+
+	<div id="reviewItemsArea">
+	</div>
+
+	<div class="row">
+		<div class="col-12 text-center">
+			<button class="btn btn-primary" id="btn-save">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> 儲存
+			</button>
+			<button class="btn btn-danger" id="btn-exit">
+				<i class="fa fa-times-circle" aria-hidden="true"></i> 不儲存離開
+			</button>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade img-modal" tabindex="-1" role="dialog" aria-labelledby="imgModal" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-body text-center" id="img-modal-body">
+				<img src="" class="img-fluid rounded img-ori">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger btn-delImg"><i class="fa fa-trash" aria-hidden="true"></i> 刪除</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> 離開</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-filestyle/1.3.0/bootstrap-filestyle.min.js"> </script>
+<!-- Doc: http://markusslima.github.io/bootstrap-filestyle/ -->

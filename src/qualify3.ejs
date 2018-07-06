@@ -1,0 +1,784 @@
+<div id="form-signUp">
+	<dl class="row">
+		<dt class="col-md-3">
+			申請類別
+		</dt>
+		<dd class="col-md-9">
+			<div class="row">
+				<div class="col-md-12">
+					<b class="systemID"></b>
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<hr />
+	<dl class="row">
+		<dt class="col-md-3">
+			身分別
+		</dt>
+		<dd class="col-md-9">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="alert alert-info" role="alert">
+						<strong>身分別說明：</strong><br>
+						<span class="text-danger">港澳生：</span>最近連續居留境外（指臺灣地區<span class="text-danger"> 以外 </span>之國家或地區）6年以上，持有香港或澳門永久性居民身分證者。並於臺灣<span class="text-danger"> 以外 </span>國家取得學士或碩士學位。<br />
+						<span class="text-danger">港澳具外國國籍之華裔學生：</span>具外國國籍，兼具香港或澳門永久居留資格，未曾在臺設有戶籍，且最近連續居留香港、澳門或海外(不含大陸及臺灣)6年以上之華裔學生。並於臺灣<span class="text-danger"> 以外 </span>國家取得學士或碩士學位。<br />
+						<span class="text-danger">海外僑生：</span>最近連續居留海外(不含大陸、港澳及臺灣)6年以上，並取得僑居地永久或長期居留證件之華裔學生。並於臺灣<span class="text-danger"> 以外 </span>國家取得學士或碩士學位。<br />
+						<span class="text-danger">在臺港澳生：</span>在臺灣取得學士或碩士學位的港澳生。<br />
+						<span class="text-danger">在臺僑生：</span>在臺灣取得學士或碩士學位的僑生。
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<fieldset class="form-group">
+						<label>申請身份別</label><br>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input radio-identity" type="radio" name="identity" value="1" checked> 港澳生
+							</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input radio-identity" type="radio" name="identity" value="2"> 港澳具外國國籍之華裔學生
+							</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input radio-identity" type="radio" name="identity" value="3"> 海外僑生
+							</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input radio-identity" type="radio" name="identity" value="4"> 在臺港澳生
+							</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input radio-identity" type="radio" name="identity" value="5"> 在臺僑生
+							</label>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<hr>
+	<form class="question overseas hide">
+		<dl class="row questionRow">
+			<dt class="col-md-3">
+				曾分發來臺
+			</dt>
+			<dd class="col-md-9">
+				<div class="row">
+					<div class="col-md-12">
+						<fieldset class="form-group">
+							<label>是否曾經分發來臺就學過？</label><br>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label">
+									<input class="form-check-input isDistribution" name="isDistribution" type="radio" value="1"> 是
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label">
+									<input class="form-check-input isDistribution" name="isDistribution" type="radio" value="0" checked> 否
+								</label>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="row hide" id="distributionMore">
+					<div class="col-12">
+						<fieldset class="form-group">
+							<label>於西元幾年分發來台？</label>
+							<input class="form-control input-distributionTime" type="text">
+						</fieldset>
+						<fieldset class="form-group">
+							<label>請就下列選項擇一勾選</label><br>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input distributionMoreQuestion" name="distributionMore" type="radio" value="1" checked> 1. 未曾辦理報到入學，亦未辦理保留入學資格。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input distributionMoreQuestion" name="distributionMore" type="radio" value="2"> 2. 曾經分發註冊，惟在臺期間因故自願退學且在臺停留未滿一年，並退回僑居地(以一次為限)。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input distributionMoreQuestion" name="distributionMore" type="radio" value="3"> 3. 辦理保留入學資格在案。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input distributionMoreQuestion" name="distributionMore" type="radio" value="4"> 4. 註冊在學。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input distributionMoreQuestion" name="distributionMore" type="radio" value="5"> 5. 辦理休學中。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input distributionMoreQuestion" name="distributionMore" type="radio" value="6"> 6. 非因故自願退學(如勒令退學)。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input distributionMoreQuestion" name="distributionMore" type="radio" value="7"> 7. 曾經來臺就讀海外青年技術訓練班。
+								</label>
+							</div>
+						</fieldset>
+						<div class="alert alert-danger hide distributionMoreAlert invalid" role="alert">
+							<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+						</div>
+					</div>
+				</div>
+			</dd>
+		</dl>
+		<hr />
+		<dl class="row questionRow">
+			<dt class="col-md-3">
+				海外居留年限
+			</dt>
+			<dd class="col-md-9">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-info" role="alert">
+							<i class="fa fa-exclamation-circle" aria-hidden="true"></i> 報名截止日可至 
+							<a href="http://www.overseas.ncnu.edu.tw/countrylist.aspx" target="_blank">官網</a> 查詢
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<fieldset class="form-group">
+							<label>請問自報名截止日往前推算，已在僑居地連續居留多少年？</label><br>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input radio-stayLimit" name="stayLimit" type="radio" value="1" checked> 報名時未滿六年
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input radio-stayLimit" name="stayLimit" type="radio" value="2"> 報名時未滿六年，但至入學當年度8月31日前滿六年
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input radio-stayLimit" name="stayLimit" type="radio" value="3"> 報名時已滿六年
+								</label>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger stayLimitAlert invalid" role="alert">
+							<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="alert alert-warning stayLimitAlert valid hide" role="alert">
+							<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 需填寫切結書
+						</div>
+					</div>
+				</div>
+			</dd>
+		</dl>
+		<hr />
+		<dl class="row questionRow">
+			<dt class="col-md-3">
+				在台停留日期
+			</dt>
+			<dd class="col-md-9">
+				<div class="row">
+					<div class="col-md-12">
+						<fieldset class="form-group">
+							<label>報名截止日往前推算僑居地居留期間內，是否曾在某一年來臺停留超過 120 天？</label><br>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label">
+									<input class="form-check-input radio-hasBeenTaiwan" type="radio" name="hasBeenTaiwan" value="1"> 是
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label">
+									<input class="form-check-input radio-hasBeenTaiwan" type="radio" name="hasBeenTaiwan" value="0" checked> 否
+								</label>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="hide hasBeenTaiwanQuestion">
+					<div class="row">
+						<div class="col-md-12">
+							<fieldset class="form-group">
+								<label>請就下列選項，擇一勾選，並檢附證明文件：</label>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input radio-whyHasBeenTaiwan" type="radio" name="whyHasBeenTaiwan" value="1" checked> 1. 就讀僑務主管機關舉辦之海外青年技術訓練班或中央主管教育行政機關認定之技術訓練專班。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input radio-whyHasBeenTaiwan" type="radio" name="whyHasBeenTaiwan" value="2"> 2. 參加僑務主管機關主辦或其認定屬政府機關舉辦之活動，或就讀主管機關核准境外招生之華語教育機構開設之華語文研習課程，其活動或研習期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input radio-whyHasBeenTaiwan" type="radio" name="whyHasBeenTaiwan" value="3"> 3. 交換學生，其交換期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input radio-whyHasBeenTaiwan" type="radio" name="whyHasBeenTaiwan" value="4"> 4. 經中央目的事業主管機關許可來臺實習，實習期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input radio-whyHasBeenTaiwan" type="radio" name="whyHasBeenTaiwan" value="5"> 5. 回國接受兵役徵召及服役。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input radio-whyHasBeenTaiwan" type="radio" name="whyHasBeenTaiwan" value="6"> 6. 因戰亂、天災或大規模傳染病，致無法返回僑居地。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input radio-whyHasBeenTaiwan" type="radio" name="whyHasBeenTaiwan" value="7"> 7. 因其他不可歸責於僑生之事由，致無法返回僑居地，有證明文件。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input radio-whyHasBeenTaiwan" type="radio" name="whyHasBeenTaiwan" value="8"> 8. 未符合前述1至7條件
+									</label>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger whyHasBeenTaiwanAlert invalid hide" role="alert">
+								<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+							</div>
+						</div>
+					</div>
+				</div>
+			</dd>
+		</dl>
+		<hr />
+	</form>
+
+	<form class="question kangAo">
+		<div class="row questionRow">
+			<div class="col-md-12">
+				<fieldset class="form-group">
+					<label><strong>請問您是否擁有香港或澳門永久性居民身分證？</strong></label><br>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-idCard" type="radio" name="idCard" value="1" checked> 是
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-idCard" type="radio" name="idCard" value="0"> 否
+						</label>
+					</div>
+				</fieldset>
+			</div>
+			<div class="col-md-12 idCardAlert invalid hide">
+				<div class="alert alert-danger" role="alert">
+					<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div class="row questionRow">
+			<div class="col-md-12">
+				<fieldset class="form-group">
+					<label><strong>是否另持有「香港護照或英國國民（海外）護照」<span class="text-danger"> 以外 </span>之旅行證照，或持有澳門護照<span class="text-danger"> 以外 </span>之旅行證照？</strong></label><br>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-holdpassport" type="radio" name="holdpassport" value="1"> 是
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-holdpassport" type="radio" name="holdpassport" value="0" checked> 否
+						</label>
+					</div>
+				</fieldset>
+			</div>
+			<div class="col-md-12 isTaiwanHousehold hide">
+				<fieldset class="form-group">
+					<label><strong>是否曾在臺設有戶籍？</strong></label><br>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-taiwanHousehold" type="radio" name="taiwanHousehold" value="1" > 是
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-taiwanHousehold" type="radio" name="taiwanHousehold" value="0" checked> 否
+						</label>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		<hr />
+		<div class="holdpassportThanShow hide">
+			<div class="row questionRow">
+				<div class="col-md-12">
+					<fieldset class="form-group">
+						<label><strong>是否持有葡萄牙護照？</strong></label><br>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input radio-portugalPassport" type="radio" name="portugalPassport" value="1" checked> 是
+							</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input radio-portugalPassport" type="radio" name="portugalPassport" value="0"> 否
+							</label>
+						</div>
+					</fieldset>
+				</div>
+				<div class="portugalPassportMore">
+					<div class="col-md-12">
+						<fieldset class="form-group">
+							<label><strong>於何時首次取得葡萄牙護照？</strong></label>
+							<input class="form-control input-portugalPassportTime" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-end-date="0d">
+						</fieldset>
+					</div>
+					<div class="col-md-12 portugalPassportTimeAlert valid1 hide">
+						<div class="alert alert-warning" role="alert">
+							<i class="fa fa-exclamation-circle" aria-hidden="true"></i> 需填寫聲明書，並同意於錄取後需檢附澳門特區政府身份證明局開立之「個人資料證明書」始得申辦赴臺就學簽證。
+						</div>
+					</div>
+					<div class="col-md-12 portugalPassportTimeAlert valid3 hide">
+						<div class="alert alert-warning" role="alert">
+							<i class="fa fa-exclamation-circle" aria-hidden="true"></i> 需填寫切結書，同意依僑輔法23-1條規定辦理，並具結未曾在臺設有戶籍
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="row questionRow whichPassport hide">
+				<div class="col-md-12">
+					<fieldset class="form-group">
+						<label><strong>您持有哪一個國家之護照？</strong></label><br>
+						<label>洲別</label><br>
+						<select class="form-control select-passportContinent">
+							<option>南美洲</option>
+						</select>
+					</fieldset>
+					<fieldset class="form-group">
+						<label>國家</label><br>
+						<select class="form-control select-passportCountry">
+						</select>
+					</fieldset>
+				</div>
+				<div class="col-md-12 whichPassportAlert valid2 hide">
+						<div class="alert alert-warning" role="alert">
+							<i class="fa fa-exclamation-circle" aria-hidden="true"></i> 需填寫切結書，同意依僑輔法23-1條規定辦理，並具結未曾在臺設有戶籍
+						</div>
+					</div>
+			</div>
+			<hr class="whichPassport hide"/>
+		</div>
+		<dl class="row questionRow">
+			<dt class="col-md-3">
+				曾分發來臺
+			</dt>
+			<dd class="col-md-9">
+				<div class="row">
+					<div class="col-md-12">
+						<fieldset class="form-group">
+							<label>是否曾經分發來臺就學過？</label><br>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_radio-isDistribution" name="kangAo_isDistribution" type="radio" value="1"> 是
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_radio-isDistribution" name="kangAo_isDistribution" type="radio" value="0" checked> 否
+								</label>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="row kangAo_distributionMore hide">
+					<div class="col-12">
+						<fieldset class="form-group">
+							<label>於西元幾年分發來台？</label>
+							<input class="form-control kangAo_input-distributionTime" type="text">
+						</fieldset>
+						<fieldset class="form-group">
+							<label>並請就下列選項擇一勾選</label><br>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_distributionMoreQuestion" name="kangAo_distributionMore" type="radio" value="1" checked> 1. 未曾辦理報到入學，亦未辦理保留入學資格。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_distributionMoreQuestion" name="kangAo_distributionMore" type="radio" value="2"> 2. 曾經分發註冊，惟在臺期間因故自願退學且在臺停留未滿一年，並退回僑居地(以一次為限)。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_distributionMoreQuestion" name="kangAo_distributionMore" type="radio" value="3"> 3. 辦理保留入學資格在案。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_distributionMoreQuestion" name="kangAo_distributionMore" type="radio" value="4"> 4. 註冊在學。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_distributionMoreQuestion" name="kangAo_distributionMore" type="radio" value="5"> 5. 辦理休學中。
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_distributionMoreQuestion" name="kangAo_distributionMore" type="radio" value="6"> 6. 非因故自願退學(如勒令退學)。
+								</label>
+							</div>
+						</fieldset>
+						<div class="alert alert-danger kangAo_distributionMoreAlert invalid hide" role="alert">
+							<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+						</div>
+					</div>
+				</div>
+			</dd>
+		</dl>
+		<hr />
+		<dl class="row questionRow">
+			<dt class="col-md-3">
+				海外居留年限
+			</dt>
+			<dd class="col-md-9">
+				<div class="row">
+					<div class="col-md-12">
+						<fieldset class="form-group">
+							<label>最近連續居留境外（指臺灣地區<span class="text-danger"> 以外 </span>之國家或地區）之年限：</label><br>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_radio-stayLimit" name="kangAo_stayLimit" type="radio" value="1" checked> 報名時未滿六年
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_radio-stayLimit" name="kangAo_stayLimit" type="radio" value="2"> 報名時未滿六年，但至入學當年度8月31日前滿六年
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_radio-stayLimit" name="kangAo_stayLimit" type="radio" value="3"> 報名時已滿六年
+								</label>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger kangAo_stayLimitAlert invalid" role="alert">
+							<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="alert alert-warning kangAo_stayLimitAlert valid hide" role="alert">
+							<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 需填寫切結書
+						</div>
+					</div>
+				</div>
+			</dd>
+		</dl>
+		<hr />
+		<dl class="row questionRow">
+			<dt class="col-md-3">
+				在台停留日期
+			</dt>
+			<dd class="col-md-9">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-info" role="alert">
+							<i class="fa fa-exclamation-circle" aria-hidden="true"></i> 報名截止日可至 
+							<a href="http://www.overseas.ncnu.edu.tw/countrylist.aspx" target="_blank">官網</a> 查詢
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<fieldset class="form-group">
+							<label>報名截止日往前推算僑居地居留期間內，是否曾在某一年來臺停留超過 120 天？</label><br>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_radio-hasBeenTaiwan" type="radio" name="kangAo_hasBeenTaiwan" value="1"> 是
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label">
+									<input class="form-check-input kangAo_radio-hasBeenTaiwan" type="radio" name="kangAo_hasBeenTaiwan" value="0" checked> 否
+								</label>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+				<div class="hide kangAoType1_hasBeenTaiwanQuestion">
+					<div class="row">
+						<div class="col-md-12">
+							<fieldset class="form-group">
+								<label>請就下列選項，擇一勾選，並檢附證明文件：</label>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="1" checked> 1. 就在臺灣地區接受兵役徵召服役。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="2"> 2. 交換學生，其交換期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="3"> 3. 參加臺灣地區大專校院附設華語文教學機構之研習課程，其研習期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="4"> 4. 懷胎七個月以上或生產、流產後未滿二個月。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="5"> 5. 罹患疾病而強制其出境有生命危險之虞。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="6"> 6. 在臺灣地區設有戶籍之配偶、直系血親、三親等內之旁系血親、二親等內之姻親在臺灣地區患重病或受重傷而住院或死亡。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="7"> 7. 遭遇天災或其他不可避免之事變。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="8"> 8. 就讀僑務主管機關舉辦之海外青年技術訓練班或中央主管教育行政機關認定之技術訓練專班，其訓練期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="9"> 9. 經中央目的事業主管機關許可來臺實習，實習期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="10"> 10. 因其他不可歸責之事由。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType1_radio-whyHasBeenTaiwan" type="radio" name="kangAoType1_whyHasBeenTaiwan" value="11"> 11. 未符合前述1至10條件
+									</label>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger kangAoType1_whyHasBeenTaiwanAlert invalid hide" role="alert">
+								<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="hide kangAoType2_hasBeenTaiwanQuestion">
+					<div class="row">
+						<div class="col-md-12">
+							<fieldset class="form-group">
+								<label>請就下列選項，擇一勾選，並檢附證明文件：</label>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType2_radio-whyHasBeenTaiwan" type="radio" name="kangAoType2_whyHasBeenTaiwan" value="1" checked> 1. 就讀僑務主管機關舉辦之海外青年技術訓練班或中央主管教育行政機關認定之技術訓練專班。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType2_radio-whyHasBeenTaiwan" type="radio" name="kangAoType2_whyHasBeenTaiwan" value="2"> 2. 參加僑務主管機關主辦或其認定屬政府機關舉辦之活動，或就讀主管機關核准境外招生之華語教育機構開設之華語文研習課程，其活動或研習期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType2_radio-whyHasBeenTaiwan" type="radio" name="kangAoType2_whyHasBeenTaiwan" value="3"> 3. 交換學生，其交換期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType2_radio-whyHasBeenTaiwan" type="radio" name="kangAoType2_whyHasBeenTaiwan" value="4"> 4. 經中央目的事業主管機關許可來臺實習，實習期間合計未滿二年。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType2_radio-whyHasBeenTaiwan" type="radio" name="kangAoType2_whyHasBeenTaiwan" value="5"> 5. 回國接受兵役徵召及服役。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType2_radio-whyHasBeenTaiwan" type="radio" name="kangAoType2_whyHasBeenTaiwan" value="6"> 6. 因戰亂、天災或大規模傳染病，致無法返回僑居地。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType2_radio-whyHasBeenTaiwan" type="radio" name="kangAoType2_whyHasBeenTaiwan" value="7"> 7. 因其他不可歸責於僑生之事由，致無法返回僑居地，有證明文件。
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input class="form-check-input kangAoType2_radio-whyHasBeenTaiwan" type="radio" name="kangAoType2_whyHasBeenTaiwan" value="8"> 8. 未符合前述1至7條件
+									</label>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger kangAoType2_whyHasBeenTaiwanAlert invalid hide" role="alert">
+								<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+							</div>
+						</div>
+					</div>
+				</div>
+			</dd>
+		</dl>
+		<hr />
+	</form>
+
+	<form class="question inTaiwan hide">
+		<div class="row questionRow">
+			<div class="col-md-12">
+				<fieldset class="form-group">
+					<label><strong>請問您是否曾經由本聯招會或各校單招管道分發在臺就讀大學並註冊入學過？</strong></label><br>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-taiwanUniversity" type="radio" name="taiwanUniversity" value="1" checked> 是
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-taiwanUniversity" type="radio" name="taiwanUniversity" value="0"> 否
+						</label>
+					</div>
+				</fieldset>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label>入學管道：</label>
+					<select class="form-control input-distributionWay">
+						<option value="海外聯合招生委員會">海外聯合招生委員會</option>
+						<option value="各校單獨招生">各校單獨招生</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label>首度分發至臺灣各大學之年份：</label>
+					<input class="form-control input-distributionYear" data-provide="datepicker" data-date-format="yyyy" data-date-min-view-mode="2" data-date-end-date="yyyy">
+				</div>
+				<div class="form-group">
+					<label>分發學校：</label>
+					<input type="text" class="form-control input-distributionSchool">
+				</div>
+				<div class="form-group">
+					<label>分發學系：</label>
+					<input type="text" class="form-control input-distributionDept">
+				</div>
+				<div class="form-group">
+					<label>分發文字號： <a href="https://dev.overseas.ncnu.edu.tw/school_allstudent/select.php" target="_blank">海外聯招會-歷年錄取結果查詢系統 <i class="fa fa-external-link" aria-hidden="true"></i></a></label>
+					<input type="text" class="form-control input-distributionNo" placeholder="如經海外聯招會分發者，建議提供分發文字號">
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div class="row questionRow">
+			<div class="col-md-12">
+				<fieldset class="form-group">
+					<label><strong>請問您是否曾經向本會申請<span class="systemID"></span>同級學程，並經由本會分發？</strong></label><br>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-applyPeer" type="radio" name="applyPeer" value="1"> 是
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<label class="form-check-label">
+							<input class="form-check-input radio-applyPeer" type="radio" name="applyPeer" value="0" checked> 否
+						</label>
+					</div>
+				</fieldset>
+			</div>
+			<div class="col-md-12 applyPeerMore hide">
+				<div class="form-group">
+					<label>哪一年：</label>
+					<div>
+						<input class="form-control input-applyPeerYear" type="text" pattern="^[1-2]{1}\d{3}$" required>
+						<small class="text-danger">(請填寫西元年份，ex 2013)</small>
+					</div>
+				</div>
+				<fieldset class="form-group">
+					<label><strong>請就下列選項，擇一勾選：</strong></label>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input radio-applyPeerStatus" name="applyPeerStatus" value="1" checked>
+							未曾辦理報到入學，亦未辦理保留入學資格。
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input radio-applyPeerStatus" name="applyPeerStatus" value="2">
+							辦理保留入學資格在案。
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input radio-applyPeerStatus" name="applyPeerStatus" value="3">
+							註冊在學。
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input radio-applyPeerStatus" name="applyPeerStatus" value="4">
+							辦理休學中。
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input radio-applyPeerStatus" name="applyPeerStatus" value="5">
+							非因故自願退學(如勒令退學)。
+						</label>
+					</div>
+				</fieldset>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger applyPeerStatusAlert invalid hide" role="alert">
+							<i class="fa fa-times" aria-hidden="true"></i> 不具有報名資格
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr />
+	</form>
+
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<a href="javascript:;" class="btn btn-primary btn-save">儲存</a>
+		</div>
+	</div>
+
+</div>
