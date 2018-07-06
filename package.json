@@ -1,0 +1,28 @@
+{
+  "name": "0ver-admin",
+  "version": "1.0.0",
+  "description": "好像該開始做後台了",
+  "main": "index.js",
+  "dependencies": {
+    "harp": "^0.27.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "harp compile src dist && babel dist/js -d dist/js",
+    "serve": "harp server src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0verseas/0verAdmin.git"
+  },
+  "author": "overseas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0verseas/0verAdmin/issues"
+  },
+  "homepage": "https://github.com/0verseas/0verAdmin#readme"
+}
