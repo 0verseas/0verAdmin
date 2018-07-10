@@ -1,4 +1,4 @@
-var reviewerInfo = (function () {
+var officeInfo = (function () {
     /*
     const _currentSystem = 'bachelor';
     var _currentDeptId = '';
@@ -38,8 +38,8 @@ var reviewerInfo = (function () {
     }
     */
 
-    var $schoolReviewerList = $('#reviewer-list'); // school reviewer 列表
-    var $schoolReviewerFilterInput = $('#reviewer-filter-input'); // 搜尋欄
+    var $officeList = $('#office-list'); // office 列表
+    var $officeFilterInput = $('#office-filter-input'); // 搜尋欄
 
     /**
      * bind event
@@ -64,7 +64,7 @@ var reviewerInfo = (function () {
     }); // 列印學制資訊 (正式版)
     */
 
-    $schoolReviewerFilterInput.on('keyup', _filterSchoolReviewerInput); // 系所列表篩選
+    $officeFilterInput.on('keyup', _filterOfficeInput); // 系所列表篩選
     /**
      * init
      */
@@ -231,7 +231,7 @@ var reviewerInfo = (function () {
     function _setData() {
         //openLoading();
 
-        SchoolReviewer.getSchoolReviewerList() // 取得 school editor 列表
+        Office.getOfficeList() // 取得 school editor 列表
             .then((res) => {
                 if(res.ok) { // 有該學制則開始頁面初始化
                     return res.json();
@@ -240,9 +240,40 @@ var reviewerInfo = (function () {
                 }
             }).then((json) => {
             // 渲染 school editor 列表
-            $schoolReviewerList.find('tbody').html('');
+            $officeList.find('tbody').html('');
             json.forEach(function (value, index) {
-                $schoolReviewerList
+                var ocac_id;
+                var email;
+                var can_verify;
+                var has_admin;
+
+                if (!value.ocac_id) {
+                    ocac_id = "";
+                } else {
+                    ocac_id = `${value.ocac_id}`;
+                }
+
+                if (!value.user.email) {
+                    email = "";
+                } else {
+                    email = `${value.user.email}`;
+                }
+
+                if (value.can_verify === true) {
+                    can_verify = "是";
+                } else {
+                    can_verify = "否";
+                }
+
+                if (value.has_admin === true) {
+                    has_admin = "是";
+                } else {
+                    has_admin = "否";
+                }
+
+                const authority = ['海外聯招會', '香港海華服務基金', '澳門事務處', '僑務委員會', '海外聯招會在臺碩博窗口'];
+
+                $officeList
                     .find('tbody')
                     .append(`
                         <tr>
@@ -250,12 +281,13 @@ var reviewerInfo = (function () {
                                 <!--<span class="btn-editSchoolEditorInfo" data-userid="${value.user.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>-->
                             </td>
                             <td>${value.user.username}</td>
-                            <td>${value.school.title}</td>
-                            <td>${value.organization}</td>
                             <td>${value.user.name}</td>
+                            <td>${authority[value.authority - 1]}</td>
                             <td>${value.user.phone}</td>
-                            <td>${value.user.email}</td>
-                            <td>${value.school.address}</td>
+                            <td>${email}</td>
+                            <td>${ocac_id}</td>
+                            <td>${can_verify}</td>
+                            <td>${has_admin}</td>
                         </tr>
                     `);
             });
@@ -281,9 +313,9 @@ var reviewerInfo = (function () {
         })
     }
 
-    function _filterSchoolReviewerInput(e) { // 搜尋過濾列表
-        let filter = $schoolReviewerFilterInput.val().toUpperCase();
-        var tr = $schoolReviewerList.find('tr');
+    function _filterOfficeInput(e) { // 「系所列表」搜尋過濾列表
+        let filter = $officeFilterInput.val().toUpperCase();
+        var tr = $officeList.find('tr');
 
         for (i = 0; i < tr.length; i++) {
             let school = tr[i].getElementsByTagName("td")[2]; // 學校

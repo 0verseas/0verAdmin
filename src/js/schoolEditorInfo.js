@@ -281,7 +281,7 @@ var editorInfo = (function () {
             })
     }
 
-    function _filterSchoolEditorInput(e) { // 「系所列表」搜尋過濾列表
+    function _filterSchoolEditorInput(e) { // 搜尋過濾列表
         let filter = $schoolEditorFilterInput.val().toUpperCase();
         var tr = $schoolEditorList.find('tr');
 
