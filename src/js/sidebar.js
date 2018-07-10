@@ -33,7 +33,7 @@ var Sidebar = (function () {
     function _logout() {
         User.logout().then(function(res) {
             if(res.ok) {
-                window.location.replace('/login.html');
+                window.location.replace('./login.html');
             } else {
                 throw res.status;
             }
