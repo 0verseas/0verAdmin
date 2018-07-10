@@ -48,10 +48,9 @@ var Sidebar = (function () {
             setTimeout(showUserInfo, 1);
             return;
         }
-        var role = userInfo.admin.has_admin ? '上帝' : '管理員';
+        var role = userInfo.admin.has_admin ? '上帝' : '一般管理員';
         $roleBadge.text(role);
         $userName.text(userInfo.name);
-        $userSchool.text(userInfo.school_editor.school.title);
     }
 
     return {
