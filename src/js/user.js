@@ -40,13 +40,13 @@ var User = (function () {
             }
         }).then(function (json) {
             if (!json[permission] || json[permission].has_banned) {
-                location.replace('/login.html');
+                location.replace('./login.html');
             } else {
                 _setUserInfo(json);
             }
         }).catch(function (err) {
             if (err == 401) {
-                location.replace('/login.html');
+                location.replace('./login.html');
             }
         });
     }
