@@ -48,15 +48,15 @@
     <% } else { -%>
     <%- partial("login")%>
     <% } -%>
-</div>
-<!-- Modal: edit account -->
-<%- partial("components/_accountEditModal")%>
-<script src="./js/<%= current.source %>.js"></script>
-<footer>
-    <div class="row">
-        <div class="col-12 text-center">
+    <!-- Modal: edit account -->
+    <%- partial("components/_accountEditModal")%>
+    <footer>
+        <div class="row">
+            <div class="col-12 text-center">
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
+</div>
+<script src="./js/<%= current.source %>.js"></script>
 </body>
 </html>
