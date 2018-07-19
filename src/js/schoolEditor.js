@@ -7,6 +7,7 @@ var SchoolEditor = (function () {
             credentials: 'include'
         });
     }
+
     return {
         getSchoolEditorList,
     };

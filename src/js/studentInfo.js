@@ -1,9 +1,22 @@
 var studentInfo = (function () {
+    var _currentUserId = '';
+
     /**
      * cache DOM
      */
     var $studentList = $('#student-list'); // student 列表
     var $studentFilterInput = $('#student-filter-input'); // 搜尋欄
+    var $editStudentInfoBtn; // 學生列表每項資料的編輯按鈕，資料取回後再綁定 event
+    var $editStudentInfoModal = $('#editStudentInfoModal'); // 學生詳細資料 modal
+
+    // Modal common elements
+    var $modalStudentInfo = $('#modal-studentInfo');
+    var $id = $modalStudentInfo.find('#id'); // 報名序號
+    var $overseasId = $modalStudentInfo.find('#overseasId'); // 僑生編號
+    var $name = $modalStudentInfo.find('#name'); // 中文姓名
+    var $engName = $modalStudentInfo.find('#engName'); // 英文姓名
+    var $email = $modalStudentInfo.find('#email'); // email
+    var $backupEmail = $modalStudentInfo.find('#backupEmail'); // 備用 email
 
     /**
      * bind event
@@ -49,9 +62,9 @@ var studentInfo = (function () {
                     .append(`
                         <tr>
                             <td>
-                                <!--<span class="btn-editSchoolEditorInfo" data-userid="${value.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>-->
+                                <span class="btn-editStudentInfo" data-userid="${value.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
                             </td>
-                            <td>${value.id}</td>
+                            <td>${(value.id).toString().padStart(6, "0")}</td>
                             <td>${value.student_misc_data.overseas_student_id || ""}</td>
                             <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
                             <td>${value.email}</td>
@@ -62,9 +75,8 @@ var studentInfo = (function () {
             });
         }).then(() => {
             $.bootstrapSortable(true); // 啟用列表排序功能
-            //$editDeptInfoBtn = $('.btn-editDeptInfo'); // 新增系所編輯按鈕的觸發事件（開啟 Modal）
-            //$editDeptInfoBtn.on('click', _handleEditDeptInfo);
-            //DeptInfo.renderDeptSelect(_currentSystem); // 產生系所詳細資料 Modal 中下拉式選單
+            $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增系所編輯按鈕的觸發事件（開啟 Modal）
+            $editStudentInfoBtn.on('click', _handleEditStudentInfo);
 
             //stopLoading();
         }).catch((err) => {
@@ -98,5 +110,38 @@ var studentInfo = (function () {
                 }
             }
         }
+    }
+
+    function _handleEditStudentInfo() { // 學生列表 Modal 觸發
+        openLoading();
+
+        _currentUserId = $(this).data('userid');
+
+        Student.getStudentInfo(_currentUserId)
+            .then((res) => { return res.json(); })
+            .then((json) => {
+                _renderStudentDetail(json);
+            })
+            .then(() => {
+                //_reviewDivAction();
+
+                $editStudentInfoModal.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                stopLoading();
+            })
+
+    }
+
+    function _renderStudentDetail(json) {
+        console.log(json.name);
+        $id.val((json.id).toString().padStart(6, "0"));
+        $overseasId.val(json.student_misc_data.overseas_student_id || "");
+        $name.val(json.name || "");
+        $engName.val(json.eng_name || "");
+        $email.val(json.email);
+        $backupEmail.val((json.student_personal_data) ? (json.student_personal_data.backup_email || "") : (""));
     }
 })();

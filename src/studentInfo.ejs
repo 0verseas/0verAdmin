@@ -26,4 +26,101 @@
     </tbody>
 </table>
 
+<div class="modal fade" id="editStudentInfoModal" tabindex="-1" role="dialog" aria-labelledby="editStudentInfoTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="modal-studentInfo">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStudentInfoTitle">
+                    學生詳細資料
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form>
+                        <div class="row">
+                            <div id="idForm" class="form-group col-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            報名序號
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" id="id" disabled>
+                                </div>
+                            </div>
+                            <div id="overseasIdForm" class="form-check col-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            僑生編號
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" id="overseasId">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="nameForm" class="form-group col-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            姓名（中）
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" id="name">
+                                </div>
+                            </div>
+                            <div id="engNameForm" class="form-check col-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            姓名（英）
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" id="engName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="emailForm" class="form-group col-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            E-mail
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" id="email">
+                                </div>
+                            </div>
+                            <div id="backupEmaileForm" class="form-check col-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            備用 E-mail
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" id="backupEmail">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="studentDetailSave">儲存</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">離開</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/bootstrap-sortable/2.0.0/bootstrap-sortable.min.js"></script>

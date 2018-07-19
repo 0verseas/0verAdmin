@@ -7,6 +7,7 @@ var SchoolReviewer = (function () {
             credentials: 'include'
         });
     }
+
     return {
         getSchoolReviewerList,
     };

@@ -7,6 +7,7 @@ var Office = (function () {
             credentials: 'include'
         });
     }
+
     return {
         getOfficeList,
     };
