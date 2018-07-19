@@ -17,6 +17,10 @@ var studentInfo = (function () {
     var $engName = $modalStudentInfo.find('#engName'); // 英文姓名
     var $email = $modalStudentInfo.find('#email'); // email
     var $backupEmail = $modalStudentInfo.find('#backupEmail'); // 備用 email
+    var $gender = $modalStudentInfo.find('.gender'); // 性別
+    var $birthday = $modalStudentInfo.find('#birthday'); // 生日
+    var $birthContinent = $modalStudentInfo.find('#birthContinent'); // 出生地（州）
+    var $birthLocation = $modalStudentInfo.find('#birthLocation'); // 出生地（國）
 
     /**
      * bind event
@@ -48,13 +52,24 @@ var studentInfo = (function () {
 
                 var system_name = '';
                 var identity_name = '';
+                var gender_name = '';
 
-                if (value.student_qualification_verify && value.student_qualification_verify.system_id) {
-                    system_name = system[value.student_qualification_verify.system_id - 1];
+                if (value.student_qualification_verify) {
+                    if (value.student_qualification_verify.system_id) {
+                        system_name = system[value.student_qualification_verify.system_id - 1];
+                    }
+
+                    if (value.student_qualification_verify.identity) {
+                        identity_name = identity[value.student_qualification_verify.identity - 1];
+                    }
                 }
 
-                if (value.student_qualification_verify && value.student_qualification_verify.identity) {
-                    identity_name = identity[value.student_qualification_verify.identity - 1];
+                if (value.student_personal_data) {
+                    if (value.student_personal_data.gender === 'M') {
+                        gender_name = '男';
+                    } else if (value.student_personal_data.gender === 'F') {
+                        gender_name = '女';
+                    }
                 }
 
                 $studentList
@@ -67,6 +82,7 @@ var studentInfo = (function () {
                             <td>${(value.id).toString().padStart(6, "0")}</td>
                             <td>${value.student_misc_data.overseas_student_id || ""}</td>
                             <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
+                            <td>${gender_name}</td>
                             <td>${value.email}</td>
                             <td>${system_name}</td>
                             <td>${identity_name}</td>
@@ -136,12 +152,23 @@ var studentInfo = (function () {
     }
 
     function _renderStudentDetail(json) {
-        console.log(json.name);
         $id.val((json.id).toString().padStart(6, "0"));
         $overseasId.val(json.student_misc_data.overseas_student_id || "");
         $name.val(json.name || "");
         $engName.val(json.eng_name || "");
         $email.val(json.email);
         $backupEmail.val((json.student_personal_data) ? (json.student_personal_data.backup_email || "") : (""));
+
+        if (json.student_personal_data && json.student_personal_data.gender) {
+            $("input[name=gender][value='" + json.student_personal_data.gender + "']").prop("checked", true);
+        } else {
+            $("input[name=gender]").prop("checked", false);
+        }
+
+        if (json.student_personal_data && json.student_personal_data.birthday) {
+            $birthday.val(json.student_personal_data.birthday);
+        } else {
+            $birthday.val();
+        }
     }
 })();

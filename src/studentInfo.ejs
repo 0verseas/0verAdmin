@@ -17,6 +17,7 @@
         <th>報名序號</th>
         <th>僑生編號</th>
         <th>姓名</th>
+        <th>性別</th>
         <th>Email</th>
         <th>班別</th>
         <th>身份別</th>
@@ -53,7 +54,7 @@
                                     <input type="text" class="form-control" id="id" disabled>
                                 </div>
                             </div>
-                            <div id="overseasIdForm" class="form-check col-6">
+                            <div id="overseasIdForm" class="form-group col-6">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
@@ -67,46 +68,61 @@
 
                         <div class="row">
                             <div id="nameForm" class="form-group col-6">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            姓名（中）
-                                        </div>
-                                    </div>
-                                    <input type="text" class="form-control" id="name">
-                                </div>
+                                <label for="name">姓名（中）</label>
+                                <input type="text" class="form-control" id="name">
                             </div>
-                            <div id="engNameForm" class="form-check col-6">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            姓名（英）
-                                        </div>
-                                    </div>
-                                    <input type="text" class="form-control" id="engName">
-                                </div>
+                            <div id="engNameForm" class="form-group col-6">
+                                <label for="engName">姓名（英）</label>
+                                <input type="text" class="form-control" id="engName">
                             </div>
                         </div>
 
                         <div class="row">
                             <div id="emailForm" class="form-group col-6">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            E-mail
-                                        </div>
-                                    </div>
-                                    <input type="text" class="form-control" id="email">
+                                <label for="email">E-mail</label>
+                                <input type="text" class="form-control" id="email" disabled>
+                            </div>
+                            <div id="backupEmaileForm" class="form-group col-6">
+                                <label for="backupEmail">備用 E-mail</label>
+                                <input type="text" class="form-control" id="backupEmail">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="genderForm" class="form-group col-6">
+                                <label>性別</label>
+                                <br />
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input gender" type="radio" name="gender" id="genderf" value="F">
+                                    <label class="form-check-label" for="genderf">女</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input gender" type="radio" name="gender" id="genderm" value="M">
+                                    <label class="form-check-label" for="genderm">男</label>
                                 </div>
                             </div>
-                            <div id="backupEmaileForm" class="form-check col-6">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            備用 E-mail
-                                        </div>
+                            <div id="birthdayForm" class="form-group col-6">
+                                <label for="birthday">生日</label>
+                                <input type="text" class="form-control" id="birthday">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="genderForm" class="form-group col-12">
+                                <label>出生地、國別</label>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <select id="birthContinent" class="form-control">
+                                            <option selected>Choose...</option>
+                                            <option>...</option>
+                                        </select>
                                     </div>
-                                    <input type="text" class="form-control" id="backupEmail">
+                                    <div class="form-group col-md-6">
+                                        <select id="birthLocation" class="form-control">
+                                            <option selected>Choose...</option>
+                                            <option>...</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -115,7 +131,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="studentDetailSave">儲存</button>
+                <!--<button type="button" class="btn btn-primary" id="studentDetailSave">儲存</button>-->
                 <button type="button" class="btn btn-danger" data-dismiss="modal">離開</button>
             </div>
 
