@@ -29,6 +29,21 @@ var studentInfo = (function () {
             // 渲染 student 列表
             $studentList.find('tbody').html('');
             json.forEach(function (value, index) {
+                const identity = ['港澳生', '港澳具外國國籍之華裔學生', '海外僑生', '在臺港澳生', '在臺僑生', '僑先部結業生', '印輔班結業生'];
+
+                const system = ['學士班', '港二技', '碩士班', '博士班'];
+
+                var system_name = '';
+                var identity_name = '';
+
+                if (value.student_qualification_verify && value.student_qualification_verify.system_id) {
+                    system_name = system[value.student_qualification_verify.system_id - 1];
+                }
+
+                if (value.student_qualification_verify && value.student_qualification_verify.identity) {
+                    identity_name = identity[value.student_qualification_verify.identity - 1];
+                }
+
                 $studentList
                     .find('tbody')
                     .append(`
@@ -40,6 +55,8 @@ var studentInfo = (function () {
                             <td>${value.student_misc_data.overseas_student_id || ""}</td>
                             <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
                             <td>${value.email}</td>
+                            <td>${system_name}</td>
+                            <td>${identity_name}</td>
                         </tr>
                     `);
             });
