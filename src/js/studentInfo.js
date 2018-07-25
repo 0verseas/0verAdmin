@@ -1,5 +1,6 @@
 var studentInfo = (function () {
     var _currentUserId = '';
+    let _countryList = [];
 
     /**
      * cache DOM
@@ -27,6 +28,18 @@ var studentInfo = (function () {
      */
     $studentFilterInput.on('keyup', _filterStudentInput); // 學生列表篩選
 
+    $birthContinent.on('change', _reRenderCountry);
+    //$specail.on('change', _changeSpecail);
+    //$disabilityCategory.on('change', _switchDisabilityCategory);
+    //$residenceContinent.on('change', _reRenderResidenceCountry);
+    //$schoolContinent.on('change', _reRenderSchoolCountry);
+    //$schoolCountry.on('change', _chSchoolCountry);
+    //$schoolType.on('change', _chSchoolType);
+    //$schoolLocation.on('change', _chSchoolLocation);
+    //$dadStatus.on('change', _chDadStatus);
+    //$momStatus.on('change', _chMomStatus);
+    //$saveBtn.on('click', _handleSave);
+
     /**
      * init
      */
@@ -38,6 +51,7 @@ var studentInfo = (function () {
         Student.getStudentList() // 取得 student 列表
             .then((res) => {
                 if(res.ok) { // 有資料則開始頁面初始化
+                    _initCountryList();
                     return res.json();
                 } else {
                     throw res;
@@ -91,7 +105,7 @@ var studentInfo = (function () {
             });
         }).then(() => {
             $.bootstrapSortable(true); // 啟用列表排序功能
-            $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增系所編輯按鈕的觸發事件（開啟 Modal）
+            $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
             $editStudentInfoBtn.on('click', _handleEditStudentInfo);
 
             //stopLoading();
@@ -170,5 +184,57 @@ var studentInfo = (function () {
         } else {
             $birthday.val();
         }
+
+        if (json.student_personal_data && json.student_personal_data.birth_location) {
+            $birthContinent.val(_findContinent(json.student_personal_data.birth_location)).change();
+            $birthLocation.val(json.student_personal_data.birth_location);
+        } else {
+            $birthContinent.val(_findContinent(-1)).change();
+            $birthLocation.val("");
+        }
+    }
+
+    function _initCountryList() {
+        Miscellaneous.getCountryList()
+            .then((json) => {
+                _countryList = json;
+                let stateHTML = '<option value="-1" data-continentIndex="-1">Continent</option>';
+                json.forEach((obj, index) => {
+                    stateHTML += `<option value="${index}" data-continentIndex="${index}">${obj.continent}</option>`
+                });
+                $birthContinent.html(stateHTML);
+                // $residenceContinent.html(stateHTML);
+                // $schoolContinent.html(stateHTML);
+            })
+    }
+
+    function _findContinent(locationId) { // 找到州別
+        let continent = '';
+        for (let i = 0; i < _countryList.length; i++) {
+            let countryObj = _countryList[i].country.filter((obj) => {
+                return obj.id === locationId;
+            });
+            if (countryObj.length > 0) {
+                return '' + i;
+            }
+        }
+        return -1;
+    }
+
+    function _reRenderCountry() {
+        const continent = $(this).find(':selected').data('continentindex');
+        const $row = $(this).closest('.row');
+        const $countrySelect = $row.find('.country');
+
+        let countryHTML = '<option value="">Country</option>';
+        if (continent !== -1) {
+            _countryList[continent]['country'].forEach((obj, index) => {
+                countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
+            })
+        } else {
+            countryHTML = '<option value="">Country</option>'
+        }
+        $countrySelect.html(countryHTML);
+        $countrySelect.change();
     }
 })();

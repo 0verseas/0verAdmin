@@ -8,7 +8,7 @@ var Student = (function () {
         });
     }
 
-    function getStudentInfo(UserId) { // 取得某學制某系所
+    function getStudentInfo(UserId) { // 取得某學生詳細資料
         return fetch(baseUrl + `/admins/students/${UserId}`, {
             credentials: 'include'
         })
