@@ -1,6 +1,14 @@
 var studentInfo = (function () {
     var _currentUserId = '';
     let _countryList = [];
+    let _specailStatus = 0;
+    let _disabilityCategory = '視覺障礙';
+    let _currentDadStatus = 'alive';
+    let _currentMomStatus = 'alive';
+    let _systemId = 0;
+    let _identityId = 0;
+
+    const _disabilityCategoryList = ["視覺障礙", "聽覺障礙", "肢體障礙", "語言障礙", "腦性麻痺", "自閉症", "學習障礙"];
 
     /**
      * cache DOM
@@ -23,14 +31,21 @@ var studentInfo = (function () {
     var $birthContinent = $modalStudentInfo.find('#birthContinent'); // 出生地（州）
     var $birthLocation = $modalStudentInfo.find('#birthLocation'); // 出生地（國）
 
+    const $specail = $modalStudentInfo.find('.specail'); // 是否為「身心障礙」或「特殊照護」或「特殊教育」者
+    const $specialForm = $modalStudentInfo.find('#specialForm'); // 身心障礙表單
+    const $disabilityCategory = $modalStudentInfo.find('#disabilityCategory'); // 障礙類別
+    const $disabilityLevel = $modalStudentInfo.find('#disabilityLevel'); // 障礙等級
+    const $otherDisabilityCategoryForm = $modalStudentInfo.find('#otherDisabilityCategoryForm'); // 其他障礙說明表單
+    const $otherDisabilityCategory = $modalStudentInfo.find('#otherDisabilityCategory'); // 其他障礙說明
+
     /**
      * bind event
      */
     $studentFilterInput.on('keyup', _filterStudentInput); // 學生列表篩選
 
     $birthContinent.on('change', _reRenderCountry);
-    //$specail.on('change', _changeSpecail);
-    //$disabilityCategory.on('change', _switchDisabilityCategory);
+    $specail.on('change', _changeSpecail);
+    $disabilityCategory.on('change', _switchDisabilityCategory);
     //$residenceContinent.on('change', _reRenderResidenceCountry);
     //$schoolContinent.on('change', _reRenderSchoolCountry);
     //$schoolCountry.on('change', _chSchoolCountry);
@@ -46,7 +61,7 @@ var studentInfo = (function () {
     _setData();
 
     function _setData() {
-        //openLoading();
+        openLoading();
 
         Student.getStudentList() // 取得 student 列表
             .then((res) => {
@@ -108,7 +123,7 @@ var studentInfo = (function () {
             $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
             $editStudentInfoBtn.on('click', _handleEditStudentInfo);
 
-            //stopLoading();
+            stopLoading();
         }).catch((err) => {
             err.json && err.json().then((data) => {
                 console.error(data);
@@ -154,6 +169,8 @@ var studentInfo = (function () {
             })
             .then(() => {
                 //_reviewDivAction();
+                _showSpecailForm();
+                _handleOtherDisabilityCategoryForm();
 
                 $editStudentInfoModal.modal({
                     backdrop: 'static',
@@ -173,24 +190,29 @@ var studentInfo = (function () {
         $email.val(json.email);
         $backupEmail.val((json.student_personal_data) ? (json.student_personal_data.backup_email || "") : (""));
 
-        if (json.student_personal_data && json.student_personal_data.gender) {
+        if (json.student_personal_data) {
             $("input[name=gender][value='" + json.student_personal_data.gender + "']").prop("checked", true);
-        } else {
-            $("input[name=gender]").prop("checked", false);
-        }
-
-        if (json.student_personal_data && json.student_personal_data.birthday) {
             $birthday.val(json.student_personal_data.birthday);
-        } else {
-            $birthday.val();
-        }
-
-        if (json.student_personal_data && json.student_personal_data.birth_location) {
             $birthContinent.val(_findContinent(json.student_personal_data.birth_location)).change();
             $birthLocation.val(json.student_personal_data.birth_location);
+
+            _specailStatus = json.student_personal_data.special;
+            $("input[name=special][value='"+ _specailStatus +"']").prop("checked",true).change();
+            if (_specailStatus === 1) {
+                if (_disabilityCategoryList.indexOf(json.student_personal_data.disability_category) > -1) {
+                    $disabilityCategory.val(json.student_personal_data.disability_category).change();
+                } else {
+                    $disabilityCategory.val("-1").change();
+                    $otherDisabilityCategory.val(json.student_personal_data.disability_category);
+                }
+                $disabilityLevel.val(json.student_personal_data.disability_level);
+            }
         } else {
+            $("input[name=gender]").prop("checked", false);
+            $birthday.val("");
             $birthContinent.val(_findContinent(-1)).change();
             $birthLocation.val("");
+            $("input[name=special]").prop("checked", false);
         }
     }
 
@@ -236,5 +258,31 @@ var studentInfo = (function () {
         }
         $countrySelect.html(countryHTML);
         $countrySelect.change();
+    }
+
+    function _switchDisabilityCategory() {
+        _disabilityCategory = $(this).val();
+        _handleOtherDisabilityCategoryForm();
+    }
+
+    function _handleOtherDisabilityCategoryForm() {
+        if (_disabilityCategory === "-1") {
+            $otherDisabilityCategoryForm.fadeIn();
+        } else {
+            $otherDisabilityCategoryForm.hide();
+        }
+    }
+
+    function _changeSpecail() {
+        _specailStatus = Number($(this).val());
+        _showSpecailForm();
+    }
+
+    function _showSpecailForm() {
+        if (_specailStatus === 1) {
+            $specialForm.fadeIn();
+        } else {
+            $specialForm.hide();
+        }
     }
 })();

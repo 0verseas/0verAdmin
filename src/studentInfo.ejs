@@ -122,6 +122,84 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row" id="form-homeTown" style="display: none;">
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <label class="text-danger">* 籍貫</label>
+                                    <div class="input-group">
+                                        <input type="text" id="homeTownProvince" class="form-control">
+                                        <span class="input-group-addon">省</span>
+                                        <input type="text" id="homeTownCity" class="form-control">
+                                        <span class="input-group-addon">市</span>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">於西元</span>
+                                        <input type="text" id="whenToResident" class="form-control" placeholder="YYYY">
+                                        <span class="input-group-addon">年從</span>
+                                        <input type="text" id="whereToResident" class="form-control" placeholder="某地">
+                                        <span class="input-group-addon">到達現居留地</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <fieldset class="form-group">
+                                    <label>是否為「身心障礙」或「特殊照護」或「特殊教育」者</label><br />
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input specail" type="radio" name="special" id="specialn" value="0">
+                                        <label class="form-check-label" for="specialn">否</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input specail" type="radio" name="special" id="specialy" value="1">
+                                        <label class="form-check-label" for="specialy">是</label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div id="specialForm" class="hide">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="disabilityCategory">障礙類別</label>
+                                        <select class="form-control" id="disabilityCategory">
+                                            <option value="視覺障礙">視覺障礙</option>
+                                            <option value="聽覺障礙">聽覺障礙</option>
+                                            <option value="肢體障礙">肢體障礙</option>
+                                            <option value="語言障礙">語言障礙</option>
+                                            <option value="腦性麻痺">腦性麻痺</option>
+                                            <option value="自閉症">自閉症</option>
+                                            <option value="學習障礙">學習障礙</option>
+                                            <option value="-1">其他</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="disabilityLevel">程度</label>
+                                        <select class="form-control" id="disabilityLevel">
+                                            <option value="極重度">極重度</option>
+                                            <option value="重度">重度</option>
+                                            <option value="中度">中度</option>
+                                            <option value="輕度">輕度</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="otherDisabilityCategoryForm">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="otherDisabilityCategory">其他類別</label>
+                                        <input class="form-control" type="text" id="otherDisabilityCategory" maxlength="15">
+                                        <small class="text-muted">請填寫 15 字內的說明</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
             </div>
