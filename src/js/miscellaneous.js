@@ -42,7 +42,6 @@ var Miscellaneous = (function () {
         });
     }
 
-
     return {
         getCountryList,
         getSchoolList,

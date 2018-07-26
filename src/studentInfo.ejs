@@ -66,136 +66,492 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div id="nameForm" class="form-group col-6">
-                                <label for="name">姓名（中）</label>
-                                <input type="text" class="form-control" id="name">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                學生資料
                             </div>
-                            <div id="engNameForm" class="form-group col-6">
-                                <label for="engName">姓名（英）</label>
-                                <input type="text" class="form-control" id="engName">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div id="emailForm" class="form-group col-6">
-                                <label for="email">E-mail</label>
-                                <input type="text" class="form-control" id="email" disabled>
-                            </div>
-                            <div id="backupEmaileForm" class="form-group col-6">
-                                <label for="backupEmail">備用 E-mail</label>
-                                <input type="text" class="form-control" id="backupEmail">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div id="genderForm" class="form-group col-6">
-                                <label>性別</label>
-                                <br />
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input gender" type="radio" name="gender" id="genderf" value="F">
-                                    <label class="form-check-label" for="genderf">女</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input gender" type="radio" name="gender" id="genderm" value="M">
-                                    <label class="form-check-label" for="genderm">男</label>
-                                </div>
-                            </div>
-                            <div id="birthdayForm" class="form-group col-6">
-                                <label for="birthday">生日</label>
-                                <input type="text" class="form-control" id="birthday">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div id="genderForm" class="form-group col-12">
-                                <label>出生地、國別</label>
+                            <div class="card-body">
                                 <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <select id="birthContinent" class="form-control">
-                                        </select>
+                                    <div id="nameForm" class="form-group col-6">
+                                        <label for="name">姓名（中）</label>
+                                        <input type="text" class="form-control" id="name">
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <select id="birthLocation" class="form-control country">
-                                        </select>
+                                    <div id="engNameForm" class="form-group col-6">
+                                        <label for="engName">姓名（英）</label>
+                                        <input type="text" class="form-control" id="engName">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div id="emailForm" class="form-group col-6">
+                                        <label for="email">E-mail</label>
+                                        <input type="text" class="form-control" id="email" disabled>
+                                    </div>
+                                    <div id="backupEmaileForm" class="form-group col-6">
+                                        <label for="backupEmail">備用 E-mail</label>
+                                        <input type="text" class="form-control" id="backupEmail">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div id="genderForm" class="form-group col-6">
+                                        <label>性別</label>
+                                        <br />
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input gender" type="radio" name="gender" id="genderf" value="F">
+                                            <label class="form-check-label" for="genderf">女</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input gender" type="radio" name="gender" id="genderm" value="M">
+                                            <label class="form-check-label" for="genderm">男</label>
+                                        </div>
+                                    </div>
+                                    <div id="birthdayForm" class="form-group col-6">
+                                        <label for="birthday">生日</label>
+                                        <input type="text" class="form-control" id="birthday">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <label>出生地、國別</label>
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <select id="birthContinent" class="form-control">
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <select id="birthLocation" class="form-control country">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="form-homeTown" style="display: none;">
+                                    <div class="col-md-10">
+                                        <div class="form-group">
+                                            <label>籍貫</label>
+                                            <div class="input-group">
+                                                <input type="text" id="homeTownProvince" class="form-control">
+                                                <span class="input-group-addon">省</span>
+                                                <input type="text" id="homeTownCity" class="form-control">
+                                                <span class="input-group-addon">市</span>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">於西元</span>
+                                                <input type="text" id="whenToResident" class="form-control" placeholder="YYYY">
+                                                <span class="input-group-addon">年從</span>
+                                                <input type="text" id="whereToResident" class="form-control" placeholder="某地">
+                                                <span class="input-group-addon">到達現居留地</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <fieldset class="form-group">
+                                            <label>是否為「身心障礙」或「特殊照護」或「特殊教育」者</label><br />
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input specail" type="radio" name="special" id="specialn" value="0">
+                                                <label class="form-check-label" for="specialn">否</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input specail" type="radio" name="special" id="specialy" value="1">
+                                                <label class="form-check-label" for="specialy">是</label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+                                <div id="specialForm" class="hide">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="disabilityCategory">障礙類別</label>
+                                                <select class="form-control" id="disabilityCategory">
+                                                    <option value="視覺障礙">視覺障礙</option>
+                                                    <option value="聽覺障礙">聽覺障礙</option>
+                                                    <option value="肢體障礙">肢體障礙</option>
+                                                    <option value="語言障礙">語言障礙</option>
+                                                    <option value="腦性麻痺">腦性麻痺</option>
+                                                    <option value="自閉症">自閉症</option>
+                                                    <option value="學習障礙">學習障礙</option>
+                                                    <option value="-1">其他</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="disabilityLevel">程度</label>
+                                                <select class="form-control" id="disabilityLevel">
+                                                    <option value="極重度">極重度</option>
+                                                    <option value="重度">重度</option>
+                                                    <option value="中度">中度</option>
+                                                    <option value="輕度">輕度</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="otherDisabilityCategoryForm">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label for="otherDisabilityCategory">其他類別</label>
+                                                <input class="form-control" type="text" id="otherDisabilityCategory" maxlength="15">
+                                                <small class="text-muted">請填寫 15 字內的說明</small>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row" id="form-homeTown" style="display: none;">
-                            <div class="col-md-10">
-                                <div class="form-group">
-                                    <label class="text-danger">* 籍貫</label>
-                                    <div class="input-group">
-                                        <input type="text" id="homeTownProvince" class="form-control">
-                                        <span class="input-group-addon">省</span>
-                                        <input type="text" id="homeTownCity" class="form-control">
-                                        <span class="input-group-addon">市</span>
+                        <br />
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                僑居地資料
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <label>國別</label>
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <select id="residenceContinent" class="form-control">
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <select id="residentLocation" class="form-control country">
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">於西元</span>
-                                        <input type="text" id="whenToResident" class="form-control" placeholder="YYYY">
-                                        <span class="input-group-addon">年從</span>
-                                        <input type="text" id="whereToResident" class="form-control" placeholder="某地">
-                                        <span class="input-group-addon">到達現居留地</span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="residentId">身分證號碼（ID no.）</label>
+                                            <input type="text" class="form-control" id="residentId">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="residentPassportNo">護照號碼</label>
+                                            <input type="text" class="form-control" id="residentPassportNo">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="residentPhoneCode">電話</label>
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control" id="residentPhoneCode" maxlength="5" placeholder="國碼">
+                                                </div>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control" id="residentPhone" placeholder="電話號碼">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="residentCellphoneCode">手機</label>
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control" id="residentCellphoneCode" maxlength="5" placeholder="國碼">
+                                                </div>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control" id="residentCellphone" placeholder="手機電話號碼">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="residentAddress">「中文」或「英文」地址</label>
+                                            <input type="text" class="form-control" id="residentAddress">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="residentOtherLangAddress">中英文以外語言地址</label>
+                                            <input type="text" class="form-control" id="residentOtherLangAddress">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <fieldset class="form-group">
-                                    <label>是否為「身心障礙」或「特殊照護」或「特殊教育」者</label><br />
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input specail" type="radio" name="special" id="specialn" value="0">
-                                        <label class="form-check-label" for="specialn">否</label>
+                        <br />
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                在台資料
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6 col-md-4">
+                                        <div class="form-group">
+                                            <label for="taiwanIdType">證件類型</label>
+                                            <select class="form-control" id="taiwanIdType">
+                                                <option value="">請選擇</option>
+                                                <option value="身分證">身分證</option>
+                                                <option value="居留證">居留證</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input specail" type="radio" name="special" id="specialy" value="1">
-                                        <label class="form-check-label" for="specialy">是</label>
+                                    <div class="col-6 col-md-8">
+                                        <div class="form-group">
+                                            <label for="taiwanIdType">證件號碼</label>
+                                            <input type="text" class="form-control" id="taiwanIdNo">
+                                            <small class="text-muted">該「證件類型」的號碼</small>
+                                        </div>
                                     </div>
-                                </fieldset>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="taiwanPassport">臺灣護照號碼</label>
+                                            <input type="text" class="form-control" id="taiwanPassport">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="taiwanPhone">臺灣電話</label>
+                                            <input type="text" class="form-control" id="taiwanPhone" placeholder="電話">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="taiwanAddress">臺灣地址</label>
+                                            <input type="text" class="form-control" id="taiwanAddress" placeholder="地址">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div id="specialForm" class="hide">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="disabilityCategory">障礙類別</label>
-                                        <select class="form-control" id="disabilityCategory">
-                                            <option value="視覺障礙">視覺障礙</option>
-                                            <option value="聽覺障礙">聽覺障礙</option>
-                                            <option value="肢體障礙">肢體障礙</option>
-                                            <option value="語言障礙">語言障礙</option>
-                                            <option value="腦性麻痺">腦性麻痺</option>
-                                            <option value="自閉症">自閉症</option>
-                                            <option value="學習障礙">學習障礙</option>
-                                            <option value="-1">其他</option>
-                                        </select>
+                        <br />
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                最高學歷
+                            </div>
+                            <div class="card-body">
+                                <div class="row" id="div-educationSystemDescription">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="educationSystemDescription">學制描述</label>
+                                            <input type="text" class="form-control" id="educationSystemDescription">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="disabilityLevel">程度</label>
-                                        <select class="form-control" id="disabilityLevel">
-                                            <option value="極重度">極重度</option>
-                                            <option value="重度">重度</option>
-                                            <option value="中度">中度</option>
-                                            <option value="輕度">輕度</option>
-                                        </select>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>學校所在地</label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <select class="form-control" id="schoolContinent">
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-control country" id="schoolCountry">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 顯示：馬來西亞、印尼、越南、泰國、緬甸 -->
+                                <div id="schoolTypeForm" class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="schoolType">學校類型</label>
+                                            <select class="form-control" id="schoolType">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 顯示：香港、澳門、馬來西亞（類別：華文獨立中學學生、臺灣學校學生）。必須和學校名稱 (select) 一起出現 -->
+                                <div id="schoolLocationForm" class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="schoolLocation">學校所在地</label>
+                                            <select class="form-control" id="schoolLocation">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="schoolNameSelect">學校名稱</label>
+                                            <select class="form-control" id="schoolNameSelect">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 顯示：港、澳及馬來西亞（類別：國民型或國民中學學生、國際學校學生）「以外的」 -->
+                                <div id="schoolNameTextForm" class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="schoolNameText">學校名稱</label>
+                                            <input class="form-control" type="text" id="schoolNameText">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 顯示：碩、博 -->
+                                <div class="row" id="subjectForm" style="display: none;">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="majorSubject">主修科目</label>
+                                            <input class="form-control" type="text" id="majorSubject">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="minorSubject">輔修科目</label>
+                                            <input class="form-control" type="text" id="minorSubject">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="schoolAdmissionAt">入學時間</label>
+                                            <input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm" data-date-min-view-mode="months" id="schoolAdmissionAt">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="schoolGraduateAt">畢業時間</label>
+                                            <input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm" data-date-min-view-mode="months" id="schoolGraduateAt">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row twoYearTechClassForm" style="display: none;">
+                                    <div class="col-md-12">
+                                        <hr>
+                                        <div class="form-group">
+                                            <small>資歷有效日期請參照<a href="http://www.hkqr.gov.hk/HKQRPRD/web/hkqr-tc/search/qr-search/">「此連結」</a>，若登記為持續有效，則無需填入課程認可結束日期。</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row twoYearTechClassForm" style="display: none;">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="twoYearTechDiploma">* 文憑類別</label>
+                                            <select class="form-control" id="twoYearTechDiploma">
+                                                <option value="">請選擇</option>
+                                                <option value="1">副學士學位</option>
+                                                <option value="2">高級文憑</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="twoYearTechClassName">* 課程名稱</label>
+                                            <input class="form-control" type="text" id="twoYearTechClassName">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row twoYearTechClassForm" style="display: none;">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="twoYearTechClassStart">* 課程認可開始日期</label>
+                                            <input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm/dd" id="twoYearTechClassStart">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="twoYearTechClassEnd">課程認可結束日期</label>
+                                            <input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm/dd" id="twoYearTechClassEnd">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" id="otherDisabilityCategoryForm">
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label for="otherDisabilityCategory">其他類別</label>
-                                        <input class="form-control" type="text" id="otherDisabilityCategory" maxlength="15">
-                                        <small class="text-muted">請填寫 15 字內的說明</small>
+                        </div>
+                        <br />
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                家長資料
+                            </div>
+                            <div class="card-body">
+                                <div id="form-father">
+                                    <p class="text-center">父親</p>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="">存歿</label><br>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="alive"> 存
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="deceased"> 歿
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="undefined"> 不詳
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
+                                <div id="form-mother">
+                                    <p class="text-center">母親</p>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="">存歿</label><br>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="alive"> 存
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="deceased"> 歿
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="undefined"> 不詳
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="form-guardian">
+                                    <p class="text-center">監護人</p>
+                                    <hr />
                                 </div>
                             </div>
                         </div>
