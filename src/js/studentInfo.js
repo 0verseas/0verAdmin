@@ -35,6 +35,7 @@ var studentInfo = (function () {
 
     // Modal common elements
     const $modalStudentInfo = $('#modal-studentInfo');
+    const $tab = $modalStudentInfo.find('#pills-tab'); // modal 分頁標籤
     const $id = $modalStudentInfo.find('#id'); // 報名序號
     const $overseasId = $modalStudentInfo.find('#overseasId'); // 僑生編號
     const $name = $modalStudentInfo.find('#name'); // 中文姓名
@@ -135,6 +136,21 @@ var studentInfo = (function () {
     const $twContactWorkplacePhone = $modalStudentInfo.find('#twContactWorkplacePhone'); // 服務機關電話
     const $twContactWorkplaceAddress = $modalStudentInfo.find('#twContactWorkplaceAddress'); // 服務機關地址
 
+    const $primarySchoolName = $modalStudentInfo.find('#primarySchoolName');
+    const $primarySchoolAdmissionsAt = $modalStudentInfo.find('#primarySchoolAdmissionsAt');
+    const $primarySchoolGraduatedAt = $modalStudentInfo.find('#primarySchoolGraduatedAt');
+    const $highSchool1to3Name = $modalStudentInfo.find('#highSchool1to3Name');
+    const $highSchool1to3AdmissionsAt = $modalStudentInfo.find('#highSchool1to3AdmissionsAt');
+    const $highSchool1to3GraduatedAt = $modalStudentInfo.find('#highSchool1to3GraduatedAt');
+    const $highSchool4to5Name = $modalStudentInfo.find('#highSchool4to5Name');
+    const $highSchool4to5AdmissionsAt = $modalStudentInfo.find('#highSchool4to5AdmissionsAt');
+    const $highSchool4to5GraduatedAt = $modalStudentInfo.find('#highSchool4to5GraduatedAt');
+    const $highSchool6Name = $modalStudentInfo.find('#highSchool6Name');
+    const $highSchool6AdmissionsAt = $modalStudentInfo.find('#highSchool6AdmissionsAt');
+    const $highSchool6GraduatedAt = $modalStudentInfo.find('#highSchool6GraduatedAt');
+    const $transfer = $modalStudentInfo.find('#transfer');
+
+    //const $saveBtn = $('#btn-save');
     //const $saveBtn = $modalStudentInfo.find('#btn-save');
 
     /**
@@ -152,6 +168,7 @@ var studentInfo = (function () {
     $schoolLocation.on('change', _chSchoolLocation);
     $dadStatus.on('change', _chDadStatus);
     $momStatus.on('change', _chMomStatus);
+
     //$saveBtn.on('click', _handleSave);
 
     /**
