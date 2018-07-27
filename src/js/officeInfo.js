@@ -100,12 +100,15 @@ var officeInfo = (function () {
         var tr = $officeList.find('tr');
 
         for (i = 0; i < tr.length; i++) {
-            let school = tr[i].getElementsByTagName("td")[2]; // 學校
+            let username = tr[i].getElementsByTagName("td")[1]; // 帳號
+            let name = tr[i].getElementsByTagName("td")[2]; // 姓名
             let org = tr[i].getElementsByTagName("td")[3]; // 單位
-            let name = tr[i].getElementsByTagName("td")[4]; // 姓名
 
-            if (school || org || name) {
-                if (school.innerHTML.toUpperCase().indexOf(filter) > -1 || org.innerHTML.toUpperCase().indexOf(filter) > -1 || name.innerHTML.toUpperCase().indexOf(filter) > -1) {
+
+            if (username || org || name) {
+                if (username.innerHTML.toUpperCase().indexOf(filter) > -1
+                    || org.innerHTML.toUpperCase().indexOf(filter) > -1
+                    || name.innerHTML.toUpperCase().indexOf(filter) > -1) {
                     tr[i].style.display = "";
                 } else {
                     tr[i].style.display = "none";

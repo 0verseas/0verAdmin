@@ -498,7 +498,7 @@
                             </div>
                             <div class="card-body">
                                 <div id="form-father">
-                                    <p class="text-center">父親</p>
+                                    <h5 class="text-center">父親</h5>
                                     <hr />
                                     <div class="row">
                                         <div class="col-md-12">
@@ -522,9 +522,48 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div id="form-dadData">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="dadName">姓名（中）</label>
+                                                    <input type="text" class="form-control" id="dadName" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="dadEngName">姓名（英）</label>
+                                                    <input type="text" class="form-control" id="dadEngName" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="dadBirthday">生日</label>
+                                                    <input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm/dd" id="dadBirthday">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="dadHometown">籍貫</label>
+                                                    <input type="text" class="form-control" id="dadHometown" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="dadJob">職業</label>
+                                                    <input type="text" class="form-control" id="dadJob" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <br /><br />
                                 <div id="form-mother">
-                                    <p class="text-center">母親</p>
+                                    <h5 class="text-center">母親</h5>
                                     <hr />
                                     <div class="row">
                                         <div class="col-md-12">
@@ -532,26 +571,159 @@
                                                 <label for="">存歿</label><br>
                                                 <div class="form-check form-check-inline">
                                                     <label class="form-check-label">
-                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="alive"> 存
+                                                        <input class="form-check-input momStatus" type="radio" name="momStatus" value="alive"> 存
                                                     </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <label class="form-check-label">
-                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="deceased"> 歿
+                                                        <input class="form-check-input momStatus" type="radio" name="momStatus" value="deceased"> 歿
                                                     </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <label class="form-check-label">
-                                                        <input class="form-check-input dadStatus" type="radio" name="dadStatus" value="undefined"> 不詳
+                                                        <input class="form-check-input momStatus" type="radio" name="momStatus" value="undefined"> 不詳
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div id="form-momData">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="momName">姓名（中）</label>
+                                                    <input type="text" class="form-control" id="momName" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="momEngName">姓名（英）</label>
+                                                    <input type="text" class="form-control" id="momEngName" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="momBirthday">生日</label>
+                                                    <input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm/dd" id="momBirthday">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="momHometown">籍貫</label>
+                                                    <input type="text" class="form-control" id="momHometown" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="momJob">職業</label>
+                                                    <input type="text" class="form-control" id="momJob" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <br /><br />
                                 <div id="form-guardian">
-                                    <p class="text-center">監護人</p>
+                                    <h5 class="text-center">監護人</h5>
                                     <hr />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="guardianName">姓名（中）</label>
+                                                <input type="text" class="form-control" id="guardianName" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="guardianEngName">姓名（英）</label>
+                                                <input type="text" class="form-control" id="guardianEngName" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="guardianBirthday">生日</label>
+                                                <input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm/dd" id="guardianBirthday">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="guardianHometown">籍貫</label>
+                                                <input type="text" class="form-control" id="guardianHometown" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="guardianJob">職業</label>
+                                                <input type="text" class="form-control" id="guardianJob" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                在台聯絡人
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="twContactName">姓名</label>
+                                            <input type="text" class="form-control" id="twContactName" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="twContactRelation">關係</label>
+                                            <input type="text" class="form-control" id="twContactRelation" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="twContactPhone">聯絡電話</label>
+                                            <input type="text" class="form-control" id="twContactPhone" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="twContactAddress">地址</label>
+                                            <input type="text" class="form-control" id="twContactAddress" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="twContactWorkplaceName">服務機關名稱</label>
+                                            <input type="text" class="form-control" id="twContactWorkplaceName" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="twContactWorkplacePhone">服務機關電話</label>
+                                            <input type="text" class="form-control" id="twContactWorkplacePhone" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="twContactWorkplaceAddress">服務機關地址</label>
+                                            <input type="text" class="form-control" id="twContactWorkplaceAddress" placeholder="">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

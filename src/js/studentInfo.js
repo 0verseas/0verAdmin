@@ -101,6 +101,42 @@ var studentInfo = (function () {
     const $twoYearTechClassStart = $modalStudentInfo.find('#twoYearTechClassStart'); // 課程開始日期（港二技）
     const $twoYearTechClassEnd = $modalStudentInfo.find('#twoYearTechClassEnd'); // 課程結束日期（港二技）
 
+    // 家長資料
+    // 父親
+    const $dadStatus = $modalStudentInfo.find('.dadStatus'); // 存歿
+    const $dadDataForm = $modalStudentInfo.find('#form-dadData'); // 資料表單
+    const $dadName = $modalStudentInfo.find('#dadName'); // 姓名（中）
+    const $dadEngName = $modalStudentInfo.find('#dadEngName'); // 姓名（英）
+    const $dadBirthday = $modalStudentInfo.find('#dadBirthday'); // 生日
+    const $dadHometown = $modalStudentInfo.find('#dadHometown'); // 籍貫
+    const $dadJob = $modalStudentInfo.find('#dadJob'); // 職業
+    // 母親
+    const $momStatus = $modalStudentInfo.find('.momStatus'); // 存歿
+    const $momDataForm = $modalStudentInfo.find('#form-momData'); // 資料表單
+    const $momName = $modalStudentInfo.find('#momName'); // 姓名（中）
+    const $momEngName = $modalStudentInfo.find('#momEngName'); // 姓名（英）
+    const $momBirthday = $modalStudentInfo.find('#momBirthday'); // 生日
+    const $momHometown = $modalStudentInfo.find('#momHometown'); // 籍貫
+    const $momJob = $modalStudentInfo.find('#momJob'); // 職業
+    // 監護人（父母皆不詳才需要填寫）
+    const $guardianForm = $modalStudentInfo.find('#form-guardian'); // 資料表單
+    const $guardianName = $modalStudentInfo.find('#guardianName'); // 姓名（中）
+    const $guardianEngName = $modalStudentInfo.find('#guardianEngName'); // 姓名（英）
+    const $guardianBirthday = $modalStudentInfo.find('#guardianBirthday'); // 生日
+    const $guardianHometown = $modalStudentInfo.find('#guardianHometown'); // 籍貫
+    const $guardianJob = $modalStudentInfo.find('#guardianJob'); // 職業
+
+    // 在台聯絡人
+    const $twContactName = $modalStudentInfo.find('#twContactName'); // 姓名
+    const $twContactRelation = $modalStudentInfo.find('#twContactRelation'); // 關係
+    const $twContactPhone = $modalStudentInfo.find('#twContactPhone'); // 聯絡電話
+    const $twContactAddress = $modalStudentInfo.find('#twContactAddress'); // 地址
+    const $twContactWorkplaceName = $modalStudentInfo.find('#twContactWorkplaceName'); // 服務機關名稱
+    const $twContactWorkplacePhone = $modalStudentInfo.find('#twContactWorkplacePhone'); // 服務機關電話
+    const $twContactWorkplaceAddress = $modalStudentInfo.find('#twContactWorkplaceAddress'); // 服務機關地址
+
+    //const $saveBtn = $modalStudentInfo.find('#btn-save');
+
     /**
      * bind event
      */
@@ -114,8 +150,8 @@ var studentInfo = (function () {
     $schoolCountry.on('change', _chSchoolCountry);
     $schoolType.on('change', _chSchoolType);
     $schoolLocation.on('change', _chSchoolLocation);
-    //$dadStatus.on('change', _chDadStatus);
-    //$momStatus.on('change', _chMomStatus);
+    $dadStatus.on('change', _chDadStatus);
+    $momStatus.on('change', _chMomStatus);
     //$saveBtn.on('click', _handleSave);
 
     /**
@@ -240,6 +276,10 @@ var studentInfo = (function () {
                 //_reviewDivAction();
                 _showSpecailForm();
                 _handleOtherDisabilityCategoryForm();
+                _switchDadDataForm();
+                _switchMomDataForm();
+                _setResidenceContinent();
+                _setSchoolContinent();
 
                 $editStudentInfoModal.modal({
                     backdrop: 'static',
@@ -331,6 +371,39 @@ var studentInfo = (function () {
                 $twoYearTechClassStart.val(json.student_personal_data.two_year_tech_class_start);
                 $twoYearTechClassEnd.val(json.student_personal_data.two_year_tech_class_end);
             }
+
+            // init 家長資料
+            // 父
+            _currentDadStatus = json.student_personal_data.dad_status;
+            $("input[name=dadStatus][value='"+ json.student_personal_data.dad_status +"']").prop("checked",true);
+            $dadName.val(json.student_personal_data.dad_name);
+            $dadEngName.val(json.student_personal_data.dad_eng_name);
+            $dadBirthday.val(json.student_personal_data.dad_birthday);
+            $dadHometown.val(json.student_personal_data.dad_hometown);
+            $dadJob.val(json.student_personal_data.dad_job);
+            // 母
+            _currentMomStatus = json.student_personal_data.mom_status;
+            $("input[name=momStatus][value='"+ json.student_personal_data.mom_status +"']").prop("checked",true);
+            $momName.val(json.student_personal_data.mom_name);
+            $momEngName.val(json.student_personal_data.mom_eng_name);
+            $momBirthday.val(json.student_personal_data.mom_birthday);
+            $momHometown.val(json.student_personal_data.mom_hometown);
+            $momJob.val(json.student_personal_data.mom_job);
+            // 監護人
+            $guardianName.val(json.student_personal_data.guardian_name);
+            $guardianEngName.val(json.student_personal_data.guardian_eng_name);
+            $guardianBirthday.val(json.student_personal_data.guardian_birthday);
+            $guardianHometown.val(json.student_personal_data.guardian_hometown);
+            $guardianJob.val(json.student_personal_data.guardian_job);
+
+            // init 在台聯絡人
+            $twContactName.val(json.student_personal_data.tw_contact_name);
+            $twContactRelation.val(json.student_personal_data.tw_contact_relation);
+            $twContactPhone.val(json.student_personal_data.tw_contact_phone);
+            $twContactAddress.val(json.student_personal_data.tw_contact_address);
+            $twContactWorkplaceName.val(json.student_personal_data.tw_contact_workplace_name);
+            $twContactWorkplacePhone.val(json.student_personal_data.tw_contact_workplace_phone);
+            $twContactWorkplaceAddress.val(json.student_personal_data.tw_contact_workplace_address);
         } else {
             $("input[name=gender]").prop("checked", false);
             $birthday.val("");
@@ -380,6 +453,39 @@ var studentInfo = (function () {
             $twoYearTechClassName.val("");
             $twoYearTechClassStart.val("");
             $twoYearTechClassEnd.val("");
+
+            // init 家長資料
+            // 父
+            _currentDadStatus = 'alive';
+            $("input[name=dadStatus]").prop("checked", false);
+            $dadName.val("");
+            $dadEngName.val("");
+            $dadBirthday.val("");
+            $dadHometown.val("");
+            $dadJob.val("");
+            // 母
+            _currentMomStatus = 'alive';
+            $("input[name=momStatus]").prop("checked", false);
+            $momName.val("");
+            $momEngName.val("");
+            $momBirthday.val("");
+            $momHometown.val("");
+            $momJob.val("");
+            // 監護人
+            $guardianName.val("");
+            $guardianEngName.val("");
+            $guardianBirthday.val("");
+            $guardianHometown.val("");
+            $guardianJob.val("");
+
+            // init 在台聯絡人
+            $twContactName.val("");
+            $twContactRelation.val("");
+            $twContactPhone.val("");
+            $twContactAddress.val("");
+            $twContactWorkplaceName.val("");
+            $twContactWorkplacePhone.val("");
+            $twContactWorkplaceAddress.val("");
         }
     }
 
@@ -408,6 +514,30 @@ var studentInfo = (function () {
             }
         }
         return -1;
+    }
+
+    function _setResidenceContinent() {
+        // 兩種港澳生的洲別只能選到「亞洲」
+        if ($residenceContinent && (_identityId === 1 || _identityId === 2 || _identityId === 4)) {
+            let residenceContinentOptions = $residenceContinent.find('option');
+            for (let i = 0; i < residenceContinentOptions.length; i++) {
+                if (!(residenceContinentOptions[i].value === "-1" || residenceContinentOptions[i].value === "0")) {
+                    residenceContinentOptions[i].remove();
+                }
+            }
+        }
+    }
+
+    function _setSchoolContinent() {
+        // 港二技的學校洲別只能選到「亞洲」
+        if ($schoolContinent && (_systemId === 2)) {
+            let schoolContinentOptions = $schoolContinent.find('option');
+            for (let i = 0; i < schoolContinentOptions.length; i++) {
+                if (!(schoolContinentOptions[i].value === "-1" || schoolContinentOptions[i].value === "0")) {
+                    schoolContinentOptions[i].remove();
+                }
+            }
+        }
     }
 
     function _reRenderCountry() {
@@ -650,4 +780,41 @@ var studentInfo = (function () {
         _currentSchoolName = "";
         _reRenderSchoolList();
     }
+
+    function _chDadStatus() {
+        _currentDadStatus = $(this).val();
+        _switchDadDataForm();
+    }
+
+    function _switchDadDataForm() {
+        if (_currentDadStatus === "undefined") {
+            $dadDataForm.hide();
+        } else {
+            $dadDataForm.fadeIn();
+        }
+        _switchGuardianForm();
+    }
+
+    function _chMomStatus() {
+        _currentMomStatus = $(this).val();
+        _switchMomDataForm();
+    }
+
+    function _switchMomDataForm() {
+        if (_currentMomStatus === "undefined") {
+            $momDataForm.hide();
+        } else {
+            $momDataForm.fadeIn();
+        }
+        _switchGuardianForm();
+    }
+
+    function _switchGuardianForm() {
+        if (_currentDadStatus === "undefined" && _currentMomStatus === "undefined") {
+            $guardianForm.fadeIn();
+        } else {
+            $guardianForm.hide();
+        }
+    }
+
 })();
