@@ -287,7 +287,8 @@ var studentInfo = (function () {
                     _identityId = json.student_qualification_verify.identity;
                 }
 
-                _renderStudentDetail(json);
+                _renderStudentPersonalInfo(json);
+                _renderStudentEducationInfo(json.student_education_background_data)
             })
             .then(() => {
                 //_reviewDivAction();
@@ -308,7 +309,7 @@ var studentInfo = (function () {
 
     }
 
-    function _renderStudentDetail(json) {
+    function _renderStudentPersonalInfo(json) {
         $id.val((json.id).toString().padStart(6, "0"));
         $overseasId.val(json.student_misc_data.overseas_student_id || "");
         $name.val(json.name || "");
@@ -503,6 +504,38 @@ var studentInfo = (function () {
             $twContactWorkplaceName.val("");
             $twContactWorkplacePhone.val("");
             $twContactWorkplaceAddress.val("");
+        }
+    }
+    
+    function _renderStudentEducationInfo(student_education_background_data) {
+        if (student_education_background_data) {
+            $primarySchoolName.val(student_education_background_data.primary_school_name);
+            $primarySchoolAdmissionsAt.val(student_education_background_data.primary_school_admissions_at);
+            $primarySchoolGraduatedAt.val(student_education_background_data.primary_school_graduated_at);
+            $highSchool1to3Name.val(student_education_background_data.high_school_1to3_name);
+            $highSchool1to3AdmissionsAt.val(student_education_background_data.high_school_1to3_admissions_at);
+            $highSchool1to3GraduatedAt.val(student_education_background_data.high_school_1to3_graduated_at);
+            $highSchool4to5Name.val(student_education_background_data.high_school_4to5_name);
+            $highSchool4to5AdmissionsAt.val(student_education_background_data.high_school_4to5_admissions_at);
+            $highSchool4to5GraduatedAt.val(student_education_background_data.high_school_4to5_graduated_at);
+            $highSchool6Name.val(student_education_background_data.high_school_6_name);
+            $highSchool6AdmissionsAt.val(student_education_background_data.high_school_6_admissions_at);
+            $highSchool6GraduatedAt.val(student_education_background_data.high_school_6_graduated_at);
+            $transfer.val(student_education_background_data.transfer);
+        } else {
+            $primarySchoolName.val("");
+            $primarySchoolAdmissionsAt.val("");
+            $primarySchoolGraduatedAt.val("");
+            $highSchool1to3Name.val("");
+            $highSchool1to3AdmissionsAt.val("");
+            $highSchool1to3GraduatedAt.val("");
+            $highSchool4to5Name.val("");
+            $highSchool4to5AdmissionsAt.val("");
+            $highSchool4to5GraduatedAt.val("");
+            $highSchool6Name.val("");
+            $highSchool6AdmissionsAt.val("");
+            $highSchool6GraduatedAt.val("");
+            $transfer.val("");
         }
     }
 
