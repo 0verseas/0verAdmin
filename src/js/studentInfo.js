@@ -7,6 +7,7 @@ var studentInfo = (function () {
     let _currentMomStatus = 'alive';
     let _systemId = 0;
     let _identityId = 0;
+    let _filterStudentList = [];
 
     const _disabilityCategoryList = ["視覺障礙", "聽覺障礙", "肢體障礙", "語言障礙", "腦性麻痺", "自閉症", "學習障礙"];
 
@@ -32,6 +33,7 @@ var studentInfo = (function () {
     const $studentFilterInput = $('#student-filter-input'); // 搜尋欄
     var $editStudentInfoBtn; // 學生列表每項資料的編輯按鈕，資料取回後再綁定 event
     const $editStudentInfoModal = $('#editStudentInfoModal'); // 學生詳細資料 modal
+    const $paginationContainer = $('#pagination-container'); // 分頁區域
 
     // Modal common elements
     const $modalStudentInfo = $('#modal-studentInfo');
@@ -188,52 +190,18 @@ var studentInfo = (function () {
                     throw res;
                 }
             }).then((json) => {
-            // 渲染 student 列表
-            $studentList.find('tbody').html('');
-            json.forEach(function (value, index) {
-                const identity = ['港澳生', '港澳具外國國籍之華裔學生', '海外僑生', '在臺港澳生', '在臺僑生', '僑先部結業生', '印輔班結業生'];
-
-                const system = ['學士班', '港二技', '碩士班', '博士班'];
-
-                var system_name = '';
-                var identity_name = '';
-                var gender_name = '';
-
-                if (value.student_qualification_verify) {
-                    if (value.student_qualification_verify.system_id) {
-                        system_name = system[value.student_qualification_verify.system_id - 1];
-                    }
-
-                    if (value.student_qualification_verify.identity) {
-                        identity_name = identity[value.student_qualification_verify.identity - 1];
-                    }
+            //作分頁
+            $studentAllList=json;
+            $paginationContainer.pagination({
+                dataSource: json,
+                pageSize: 10,
+                callback: function(json, pagination) {
+                    _studentListTamplate(json);
                 }
-
-                if (value.student_personal_data) {
-                    if (value.student_personal_data.gender === 'M') {
-                        gender_name = '男';
-                    } else if (value.student_personal_data.gender === 'F') {
-                        gender_name = '女';
-                    }
-                }
-
-                $studentList
-                    .find('tbody')
-                    .append(`
-                        <tr>
-                            <td>
-                                <span class="btn-editStudentInfo" data-userid="${value.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                            </td>
-                            <td>${(value.id).toString().padStart(6, "0")}</td>
-                            <td>${value.student_misc_data.overseas_student_id || ""}</td>
-                            <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
-                            <td>${gender_name}</td>
-                            <td>${value.email}</td>
-                            <td>${system_name}</td>
-                            <td>${identity_name}</td>
-                        </tr>
-                    `);
             });
+
+
+
         }).then(() => {
             $.bootstrapSortable(true); // 啟用列表排序功能
             $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
@@ -250,27 +218,115 @@ var studentInfo = (function () {
         })
     }
 
-    function _filterStudentInput(e) { // 搜尋過濾列表
-        let filter = $studentFilterInput.val().toUpperCase();
-        var tr = $studentList.find('tr');
+    function _studentListTamplate(json){
+        // 渲染 student 列表
+        $studentList.find('tbody').html('');
+        json.forEach(function (value, index) {
+            const identity = ['港澳生', '港澳具外國國籍之華裔學生', '海外僑生', '在臺港澳生', '在臺僑生', '僑先部結業生', '印輔班結業生'];
 
-        for (i = 0; i < tr.length; i++) {
-            let id = tr[i].getElementsByTagName("td")[1]; // 報名序號
-            let overseas_id = tr[i].getElementsByTagName("td")[2]; // 僑生編號
-            let name = tr[i].getElementsByTagName("td")[3]; // 姓名
-            let email = tr[i].getElementsByTagName("td")[4]; // Email
+            const system = ['學士班', '港二技', '碩士班', '博士班'];
 
-            if (id || overseas_id || email || name) {
-                if (id.innerHTML.toUpperCase().indexOf(filter) > -1
-                    || overseas_id.innerHTML.toUpperCase().indexOf(filter) > -1
-                    || email.innerHTML.toUpperCase().indexOf(filter) > -1
-                    || name.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
+            var system_name = '';
+            var identity_name = '';
+            var gender_name = '';
+
+            if (value.student_qualification_verify) {
+                if (value.student_qualification_verify.system_id) {
+                    system_name = system[value.student_qualification_verify.system_id - 1];
+                }
+
+                if (value.student_qualification_verify.identity) {
+                    identity_name = identity[value.student_qualification_verify.identity - 1];
                 }
             }
+
+            if (value.student_personal_data) {
+                if (value.student_personal_data.gender === 'M') {
+                    gender_name = '男';
+                } else if (value.student_personal_data.gender === 'F') {
+                    gender_name = '女';
+                }
+            }
+
+            $studentList
+                .find('tbody')
+                .append(`
+                        <tr>
+                            <td>
+                                <span class="btn-editStudentInfo" data-userid="${value.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                            </td>
+                            <td>${(value.id).toString().padStart(6, "0")}</td>
+                            <td>${value.student_misc_data.overseas_student_id || ""}</td>
+                            <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
+                            <td>${gender_name}</td>
+                            <td>${value.email}</td>
+                            <td>${system_name}</td>
+                            <td>${identity_name}</td>
+                        </tr>`);
+
+        });
+    }
+    function _filterStudentInput(e) { // 搜尋過濾列表
+
+        const filter = $studentFilterInput.val().toUpperCase();
+        //console.log(filter);
+        // for (i = 0; i < tr.length; i++) {
+        //     let id = tr[i].getElementsByTagName("td")[1]; // 報名序號
+        //     let overseas_id = tr[i].getElementsByTagName("td")[2]; // 僑生編號
+        //     let name = tr[i].getElementsByTagName("td")[3]; // 姓名
+        //     let email = tr[i].getElementsByTagName("td")[4]; // Email
+        //
+        //     if (id || overseas_id || email || name) {
+        //         if (id.innerHTML.toUpperCase().indexOf(filter) > -1
+        //             || overseas_id.innerHTML.toUpperCase().indexOf(filter) > -1
+        //             || email.innerHTML.toUpperCase().indexOf(filter) > -1
+        //             || name.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        //             tr[i].style.display = "";
+        //         } else {
+        //             tr[i].style.display = "none";
+        //         }
+        //     }
+        // }
+        //console.log("$studentAllList",$studentAllList);
+
+        _filterStudentList = $studentAllList.filter(function (obj) {
+            //有些還不會有僑編，轉成空字串避免後面toUpperCase出錯
+            if( obj["student_misc_data"].overseas_student_id == null)
+                obj["student_misc_data"].overseas_student_id='';
+            //console.log("value===",obj["student_misc_data"].overseas_student_id);
+            //console.log("type===",typeof(obj["student_misc_data"].overseas_student_id));
+
+            // 搜尋 報名序號、姓名、email、僑編
+            return ( obj["id"].toString().toUpperCase().indexOf(filter) > -1 ||
+                obj["name"].toUpperCase().indexOf(filter) > -1 ||
+                obj["email"].toUpperCase().indexOf(filter) > -1  ||
+                obj["student_misc_data"].overseas_student_id.toUpperCase().indexOf(filter) > -1);
+        });
+
+
+
+        if (_filterStudentList.length === 0) {
+            $studentList
+                .find('tbody')
+                .html(`
+                        <tr>
+				<td class="text-center" colspan="2">查無資料。</td>
+				</tr>`);
         }
+        else{
+            $paginationContainer.pagination({
+                dataSource: _filterStudentList,
+                pageSize: 10,
+                callback: function(json, pagination) {
+                    _studentListTamplate(json);
+                }
+            });
+        }
+
+        $.bootstrapSortable(true); // 啟用列表排序功能
+        $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
+        $editStudentInfoBtn.on('click', _handleEditStudentInfo);
+
     }
 
     function _handleEditStudentInfo() { // 學生列表 Modal 觸發

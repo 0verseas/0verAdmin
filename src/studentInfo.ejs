@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap-sortable/2.0.0/bootstrap-sortable.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.0.8/pagination.css">
 <div class="row">
     <div class="col-md-7 col-6">
         <h2>學生列表</h2>
@@ -25,6 +26,14 @@
     </thead>
     <tbody>
     </tbody>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover">
+                <div id="pagination-container"></div>
+            </table>
+        </div>
+    </div>
 </table>
 
 <div class="modal fade" id="editStudentInfoModal" tabindex="-1" role="dialog" aria-labelledby="editStudentInfoTitle" aria-hidden="true">
@@ -41,6 +50,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-educationInfo-tab" data-toggle="pill" href="#pills-educationInfo" role="tab" aria-controls="pills-educationInfo" aria-selected="false">入學資料</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-selectionList-tab" data-toggle="pill" href="#pills-selectionList" role="tab" aria-controls="pills-selectionList" aria-selected="false">個申志願</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-placementList-tab" data-toggle="pill" href="#pills-placementList" role="tab" aria-controls="pills-placementList" aria-selected="false">聯分志願</a>
                     </li>
                 </ul>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -895,3 +910,4 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/bootstrap-sortable/2.0.0/bootstrap-sortable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.0.8/pagination.min.js"></script>
