@@ -1,0 +1,20 @@
+.p_card {
+    color: #0063b1;
+    /*0063b1 fffff0*/
+    background-color:#fee4c8;
+    /*fee4c8 5e9ea4*/
+    border-radius: 15px;
+    font-size:35px;
+    font-weight:bold;
+    /*padding: 1%;*/
+    padding-left: 2%;
+    font-family:DFKai-sb;
+}
+
+.link {
+    color:#067b76;
+    /*5e9ea4 4a67d4*/
+    font-size:large;
+    line-height: 30px;
+    font-weight:bold;
+}
