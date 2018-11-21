@@ -194,7 +194,7 @@ var studentInfo = (function () {
             $studentAllList=json;
             $paginationContainer.pagination({
                 dataSource: json,
-                pageSize: 10,
+                pageSize: 20,
                 callback: function(json, pagination) {
                     _studentListTamplate(json);
                 }
@@ -316,7 +316,7 @@ var studentInfo = (function () {
         else{
             $paginationContainer.pagination({
                 dataSource: _filterStudentList,
-                pageSize: 10,
+                pageSize: 20,
                 callback: function(json, pagination) {
                     _studentListTamplate(json);
                 }
