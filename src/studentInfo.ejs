@@ -43,7 +43,7 @@
             <div class="modal-header">
                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-qualify-tab" data-toggle="pill" href="#pills-qualify" role="tab" aria-controls="pills-qualify" aria-selected="false">資格驗證</a>
+                        <a class="nav-link" id="pills-qualify-tab" data-toggle="pill" href="#pills-qualify" role="tab" aria-controls="pills-qualify" aria-selected="false">填報狀況</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" id="pills-personalInfo-tab" data-toggle="pill" href="#pills-personalInfo" role="tab" aria-controls="pills-personalInfo" aria-selected="true">個人基本資料</a>
@@ -66,7 +66,11 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade" id="pills-qualify" role="tabpanel" aria-labelledby="pills-qualify-tab">...</div>
+                        <!--資格驗證-->
+                        <div class="tab-pane fade" id="pills-qualify" role="tabpanel" aria-labelledby="pills-qualify-tab">
+
+                        </div>
+                        <!--基本資料-->
                         <div class="tab-pane fadeshow active" id="pills-personalInfo" role="tabpanel" aria-labelledby="pills-personalInfo-tab">
                             <form>
                                 <div class="row">
@@ -761,6 +765,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!--入學驗證-->
                         <div class="tab-pane fade" id="pills-educationInfo" role="tabpanel" aria-labelledby="pills-educationInfo-tab">
                             <div class="card">
                                 <div class="card-header">
@@ -896,6 +901,34 @@
                                     <button class="btn btn-primary" id="btn-educationInfo-save">儲存</button>
                                 </div>
                             </div>
+                        </div>
+                        <!--個申志願-->
+                        <div class="tab-pane fade" id="pills-selectionList" role="tabpanel" aria-labelledby="pills-selectionList-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>序號</th>
+                                    <th>志願代碼</th>
+                                    <th>校系名稱</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbody-selection">
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--聯分志願-->
+                        <div class="tab-pane fade" id="pills-placementList" role="tabpanel" aria-labelledby="pills-placementList-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>序號</th>
+                                    <th>志願代碼</th>
+                                    <th>校系名稱</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbody-placement">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

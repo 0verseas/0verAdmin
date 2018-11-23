@@ -152,6 +152,7 @@ var studentInfo = (function () {
     const $highSchool6GraduatedAt = $modalStudentInfo.find('#highSchool6GraduatedAt');
     const $transfer = $modalStudentInfo.find('#transfer');
 
+
     //const $saveBtn = $('#btn-save');
     //const $saveBtn = $modalStudentInfo.find('#btn-save');
 
@@ -190,6 +191,7 @@ var studentInfo = (function () {
                     throw res;
                 }
             }).then((json) => {
+            // console.log(json);
             //作分頁
             $studentAllList=json;
             $paginationContainer.pagination({
@@ -343,8 +345,21 @@ var studentInfo = (function () {
                     _identityId = json.student_qualification_verify.identity;
                 }
 
+                _renderStudentRegistrationProgress(json);
                 _renderStudentPersonalInfo(json);
                 _renderStudentEducationInfo(json.student_education_background_data);
+                if( _systemId == 1 ){
+                    _renderStudentAdmissionSelectionOrder(json.student_department_admission_selection_order);
+                    _renderStudentAdmissionPlacementOrder(json.student_department_admission_placement_order);
+                }
+                if( _systemId == 2) {
+                    _renderStudentAdmissionSelectionOrder(json.student_two_year_tech_department_admission_selection_order);
+                    _renderStudentAdmissionPlacementOrder('x');
+                }
+                if( _systemId == 3 || _systemId == 4) {
+                    _renderStudentAdmissionSelectionOrder(json.student_graduate_department_admission_selection_order);
+                    _renderStudentAdmissionPlacementOrder('x');
+                }
             })
             .then(() => {
                 //_reviewDivAction();
@@ -365,6 +380,84 @@ var studentInfo = (function () {
 
     }
 
+    function _renderStudentRegistrationProgress(value) {
+        console.log(value);
+        const identity = ['港澳生', '港澳具外國國籍之華裔學生', '海外僑生', '在臺港澳生', '在臺僑生', '僑先部結業生', '印輔班結業生'];
+
+        const system = ['學士班', '港二技', '碩士班', '博士班'];
+
+        var system_name = '';
+        var identity_name = '';
+        var is_join_admission_selection = '';
+        var is_confirmed = '';
+        var is_selection_document_lock = '';
+
+        if (value.student_qualification_verify) {
+            if (value.student_qualification_verify.system_id) {
+                system_name = system[value.student_qualification_verify.system_id - 1];
+            }
+
+            if (value.student_qualification_verify.identity) {
+                identity_name = identity[value.student_qualification_verify.identity - 1];
+            }
+        }
+        if (value.student_misc_data.join_admission_selection == 1)
+            is_join_admission_selection = '參加個人申請';
+        else
+            is_join_admission_selection = '僅參加聯合分發';
+
+        if (value.student_misc_data.confirmed_at != null)
+            is_confirmed = '已完成填報';
+        else
+            is_confirmed = '尚未完成填報';
+
+        if (value.student_misc_data.admission_selection_document_lock_at != null)
+            is_selection_document_lock = '已上傳並鎖定備審資料';
+        else
+            is_selection_document_lock = '尚未鎖定備審資料';
+
+        let progressListHTML ='';
+        progressListHTML =`
+            <ul>
+                <li>
+                    ${system_name}  ${identity_name}
+                </li>
+                <li>
+                    僑居地：
+                </li>
+                <li>
+                    ${is_join_admission_selection}
+                </li>
+                <li>
+                    聯分採計：
+                </li>
+                <li>
+                    ${is_confirmed}
+                </li>
+                <li>
+                    ${is_selection_document_lock}
+                </li>
+            </ul>
+        `;
+
+
+        // $studentList
+        //     .find('tbody')
+        //     .append(`
+        //                 <tr>
+        //                     <td>
+        //                         <span class="btn-editStudentInfo" data-userid="${value.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+        //                     </td>
+        //                     <td>${(value.id).toString().padStart(6, "0")}</td>
+        //                     <td>${value.student_misc_data.overseas_student_id || ""}</td>
+        //                     <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
+        //                     <td>${gender_name}</td>
+        //                     <td>${value.email}</td>
+        //                     <td>${system_name}</td>
+        //                     <td>${identity_name}</td>
+        //                 </tr>`);
+        $('#pills-qualify').html(progressListHTML);
+    }
     function _renderStudentPersonalInfo(json) {
         $id.val((json.id).toString().padStart(6, "0"));
         $overseasId.val(json.student_misc_data.overseas_student_id || "");
@@ -593,6 +686,48 @@ var studentInfo = (function () {
             $highSchool6GraduatedAt.val("");
             $transfer.val("");
         }
+    }
+
+    function _renderStudentAdmissionSelectionOrder(json) {
+        let selectionHTML = '';
+        json.forEach((value, index) => {
+            index= parseInt(index,10) + 1;
+            // console.log(index + 1);
+            // console.log(value.department_data.school_code);
+            // console.log(value.department_data.school.title);
+            // console.log(value.dept_id);
+            // console.log(value.department_data.title);
+            selectionHTML += `
+                        <tr>
+                        <td>` + index + `</td>
+                        <td>` + value.dept_id + `</td>
+                        <td>` + value.department_data.school.title + ' ' + value.department_data.title + `</td>
+                        </tr>
+                        `
+        });
+        $('#tbody-selection').html(selectionHTML);
+
+    }
+
+    function _renderStudentAdmissionPlacementOrder(json) {
+        //console.log(json);
+        let placementHTML = '';
+        if ( json == 'x')
+            placementHTML = `<tr><td colspan="3" style="font-size: xx-large; text-align: center;">不適用</td></tr>`;
+        else {
+            json.forEach((value, index) => {
+                index= parseInt(index,10) + 1;
+                placementHTML += `
+							<tr>
+							<td>` + index + `</td>
+							<td>` + value.dept_id + `</td>
+							<td>` + value.department_data.school.title + ' ' + value.department_data.title + `</td>
+							</tr>
+							`
+            });
+        }
+        $('#tbody-placement').html(placementHTML);
+
     }
 
     function _initCountryList() {
