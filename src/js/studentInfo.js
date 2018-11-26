@@ -171,7 +171,6 @@ var studentInfo = (function () {
     $schoolLocation.on('change', _chSchoolLocation);
     $dadStatus.on('change', _chDadStatus);
     $momStatus.on('change', _chMomStatus);
-
     //$saveBtn.on('click', _handleSave);
 
     /**
@@ -199,6 +198,8 @@ var studentInfo = (function () {
                 pageSize: 20,
                 callback: function(json, pagination) {
                     _studentListTamplate(json);
+                    $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
+                    $editStudentInfoBtn.on('click', _handleEditStudentInfo);
                 }
             });
 
@@ -206,8 +207,8 @@ var studentInfo = (function () {
 
         }).then(() => {
             $.bootstrapSortable(true); // 啟用列表排序功能
-            $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
-            $editStudentInfoBtn.on('click', _handleEditStudentInfo);
+            // $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
+            // $editStudentInfoBtn.on('click', _handleEditStudentInfo);
 
             stopLoading();
         }).catch((err) => {
@@ -321,25 +322,31 @@ var studentInfo = (function () {
                 pageSize: 20,
                 callback: function(json, pagination) {
                     _studentListTamplate(json);
+                    $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
+                    $editStudentInfoBtn.on('click', _handleEditStudentInfo);
                 }
             });
         }
 
         $.bootstrapSortable(true); // 啟用列表排序功能
-        $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
-        $editStudentInfoBtn.on('click', _handleEditStudentInfo);
+        // $editStudentInfoBtn = $('.btn-editStudentInfo'); // 新增學生資料編輯按鈕的觸發事件（開啟 Modal）
+        // $editStudentInfoBtn.on('click', _handleEditStudentInfo);
 
     }
 
-    function _handleEditStudentInfo() { // 學生列表 Modal 觸發
+    async function _handleEditStudentInfo() { // 學生列表 Modal 觸發
         openLoading();
 
         _currentUserId = $(this).data('userid');
+        try {
+            const response = await Student.getStudentInfo(_currentUserId);
+            if (!response.ok) { throw response; }
 
-        Student.getStudentInfo(_currentUserId)
-            .then((res) => {
-                return res.json();
-            }).then((json) => {
+            Student.getStudentInfo(_currentUserId)
+                .then((res) => {
+                    return res.json();
+                }).then((json) => {
+
                 if (json.student_qualification_verify) {
                     _systemId = json.student_qualification_verify.system_id;
                     _identityId = json.student_qualification_verify.identity;
@@ -348,35 +355,42 @@ var studentInfo = (function () {
                 _renderStudentRegistrationProgress(json);
                 _renderStudentPersonalInfo(json);
                 _renderStudentEducationInfo(json.student_education_background_data);
-                if( _systemId == 1 ){
+                if (_systemId == 1) {
                     _renderStudentAdmissionSelectionOrder(json.student_department_admission_selection_order);
                     _renderStudentAdmissionPlacementOrder(json.student_department_admission_placement_order);
                 }
-                if( _systemId == 2) {
+                if (_systemId == 2) {
                     _renderStudentAdmissionSelectionOrder(json.student_two_year_tech_department_admission_selection_order);
                     _renderStudentAdmissionPlacementOrder('x');
                 }
-                if( _systemId == 3 || _systemId == 4) {
+                if (_systemId == 3 || _systemId == 4) {
                     _renderStudentAdmissionSelectionOrder(json.student_graduate_department_admission_selection_order);
                     _renderStudentAdmissionPlacementOrder('x');
                 }
-            })
-            .then(() => {
-                //_reviewDivAction();
-                _showSpecailForm();
-                _handleOtherDisabilityCategoryForm();
-                _switchDadDataForm();
-                _switchMomDataForm();
-                _setResidenceContinent();
-                _setSchoolContinent();
+            }).then(() => {
+                    //_reviewDivAction();
+                    _showSpecailForm();
+                    _handleOtherDisabilityCategoryForm();
+                    _switchDadDataForm();
+                    _switchMomDataForm();
+                    _setResidenceContinent();
+                    _setSchoolContinent();
 
-                $editStudentInfoModal.modal({
-                    backdrop: 'static',
-                    keyboard: false
-                });
+                    $editStudentInfoModal.modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
 
+                    stopLoading();
+                })
+        }
+        catch(e) {
+            e.json && e.json().then((data) => {
+                console.error(data);
+                alert(`ERROR: \n${data.messages[0]}`);
                 stopLoading();
             })
+        }
 
     }
 
@@ -391,6 +405,8 @@ var studentInfo = (function () {
         var is_join_admission_selection = '';
         var is_confirmed = '';
         var is_selection_document_lock = '';
+        var countryName = '';
+        var admission_placement_apply_name ='';
 
         if (value.student_qualification_verify) {
             if (value.student_qualification_verify.system_id) {
@@ -403,8 +419,12 @@ var studentInfo = (function () {
         }
         if (value.student_misc_data.join_admission_selection == 1)
             is_join_admission_selection = '參加個人申請';
-        else
+        else if (value.student_misc_data.join_admission_selection == 0 )
             is_join_admission_selection = '僅參加聯合分發';
+        else if (value.student_misc_data.join_admission_selection == 2)
+            is_join_admission_selection = '無參加個人申請資格';
+        else
+            is_join_admission_selection = '無';
 
         if (value.student_misc_data.confirmed_at != null)
             is_confirmed = '已完成填報';
@@ -413,23 +433,34 @@ var studentInfo = (function () {
 
         if (value.student_misc_data.admission_selection_document_lock_at != null)
             is_selection_document_lock = '已上傳並鎖定備審資料';
+        else if (value.student_misc_data.join_admission_selection != 1)
+            is_selection_document_lock = '不需上傳備審資料';
         else
             is_selection_document_lock = '尚未鎖定備審資料';
 
+        if (value.student_personal_data == null || value.student_personal_data.resident_location == null)
+            countryName = '無';
+        else
+            countryName = _findCountryName(_findContinent(value.student_personal_data.resident_location), value.student_personal_data.resident_location);
+
+        if(value.student_misc_data.admission_placement_apply_way_data != null)
+            admission_placement_apply_name = value.student_misc_data.admission_placement_apply_way_data.description;
+        else
+            admission_placement_apply_name = '無';
         let progressListHTML ='';
         progressListHTML =`
-            <ul>
+            <ul style="font-size: 30px; margin-left: 20%; line-height: 190%;     color: chocolate;">
                 <li>
-                    ${system_name}  ${identity_name}
+                    【 ${system_name} 】  ${identity_name}
                 </li>
                 <li>
-                    僑居地：
+                    僑居地： ${countryName}
                 </li>
                 <li>
                     ${is_join_admission_selection}
                 </li>
                 <li>
-                    聯分採計：
+                    聯分採計： ${admission_placement_apply_name}
                 </li>
                 <li>
                     ${is_confirmed}
@@ -753,6 +784,14 @@ var studentInfo = (function () {
             if (countryObj.length > 0) {
                 return '' + i;
             }
+        }
+        return -1;
+    }
+
+    function _findCountryName(ContinentID, countryID) {
+        for (let i = 0; i < _countryList[ContinentID].country.length; i++) {
+            if( countryID == _countryList[ContinentID].country[i].id)
+                 return _countryList[ContinentID].country[i].country;
         }
         return -1;
     }
