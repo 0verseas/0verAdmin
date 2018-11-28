@@ -58,7 +58,7 @@ var officeInfo = (function () {
                     has_admin = "否";
                 }
 
-                const authority = ['海外聯招會', '香港海華服務基金', '澳門事務處', '僑務委員會', '海外聯招會在臺碩博窗口'];
+                const authority = ['海外聯招會', '香港海華服務基金', '澳門辦事處', '僑務委員會', '海外聯招會在臺碩博窗口'];
 
                 $officeList
                     .find('tbody')
