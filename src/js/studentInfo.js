@@ -254,9 +254,9 @@ var studentInfo = (function () {
             $studentList
                 .find('tbody')
                 .append(`
-                        <tr>
+                        <tr class="btn-editStudentInfo" data-userid="${value.id}">
                             <td>
-                                <span class="btn-editStudentInfo" data-userid="${value.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
                             </td>
                             <td>${(value.id).toString().padStart(6, "0")}</td>
                             <td>${value.student_misc_data.overseas_student_id || ""}</td>
