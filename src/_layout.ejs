@@ -42,6 +42,23 @@
             window.history.back();
         }
     </script>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId            : '319347395576034',
+                autoLogAppEvents : true,
+                xfbml            : true,
+                version          : 'v2.11'
+            });
+        };
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
 </head>
 <body>
 <div id="app" class="container-fluid">
@@ -50,6 +67,10 @@
     <% } else { -%>
     <%- partial("login")%>
     <% } -%>
+    <div class="fb-customerchat"
+         page_id="1620029011621660"
+         minimized="true">
+    </div>
     <footer>
         <div class="row">
             <div class="col-12 text-center">
