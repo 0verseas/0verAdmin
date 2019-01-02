@@ -64,13 +64,13 @@ var receiptList = (function () {
 
         $malaysia_spring.attr('href', env.baseUrl + '/admins/verified/malaysia-spring');
         $malaysia_selection.attr('href', env.baseUrl + '/admins/verified/malaysia-selection');
-        $malaysia_stage1_placement.addClass('no-link');
-        $malaysia_stage2_placement.addClass('no-link');
+        $malaysia_stage1_placement.attr('href', env.baseUrl + '/admins/verified/malaysia_placement_stage1');
+        $malaysia_stage2_placement.attr('href', env.baseUrl + '/admins/verified/malaysia_placement_stage2');
 
         $preparatory_program_graduated_selection.attr('href', env.baseUrl + '/admins/verified/preparatory-program-graduated-selection');
         $preparatory_program_graduated_placement.attr('href', env.baseUrl + '/admins/verified/preparatory-program-graduated-placement');
-        $ocac_selection.addClass('no-link');
-        $ocac_placement.addClass('no-link');
+        $ocac_selection.attr('href', env.baseUrl + '/admins/verified/ocac_selection');
+        $ocac_placement.attr('href', env.baseUrl + '/admins/verified/ocac_placement');
         $two_year.attr('href', env.baseUrl + '/admins/verified/two-year');
     }
 })();
