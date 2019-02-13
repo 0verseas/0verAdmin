@@ -728,11 +728,16 @@ var studentInfo = (function () {
             // console.log(value.department_data.school.title);
             // console.log(value.dept_id);
             // console.log(value.department_data.title);
+
+            var note ='';
+            if(value.deleted_at != null)
+                note = '註銷';
             selectionHTML += `
                         <tr>
                         <td>` + index + `</td>
                         <td>` + value.dept_id + `</td>
                         <td>` + value.department_data.school.title + ' ' + value.department_data.title + `</td>
+                        <td>` + note + `</td>
                         </tr>
                         `
         });
@@ -748,11 +753,15 @@ var studentInfo = (function () {
         else {
             json.forEach((value, index) => {
                 index= parseInt(index,10) + 1;
+                var note ='';
+                if(value.deleted_at != null)
+                    note = '註銷';
                 placementHTML += `
 							<tr>
 							<td>` + index + `</td>
 							<td>` + value.dept_id + `</td>
 							<td>` + value.department_data.school.title + ' ' + value.department_data.title + `</td>
+							<td>` + note + `</td>
 							</tr>
 							`
             });
