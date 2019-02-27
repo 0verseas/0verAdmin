@@ -407,6 +407,7 @@ var studentInfo = (function () {
         var is_selection_document_lock = '';
         var countryName = '';
         var admission_placement_apply_name ='';
+        var qualification_to_distribute ='';
 
         if (value.student_qualification_verify) {
             if (value.student_qualification_verify.system_id) {
@@ -447,6 +448,10 @@ var studentInfo = (function () {
             admission_placement_apply_name = value.student_misc_data.admission_placement_apply_way_data.description;
         else
             admission_placement_apply_name = '無';
+        if(value.student_misc_data.qualification_to_distribute != null)
+            qualification_to_distribute = value.student_misc_data.qualification_to_distribute;
+        else
+            qualification_to_distribute = '';
         let progressListHTML ='';
         progressListHTML =`
             <ul style="font-size: 30px; margin-left: 20%; line-height: 190%;     color: chocolate;">
@@ -467,6 +472,9 @@ var studentInfo = (function () {
                 </li>
                 <li>
                     ${is_selection_document_lock}
+                </li>
+                <li>
+                    ${qualification_to_distribute}
                 </li>
             </ul>
         `;
