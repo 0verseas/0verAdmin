@@ -257,7 +257,7 @@ var admittedList = (function () {
             }
 
             if(value.student_misc_data.admission_placement_apply_way != null){
-                admission_placement_apply_description = value.student_misc_data.admission_placement_apply_way;
+                admission_placement_apply_description = value.student_misc_data.admission_placement_apply_way_data.description;
             }
 
             $studentList
