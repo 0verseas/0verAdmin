@@ -237,6 +237,7 @@ var admittedList = (function () {
             var identity_name = '';
             var gender_name = '';
             let admission_placement_apply_description = '';
+            let admission_placement_apply_stage = '';
 
             if (value.student_qualification_verify) {
                 if (value.student_qualification_verify.system_id) {
@@ -258,6 +259,7 @@ var admittedList = (function () {
 
             if(value.student_misc_data.admission_placement_apply_way != null){
                 admission_placement_apply_description = value.student_misc_data.admission_placement_apply_way_data.description;
+                admission_placement_apply_stage = value.student_misc_data.admission_placement_apply_way_data.stage;
             }
 
             $studentList
@@ -269,11 +271,11 @@ var admittedList = (function () {
                             </td>
                             <td>${(value.id).toString().padStart(6, "0")}</td>
                             <td>${value.student_misc_data.overseas_student_id || ""}</td>
-                            <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
+                            <td>${value.name}</td>
                             <td>${gender_name}</td>
                             <td>${admission_placement_apply_description}</td>
-                            <td>${system_name}</td>
                             <td>${identity_name}</td>
+                            <td>${admission_placement_apply_stage}</td>
                         </tr>`);
 
         });
