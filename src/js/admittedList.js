@@ -26,5 +26,7 @@ var admittedList = (function () {
         $stage_zero_only_graduate.attr('href', env.baseUrl + '/admit/stage_zero_only_graduate');
 
         $stage_one.attr('href', env.baseUrl + '/admins/admit/stage_one');
+
+        $stage_two.attr('href', env.baseUrl + '/admins/admit/stage_two');
     }
 })();
