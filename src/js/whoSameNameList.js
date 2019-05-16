@@ -236,13 +236,11 @@ var admittedList = (function () {
             var system_name = '';
             var identity_name = '';
             var gender_name = '';
-            let admission_placement_apply_description = '';
-            let admission_placement_apply_stage = '';
 
             if (value.student_qualification_verify) {
-                if (value.student_qualification_verify.system_id) {
-                    system_name = system[value.student_qualification_verify.system_id - 1];
-                }
+                // if (value.student_qualification_verify.system_id) {
+                //     system_name = system[value.student_qualification_verify.system_id - 1];
+                // }
 
                 if (value.student_qualification_verify.identity) {
                     identity_name = identity[value.student_qualification_verify.identity - 1];
@@ -250,16 +248,14 @@ var admittedList = (function () {
             }
 
             if (value.student_personal_data) {
-                if (value.student_personal_data.gender === 'M') {
-                    gender_name = '男';
-                } else if (value.student_personal_data.gender === 'F') {
-                    gender_name = '女';
+                switch(value.student_personal_data.gender){
+                    case 'M':
+                        gender_name = '男';
+                        break;
+                    case 'F':
+                        gender_name = '女';
+                        break;
                 }
-            }
-
-            if(value.student_misc_data.admission_placement_apply_way != null){
-                admission_placement_apply_description = value.student_misc_data.admission_placement_apply_way_data.description;
-                admission_placement_apply_stage = value.student_misc_data.admission_placement_apply_way_data.stage;
             }
 
             $studentList
@@ -270,12 +266,12 @@ var admittedList = (function () {
                                 <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
                             </td>
                             <td>${(value.id).toString().padStart(6, "0")}</td>
-                            <td>${value.student_misc_data.overseas_student_id || ""}</td>
+                            <td>${value.overseas_student_id || ""}</td>
                             <td>${value.name}</td>
                             <td>${gender_name}</td>
-                            <td>${admission_placement_apply_description}</td>
+                            <td>${value.description}</td>
                             <td>${identity_name}</td>
-                            <td>${admission_placement_apply_stage}</td>
+                            <td>${value.stage}</td>
                         </tr>`);
 
         });
