@@ -302,16 +302,17 @@ var admittedList = (function () {
 
         _filterStudentList = $studentAllList.filter(function (obj) {
             //有些還不會有僑編，轉成空字串避免後面toUpperCase出錯
-            if( obj["student_misc_data"].overseas_student_id == null)
-                obj["student_misc_data"].overseas_student_id='';
+            if( obj["overseas_student_id"] == null){
+                obj["overseas_student_id"] = '';
+            }
             //console.log("value===",obj["student_misc_data"].overseas_student_id);
             //console.log("type===",typeof(obj["student_misc_data"].overseas_student_id));
 
             // 搜尋 報名序號、姓名、email、僑編
             return ( obj["id"].toString().toUpperCase().indexOf(filter) > -1 ||
                 obj["name"].toUpperCase().indexOf(filter) > -1 ||
-                obj["email"].toUpperCase().indexOf(filter) > -1  ||
-                obj["student_misc_data"].overseas_student_id.toUpperCase().indexOf(filter) > -1);
+                // obj["email"].toUpperCase().indexOf(filter) > -1  ||
+                obj["overseas_student_id"].toUpperCase().indexOf(filter) > -1);
         });
 
 
