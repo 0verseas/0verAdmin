@@ -28,5 +28,7 @@ var admittedList = (function () {
         $stage_one.attr('href', env.baseUrl + '/admins/admit/stage_one');
 
         $stage_two.attr('href', env.baseUrl + '/admins/admit/stage_two');
+
+        $stage_three.attr('href', env.baseUrl + '/admins/admit/stage_three');
     }
 })();
