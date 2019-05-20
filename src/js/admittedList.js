@@ -22,8 +22,8 @@ var admittedList = (function () {
 
     function _setData() {
         $stage_zero.attr('href', env.baseUrl + '/admins/admit/stage_zero');
-        $stage_zero_no_graduate.attr('href', env.baseUrl + '/admit/stage_zero_no_graduate');
-        $stage_zero_only_graduate.attr('href', env.baseUrl + '/admit/stage_zero_only_graduate');
+        $stage_zero_no_graduate.attr('href', env.baseUrl + '/admins/admit/stage_zero_no_graduate');
+        $stage_zero_only_graduate.attr('href', env.baseUrl + '/admins/admit/stage_zero_only_graduate');
 
         $stage_one.attr('href', env.baseUrl + '/admins/admit/stage_one');
 
