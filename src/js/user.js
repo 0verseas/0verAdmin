@@ -52,7 +52,7 @@ var User = (function () {
     }
 
     function update(userInfo) {
-        return fetch(baseUrl + `/schools/me/editors/${userInfo.username}`, {
+        return fetch(baseUrl + `/admins/account/${userInfo.username}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'

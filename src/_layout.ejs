@@ -64,6 +64,7 @@
 <div id="app" class="container-fluid">
     <% if (current.source != 'login') { -%>
     <%- partial("components/_sidebar")%>
+    <%- partial("components/_accountEditModal")%>
     <% } else { -%>
     <%- partial("login")%>
     <% } -%>
