@@ -533,8 +533,7 @@ var studentInfo = (function () {
             $residentPhone.val(_splitWithSemicolon(json.student_personal_data.resident_phone)[1]);
             $residentCellphoneCode.val(_splitWithSemicolon(json.student_personal_data.resident_cellphone)[0]);
             $residentCellphone.val(_splitWithSemicolon(json.student_personal_data.resident_cellphone)[1]);
-            $residentAddress.val(_splitWithSemicolon(json.student_personal_data.resident_address)[0]);
-            $residentOtherLangAddress.val(_splitWithSemicolon(json.student_personal_data.resident_address)[1]);
+            $residentAddress.val(json.student_personal_data.resident_address);
 
             $taiwanIdType.val(json.student_personal_data.taiwan_id_type);
             $taiwanIdNo.val(json.student_personal_data.taiwan_id);
