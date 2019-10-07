@@ -408,6 +408,7 @@ var studentInfo = (function () {
         var countryName = '';
         var admission_placement_apply_name ='';
         var qualification_to_distribute ='';
+        let confirmed_placement_at = '非後填志願學生';  // 後填志願鎖定情況
 
         if (value.student_qualification_verify) {
             if (value.student_qualification_verify.system_id) {
@@ -452,6 +453,17 @@ var studentInfo = (function () {
             qualification_to_distribute = value.student_misc_data.qualification_to_distribute;
         else
             qualification_to_distribute = '';
+
+        // 為後填志願者才顯示相關訊息
+        if(value.student_misc_data.confirmed_placement_at != null){  // 已經有時間戳 => 已經鎖定
+            confirmed_placement_at = '已完成後填志願鎖定';
+        } else if(value.student_misc_data.admission_placement_apply_way == 2 ||  // 港澳生以DSE、ALE、CEE作為採計方式
+            value.student_misc_data.admission_placement_apply_way == 12 ||  // 港澳具外國國籍以DSE、ALE、CEE作為採計方式
+            value.student_misc_data.admission_placement_apply_way == 37  // 印尼輔訓班
+        ){  // 沒有時間戳 => 先看看是不是後填志願的
+            confirmed_placement_at = '尚未完成後填志願鎖定';
+        }
+
         let progressListHTML ='';
         progressListHTML =`
             <ul style="font-size: 30px; margin-left: 20%; line-height: 190%;     color: chocolate;">
@@ -475,6 +487,9 @@ var studentInfo = (function () {
                 </li>
                 <li>
                     ${qualification_to_distribute}
+                </li>
+                <li>
+                    ${confirmed_placement_at}
                 </li>
             </ul>
         `;
