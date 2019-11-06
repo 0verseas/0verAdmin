@@ -8,6 +8,7 @@ var receiptList = (function () {
 
     const $test_area_selection = $('#test_area_selection'); // 測驗地區個人申請（文憑別為學科測驗或綜合學科測驗，但不含澳門）
     const $myanmar_teacher_education = $('#myanmar_teacher_education'); // 緬甸師培專案
+    const $myanmar_selection = $('#myanmar_selection'); // 緬甸個人申請
     const $myanmar_placement = $('#myanmar_placement'); // 緬甸聯合分發
     const $test_area_placement = $('#test_area_placement'); // 測驗地區聯合分發（文憑別為學科測驗或綜合學科測驗，但不含澳門）
     const $mya_sg_ph_to_preparatory_program = $('#mya_sg_ph_to_preparatory_program'); // 免試申請橋先部（緬十、新、菲）
@@ -48,6 +49,7 @@ var receiptList = (function () {
 
         $test_area_selection.attr('href', env.baseUrl + '/admins/verified/test-area-selection');
         $myanmar_teacher_education.attr('href', env.baseUrl + '/admins/verified/myanmar-teacher-education');
+        $myanmar_selection.attr('href', env.baseUrl + '/admins/verified/myanmar-selection');
         $myanmar_placement.attr('href', env.baseUrl + '/admins/verified/myanmar-placement');
         $test_area_placement.attr('href', env.baseUrl + '/admins/verified/test-area-placement');
         $mya_sg_ph_to_preparatory_program.attr('href', env.baseUrl + '/admins/verified/mya-sg-ph-to-preparatory-program');
