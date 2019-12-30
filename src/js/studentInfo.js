@@ -113,6 +113,7 @@ var studentInfo = (function () {
     const $dadBirthday = $modalStudentInfo.find('#dadBirthday'); // 生日
     const $dadHometown = $modalStudentInfo.find('#dadHometown'); // 籍貫
     const $dadJob = $modalStudentInfo.find('#dadJob'); // 職業
+    const $dadPhone = $modalStudentInfo.find('#dadPhone');  // 電話
     // 母親
     const $momStatus = $modalStudentInfo.find('.momStatus'); // 存歿
     const $momDataForm = $modalStudentInfo.find('#form-momData'); // 資料表單
@@ -121,6 +122,7 @@ var studentInfo = (function () {
     const $momBirthday = $modalStudentInfo.find('#momBirthday'); // 生日
     const $momHometown = $modalStudentInfo.find('#momHometown'); // 籍貫
     const $momJob = $modalStudentInfo.find('#momJob'); // 職業
+    const $momPhone = $modalStudentInfo.find('#momPhone');  // 電話
     // 監護人（父母皆不詳才需要填寫）
     const $guardianForm = $modalStudentInfo.find('#form-guardian'); // 資料表單
     const $guardianName = $modalStudentInfo.find('#guardianName'); // 姓名（中）
@@ -128,6 +130,7 @@ var studentInfo = (function () {
     const $guardianBirthday = $modalStudentInfo.find('#guardianBirthday'); // 生日
     const $guardianHometown = $modalStudentInfo.find('#guardianHometown'); // 籍貫
     const $guardianJob = $modalStudentInfo.find('#guardianJob'); // 職業
+    const $guardianPhone = $modalStudentInfo.find('#guardianPhone');  // 電話
 
     // 在台聯絡人
     const $twContactName = $modalStudentInfo.find('#twContactName'); // 姓名
@@ -601,6 +604,7 @@ var studentInfo = (function () {
             $dadBirthday.val(json.student_personal_data.dad_birthday);
             $dadHometown.val(json.student_personal_data.dad_hometown);
             $dadJob.val(json.student_personal_data.dad_job);
+            $dadPhone.val(json.student_personal_data.dad_phone);
             // 母
             _currentMomStatus = json.student_personal_data.mom_status;
             $("input[name=momStatus][value='"+ json.student_personal_data.mom_status +"']").prop("checked",true);
@@ -609,12 +613,14 @@ var studentInfo = (function () {
             $momBirthday.val(json.student_personal_data.mom_birthday);
             $momHometown.val(json.student_personal_data.mom_hometown);
             $momJob.val(json.student_personal_data.mom_job);
+            $momPhone.val(json.student_personal_data.mom_phone);
             // 監護人
             $guardianName.val(json.student_personal_data.guardian_name);
             $guardianEngName.val(json.student_personal_data.guardian_eng_name);
             $guardianBirthday.val(json.student_personal_data.guardian_birthday);
             $guardianHometown.val(json.student_personal_data.guardian_hometown);
             $guardianJob.val(json.student_personal_data.guardian_job);
+            $guardianPhone.val(json.student_personal_data.guardian_phone);
 
             // init 在台聯絡人
             $twContactName.val(json.student_personal_data.tw_contact_name);
