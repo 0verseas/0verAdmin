@@ -29,6 +29,10 @@ var editorInfo = (function () {
                 // 渲染 school editor 列表
                 $schoolEditorList.find('tbody').html('');
                 json.forEach(function (value, index) {
+                    let organization = encodeHtmlCharacters(value.organization);
+                    let name = encodeHtmlCharacters(value.user.name);
+                    let phone = encodeHtmlCharacters(value.user.phone);
+                    let schoolAddress = encodeHtmlCharacters(value.school.address);
                     $schoolEditorList
                         .find('tbody')
                         .append(`
@@ -38,11 +42,11 @@ var editorInfo = (function () {
                             </td>
                             <td>${value.user.username}</td>
                             <td>${value.school.title}</td>
-                            <td>${value.organization}</td>
-                            <td>${value.user.name}</td>
-                            <td>${value.user.phone}</td>
+                            <td>${organization}</td>
+                            <td>${name}</td>
+                            <td>${phone}</td>
                             <td>${value.user.email}</td>
-                            <td>${value.school.address}</td>
+                            <td>${schoolAddress}</td>
                         </tr>
                     `);
                 });
@@ -84,5 +88,14 @@ var editorInfo = (function () {
                 }
             }
         }
+    }
+
+    // 轉換一些敏感字元避免 XSS
+    function encodeHtmlCharacters(bareString) {
+        return bareString.replace(/&/g, "&amp;")  // 轉換 &
+            .replace(/</g, "&lt;").replace(/>/g, "&gt;")  // 轉換 < 及 >
+            .replace(/'/g, "&apos;").replace(/"/g, "&quot;")  // 轉換英文的單雙引號
+            .replace(/ /g, " &nbsp;")
+            ;
     }
 })();
