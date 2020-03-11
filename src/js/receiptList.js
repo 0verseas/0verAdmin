@@ -46,7 +46,28 @@ var receiptList = (function () {
     /**
      * init
      */
-    _setData();
+
+     init();
+
+    function init(){
+        User.isLogin().then(function (res) {
+            if(res.ok) {
+                return res.json();
+            } else {
+                throw res.status;
+            }
+        }).then(function (json) {
+            if (!json['admin'] || json['admin'].has_banned) {
+                location.replace('./login.html');
+            } else {
+                _setData();
+            }
+        }).catch(function (err) {
+            if (err == 401) {
+                alert('請先登入！！');
+            }
+        });
+    }
 
     function _setData() {
         $mc_card[0].textContent = '凱婷';
