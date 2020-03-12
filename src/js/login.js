@@ -123,7 +123,7 @@ var login = (function () {
 
 		let codeString = '';
 
-		//雖機產生4個字母
+		//隨機產生4個字母
 		for(let i = 0; i<4 ; i++){
 			let code = codeList[randomNumber(0,codeList.length)];
 			codeString += code;
