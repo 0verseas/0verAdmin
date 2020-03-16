@@ -53,6 +53,9 @@ var officeInfo = (function () {
                 var email;
                 var can_verify;
                 var has_admin;
+                let username = encodeHtmlCharacters(value.user.username);
+                let name = encodeHtmlCharacters(value.user.name);
+                let phone = encodeHtmlCharacters(value.user.phone);
 
                 if (!value.ocac_id) {
                     ocac_id = "";
@@ -87,10 +90,10 @@ var officeInfo = (function () {
                             <td>
                                 <!--<span class="btn-editSchoolEditorInfo" data-userid="${value.user.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>-->
                             </td>
-                            <td>${value.user.username}</td>
-                            <td>${value.user.name}</td>
+                            <td>${username}</td>
+                            <td>${name}</td>
                             <td>${authority[value.authority - 1]}</td>
-                            <td>${value.user.phone}</td>
+                            <td>${phone}</td>
                             <td>${email}</td>
                             <td>${ocac_id}</td>
                             <td>${can_verify}</td>
@@ -135,5 +138,14 @@ var officeInfo = (function () {
                 }
             }
         }
+    }
+    
+    // 轉換一些敏感字元避免 XSS
+    function encodeHtmlCharacters(bareString) {
+        return bareString.replace(/&/g, "&amp;")  // 轉換 &
+            .replace(/</g, "&lt;").replace(/>/g, "&gt;")  // 轉換 < 及 >
+            .replace(/'/g, "&apos;").replace(/"/g, "&quot;")  // 轉換英文的單雙引號
+            .replace(/ /g, " &nbsp;")
+            ;
     }
 })();
