@@ -255,6 +255,8 @@ var studentInfo = (function () {
             var system_name = '';
             var identity_name = '';
             var gender_name = '';
+            let student_name = encodeHtmlCharacters(value.name);
+            let student_eng_name = encodeHtmlCharacters(value.eng_name);
 
             if (value.student_qualification_verify) {
                 if (value.student_qualification_verify.system_id) {
@@ -283,7 +285,7 @@ var studentInfo = (function () {
                             </td>
                             <td>${(value.id).toString().padStart(6, "0")}</td>
                             <td>${value.student_misc_data.overseas_student_id || ""}</td>
-                            <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
+                            <td>${student_name} &nbsp;&nbsp;&nbsp;&nbsp; ${student_eng_name}</td>
                             <td>${gender_name}</td>
                             <td>${value.email}</td>
                             <td>${system_name}</td>
@@ -1160,6 +1162,15 @@ var studentInfo = (function () {
         } else {
             $guardianForm.hide();
         }
+    }
+
+    // 轉換一些敏感字元避免 XSS
+    function encodeHtmlCharacters(bareString) {
+        return bareString.replace(/&/g, "&amp;")  // 轉換 &
+            .replace(/</g, "&lt;").replace(/>/g, "&gt;")  // 轉換 < 及 >
+            .replace(/'/g, "&apos;").replace(/"/g, "&quot;")  // 轉換英文的單雙引號
+            .replace(/ /g, " &nbsp;")
+            ;
     }
 
 })();
