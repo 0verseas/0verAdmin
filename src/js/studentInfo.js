@@ -432,6 +432,7 @@ var studentInfo = (function () {
         var admission_placement_apply_name ='';
         var qualification_to_distribute ='';
         let confirmed_placement_at = '非後填志願學生';  // 後填志願鎖定情況
+        let not_to_FF = '';
 
         if (value.student_qualification_verify) {
             if (value.student_qualification_verify.system_id) {
@@ -487,6 +488,10 @@ var studentInfo = (function () {
             confirmed_placement_at = '尚未完成後填志願鎖定';
         }
 
+        if (value.student_misc_data.not_to_FF){
+            not_to_FF = "學生不願意被分發至僑先部";
+        }
+
         let progressListHTML ='';
         progressListHTML =`
             <ul style="font-size: 30px; margin-left: 20%; line-height: 190%;     color: chocolate;">
@@ -513,6 +518,9 @@ var studentInfo = (function () {
                 </li>
                 <li>
                     ${confirmed_placement_at}
+                </li>
+                <li>
+                    ${not_to_FF}  <!--願不願意去僑生先修部-->
                 </li>
             </ul>
         `;
