@@ -19,6 +19,7 @@ var login = (function () {
 
     $loginBtn.on('click', _login);
     $password.on('keydown', _login);
+    $identifyingCode.on('keydown', _login);
     $getStatus.on('click', _getStatus);
     $identifyingCanvas.on('click',generateCode);
 
