@@ -420,7 +420,7 @@ var studentInfo = (function () {
     }
 
     function _renderStudentRegistrationProgress(value) {
-        console.log(value);
+        // console.log(value);
         const identity = ['港澳生', '港澳具外國國籍之華裔學生', '海外僑生', '在臺港澳生', '在臺僑生', '僑先部結業生', '印輔班結業生'];
 
         const system = ['學士班', '港二技', '碩士班', '博士班'];
@@ -814,11 +814,13 @@ var studentInfo = (function () {
                 var note ='';
                 if(value.deleted_at != null)
                     note = '註銷';
+                schoolTitle = (value.department_data!=null && value.department_data.school!=null)  ? value.department_data.school.title : '';
+                departmentTitle = (value.department_data!=null)  ? value.department_data.title : '';
                 placementHTML += `
 							<tr>
 							<td>` + index + `</td>
 							<td>` + value.dept_id + `</td>
-							<td>` + value.department_data.school.title + ' ' + value.department_data.title + `</td>
+							<td>` + schoolTitle + ' ' + departmentTitle + `</td>
 							<td>` + note + `</td>
 							</tr>
 							`
