@@ -494,6 +494,8 @@ var studentInfo = (function () {
             not_to_FF = "學生不願意被分發至僑先部";
         }
 
+        let propose = value.student_misc_data.propose != null ? value.student_misc_data.propose : '';  // 保薦單位
+
         let progressListHTML ='';
         progressListHTML =`
             <ul style="font-size: 30px; margin-left: 20%; line-height: 190%;     color: chocolate;">
@@ -501,7 +503,7 @@ var studentInfo = (function () {
                     【 ${system_name} 】  ${identity_name}
                 </li>
                 <li>
-                    僑居地： ${countryName}
+                    僑居地：${countryName}<br/>保薦單位：${propose}
                 </li>
                 <li>
                     ${is_join_admission_selection}
