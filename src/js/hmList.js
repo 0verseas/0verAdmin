@@ -7,7 +7,6 @@ var receiptList = (function () {
     const $mc_placement_local_immigration = $('#mc-placement-local-immigration'); // 澳門聯合分發出入境清冊
     const $mc_foreign_immigration = $('#mc-foreign-immigration'); // 澳門持外國學歷(個申+聯分)出入境清冊
 
-
     const $hk_card = $('#hongkong-card');
     const $hk_selection_local_immigration = $('#hk-selection-local-immigration'); // 香港個人申請出入境清冊
     const $hk_placement_local_immigration = $('#hk-placement-local-immigration'); // 香港聯合分發出入境清冊
@@ -58,10 +57,10 @@ var receiptList = (function () {
 
         $two_year_card[0].textContent = '嘉偵';
 
+        //出入境清冊 連結 append
         $mc_selection_local_immigration.attr('href', env.baseUrl + '/admins/verified/mc-selection-local-immigration');
         $mc_placement_local_immigration.attr('href', env.baseUrl + '/admins/verified/mc-placement-local-immigration');
         $mc_foreign_immigration.attr('href', env.baseUrl + '/admins/verified/mc-foreign-immigration');
-
 
         $hk_selection_local_immigration.attr('href', env.baseUrl + '/admins/verified/hk-selection-local-immigration');
         $hk_placement_local_immigration.attr('href', env.baseUrl + '/admins/verified/hk-placement-local-immigration');
@@ -71,7 +70,21 @@ var receiptList = (function () {
 
         $graduated_immigration.attr('href', env.baseUrl + '/admins/verified/graduated-immigration');
 
-
         $two_year_immigration.attr('href', env.baseUrl + '/admins/verified/two-year-immigration');
+
+        //身份查核通報名冊 連結 append
+        $('#mc-selection-local-check').attr('href', env.baseUrl + '/admins/verified/mc-selection-local-check');
+        $('#mc-placement-local-check').attr('href', env.baseUrl + '/admins/verified/mc-placement-local-check');
+        $('#mc-foreign-check').attr('href', env.baseUrl + '/admins/verified/mc-foreign-check');
+
+        $('#hk-selection-local-check').attr('href', env.baseUrl + '/admins/verified/hk-selection-local-check');
+        $('#hk-placement-local-check').attr('href', env.baseUrl + '/admins/verified/hk-placement-local-check');
+        $('#hk-to-preparatory-check').attr('href', env.baseUrl + '/admins/verified/hk-to-preparatory-check');
+        $('#hk-selection-foreign-check').attr('href', env.baseUrl + '/admins/verified/hk-selection-foreign-check');
+        $('#hk-placement-foreign-check').attr('href', env.baseUrl + '/admins/verified/hk-placement-foreign-check');
+
+        $('#graduated-check').attr('href', env.baseUrl + '/admins/verified/graduated-check');
+
+        $('#two-year-check').attr('href', env.baseUrl + '/admins/verified/two-year-check');
     }
 })();
