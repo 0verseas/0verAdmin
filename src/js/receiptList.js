@@ -105,9 +105,9 @@ var receiptList = (function () {
 
         $preparatory_program_graduated_selection.attr('href', env.baseUrl + '/admins/verified/preparatory-program-graduated-selection');
         $preparatory_program_graduated_placement.attr('href', env.baseUrl + '/admins/verified/preparatory-program-graduated-placement');
-        $ocac_selection[0].innerHTML = '<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;僑委會 ocac2(董惠鈞）ocac3(賴怡菁）個人申請收件清冊';
+        $ocac_selection[0].innerHTML = '<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;免試地區個人申請收件清冊';
         $ocac_selection.attr('href', env.baseUrl + '/admins/verified/ocac_selection');
-        $ocac_placement[0].innerHTML = '<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;僑委會 ocac2(董惠鈞）ocac3(賴怡菁）聯合分發收件清冊';
+        $ocac_placement[0].innerHTML = '<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;免試地區聯合分發收件清冊';
         $ocac_placement.attr('href', env.baseUrl + '/admins/verified/ocac_placement');
         $two_year.attr('href', env.baseUrl + '/admins/verified/two-year');
     }
