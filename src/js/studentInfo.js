@@ -789,6 +789,13 @@ var studentInfo = (function () {
             // console.log(value.dept_id);
             // console.log(value.department_data.title);
 
+            let review_result_string = '';
+            if(value.review_result){
+                review_result_string = '<strong class="text-success">合格</strong>，合格排序為：'+ value.review_order;
+            } else {
+                review_result_string = '<strong class="text-danger">不合格</strong>，原因為：<br/>'+ value.fail_result_data.reason;
+            }
+
             var note ='';
             if(value.deleted_at != null)
                 note = '註銷';
@@ -797,6 +804,7 @@ var studentInfo = (function () {
                         <td>` + index + `</td>
                         <td>` + value.dept_id + `</td>
                         <td>` + value.department_data.school.title + ' ' + value.department_data.title + `</td>
+                        <td>` + review_result_string + `</td>
                         <td>` + note + `</td>
                         </tr>
                         `
