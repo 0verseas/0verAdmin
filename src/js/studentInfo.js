@@ -792,7 +792,7 @@ var studentInfo = (function () {
             let review_result_string = '';
             if(value.review_result){
                 review_result_string = '<strong class="text-success">合格</strong>，合格排序為：'+ value.review_order;
-            } else {
+            } else if(value.review_result !== null){
                 review_result_string = '<strong class="text-danger">不合格</strong>，原因為：<br/>'+ value.fail_result_data.reason;
             }
 
