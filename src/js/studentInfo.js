@@ -527,6 +527,7 @@ var studentInfo = (function () {
                     ${not_to_FF}  <!--願不願意去僑生先修部-->
                 </li>
         `;
+        // 有stage_of_admit才顯示
         if(value.student_misc_data.stage_of_admit !== null){
             let admission_result = ''; // 錄取結果
             switch(value.student_misc_data.stage_of_admit){
@@ -561,7 +562,7 @@ var studentInfo = (function () {
                 </li>
             `
         }
-        console.log(value);
+        // school5 = Y 才顯示
         if(value.student_misc_data.school5 == 'Y'){
             progressListHTML +=`
                 <li>
@@ -572,23 +573,6 @@ var studentInfo = (function () {
         progressListHTML +=`
             </ul>
         `
-
-
-        // $studentList
-        //     .find('tbody')
-        //     .append(`
-        //                 <tr>
-        //                     <td>
-        //                         <span class="btn-editStudentInfo" data-userid="${value.id}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-        //                     </td>
-        //                     <td>${(value.id).toString().padStart(6, "0")}</td>
-        //                     <td>${value.student_misc_data.overseas_student_id || ""}</td>
-        //                     <td>${value.name} &nbsp;&nbsp;&nbsp;&nbsp; ${value.eng_name}</td>
-        //                     <td>${gender_name}</td>
-        //                     <td>${value.email}</td>
-        //                     <td>${system_name}</td>
-        //                     <td>${identity_name}</td>
-        //                 </tr>`);
         $('#pills-qualify').html(progressListHTML);
     }
     function _renderStudentPersonalInfo(json) {
