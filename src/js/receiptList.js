@@ -36,8 +36,8 @@ var receiptList = (function () {
     const $ocac_card = $('#ocac-card');    
     const $preparatory_program_graduated_selection = $('#preparatory_program_graduated_selection'); // 僑先部結業生個人申請收件清冊
     const $preparatory_program_graduated_placement = $('#preparatory-program_graduated_placement'); // 僑先部結業生聯合分發收件清冊
-    const $ocac_selection = $('#ocac_selection'); // 僑委會 ocac2(董惠鈞）ocac3(賴怡菁）個人申請收件清冊
-    const $ocac_placement = $('#ocac_placement'); // 僑委會 ocac2(董惠鈞）ocac3(賴怡菁）聯合分發收件清冊
+    const $ocac_selection = $('#ocac_selection'); // 免試地區個人申請收件清冊
+    const $ocac_placement = $('#ocac_placement'); // 免試地區聯合分發收件清冊
     const $two_year = $('#two_year'); // 港二技收件清冊
     /**
      * bind event

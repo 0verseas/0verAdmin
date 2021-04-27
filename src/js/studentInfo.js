@@ -478,7 +478,7 @@ var studentInfo = (function () {
         if(value.student_misc_data.qualification_to_distribute != null)
             qualification_to_distribute = value.student_misc_data.qualification_to_distribute;
         else
-            qualification_to_distribute = '';
+            qualification_to_distribute = '無';
 
         // 為後填志願者才顯示相關訊息
         if(value.student_misc_data.confirmed_placement_at != null){  // 已經有時間戳 => 已經鎖定
@@ -518,15 +518,23 @@ var studentInfo = (function () {
                     ${is_selection_document_lock}
                 </li>
                 <li>
-                    ${qualification_to_distribute}
-                </li>
+                    資格不符原因：${qualification_to_distribute}
+                </li>                
+        `;
+        if(value.student_misc_data.confirmed_placement_at != null){
+            progressListHTML+=`
                 <li>
                     ${confirmed_placement_at}
                 </li>
+            `;
+        }
+        if (value.student_misc_data.not_to_FF){
+            progressListHTML+=`
                 <li>
                     ${not_to_FF}  <!--願不願意去僑生先修部-->
                 </li>
-        `;
+            `;
+        }
         // 有stage_of_admit才顯示
         if(value.student_misc_data.stage_of_admit !== null){
             let admission_result = ''; // 錄取結果
