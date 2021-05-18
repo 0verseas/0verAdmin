@@ -3,8 +3,9 @@ var admittedList = (function () {
      * cache DOM
      */
     const $stage_zero = $('#s0_admitted_list');  // 個人申請錄取者聯絡清冊
-    const $stage_zero_no_graduate = $('#s0_admitted_list_no_graduate');  // 個人申請錄取者聯絡清冊（不含研究所）
+    const $stage_zero_only_bachelor = $('#s0_admitted_list_only_bachelor');  // 個人申請錄取者聯絡清冊（只有學士班）
     const $stage_zero_only_graduate = $('#s0_admitted_list_only_graduate');  // 個人申請錄取者聯絡清冊（只有研究所）
+    const $stage_zero_only_twoYear = $('#s0_admitted_list_only_twoYear');  // 個人申請錄取者聯絡清冊（只有港二技）
     const $stage_one = $('#s1_admitted_list');      //聯合分發第一梯次錄取者聯絡清冊
     const $stage_two = $('#s2_admitted_list');     //聯合分發第二梯次錄取者聯絡清冊
     const $stage_three = $('#s3_admitted_list');  //聯合分發第三梯次錄取者聯絡清冊
@@ -43,8 +44,9 @@ var admittedList = (function () {
 
     function _setData() {
         $stage_zero.attr('href', env.baseUrl + '/admins/admit/stage_zero');
-        $stage_zero_no_graduate.attr('href', env.baseUrl + '/admins/admit/stage_zero_no_graduate');
+        $stage_zero_only_bachelor.attr('href', env.baseUrl + '/admins/admit/stage_zero_only_bachelor');
         $stage_zero_only_graduate.attr('href', env.baseUrl + '/admins/admit/stage_zero_only_graduate');
+        $stage_zero_only_twoYear.attr('href', env.baseUrl + '/admins/admit/stage_zero_only_twoYear');
 
         $stage_one.attr('href', env.baseUrl + '/admins/admit/stage_one');
 
