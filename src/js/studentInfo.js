@@ -491,7 +491,9 @@ var studentInfo = (function () {
         }
 
         if (value.student_misc_data.not_to_FF){
-            not_to_FF = "學生不願意被分發至僑先部";
+            not_to_FF = "學生<a class='text-danger'>不願意</a>被分發至僑先部";
+        } else {
+            not_to_FF = "學生<a class='text-success'>願意</a>被分發至僑先部";
         }
 
         let propose = value.student_misc_data.propose != null ? value.student_misc_data.propose : '';  // 保薦單位
@@ -528,7 +530,8 @@ var studentInfo = (function () {
                 </li>
             `;
         }
-        if (value.student_misc_data.not_to_FF){
+        // 報名學士班且不是僑先部結業生才顯示
+        if (value.student_qualification_verify && value.student_qualification_verify.system_id === 1 && value.student_qualification_verify.identity < 4){
             progressListHTML+=`
                 <li>
                     ${not_to_FF}  <!--願不願意去僑生先修部-->
