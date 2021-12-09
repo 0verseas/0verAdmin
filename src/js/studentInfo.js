@@ -530,7 +530,7 @@ var studentInfo = (function () {
                 </li>
             `;
         }
-        // 報名學士班且不是僑先部結業生才顯示
+        // 報名學士班且不是僑先部結業生有參加聯合分發不是報名僑先部或特輔班才顯示
         if (value.student_qualification_verify && 
             value.student_qualification_verify.system_id === 1 && 
             value.student_qualification_verify.identity < 4 &&
@@ -539,7 +539,8 @@ var studentInfo = (function () {
                 value.student_misc_data.admission_placement_apply_way_data.code != 99999 ||
                 value.student_misc_data.admission_placement_apply_way_data.code != 16 ||
                 value.student_misc_data.admission_placement_apply_way_data.code != 18
-            )){
+            )
+        ){
             progressListHTML+=`
                 <li>
                     ${not_to_FF}  <!--願不願意去僑生先修部-->
