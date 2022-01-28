@@ -4,12 +4,12 @@
   "description": "好像該開始做後台了",
   "main": "index.js",
   "dependencies": {
-    "harp": "^0.41.0"
+    "harp": "^0.41.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
-    "@babel/core": "^7.15.0"
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.12",
+    "@babel/preset-env": "^7.16.11"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
