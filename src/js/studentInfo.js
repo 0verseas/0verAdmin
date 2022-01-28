@@ -293,6 +293,7 @@ var studentInfo = (function () {
                         </tr>`);
 
         });
+        $.bootstrapSortable(true);
     }
     function _filterStudentInput(e) { // 搜尋過濾列表
 
