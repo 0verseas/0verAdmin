@@ -9,11 +9,10 @@ var login = (function () {
      * cache DOM
      */
 
-    var $username = $('#username');
-    var $password = $('#password');
-    var $loginBtn = $('#btn-login');
-    var $errMsg = $('#errMsg');
-    var $getStatus = $('#getStatus');
+    const $username = $('#username');
+    const $password = $('#password');
+    const $loginBtn = $('#btn-login');
+    const $errMsg = $('#errMsg');
 
     /**
      * bind event
@@ -21,7 +20,6 @@ var login = (function () {
 
     $loginBtn.on('click', _login);
     $password.on('keydown', _login);
-    $getStatus.on('click', _getStatus);
 
     /**
 	*	init
@@ -35,14 +33,14 @@ var login = (function () {
             return;
         }
 
-        var username = $username.val();
-        var password = $password.val();
+        const username = $username.val();
+        const password = $password.val();
 
         if (!username || !password) {
             return;
         }
 
-        var loginForm = {
+        const loginForm = {
             username: username,
             password: sha256(password),
 			google_recaptcha_token: ''
@@ -62,7 +60,7 @@ var login = (function () {
 						throw res.status;
 					}
 				}).then(function(json) {
-					console.log(json);
+					// console.log(json);
 					window.location.href = './schoolEditorInfo.html'
 				}).catch(function(err) {
 					if (err == 401) {
@@ -76,19 +74,4 @@ var login = (function () {
 			});
         });
     }
-
-    function _getStatus() {
-        User.isLogin().then(function(res) {
-            if(res.ok) {
-                return res.json();
-            } else {
-                throw res
-            }
-        }).then(function(json) {
-            console.log(json);
-        }).catch(function(err) {
-            console.log(err);
-        })
-    }
-
 })();
