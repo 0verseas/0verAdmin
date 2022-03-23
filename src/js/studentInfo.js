@@ -361,54 +361,48 @@ var studentInfo = (function () {
     }
 
     async function _handleEditStudentInfo() { // 學生列表 Modal 觸發
-        openLoading();
+        await openLoading();
 
         _currentUserId = $(this).data('userid');
         try {
             const response = await Student.getStudentInfo(_currentUserId);
             if (!response.ok) { throw response; }
+            const studentData = await response.json();
+            if(studentData.student_qualification_verify){
+                _systemId = studentData.student_qualification_verify.system_id;
+                _identityId = studentData.student_qualification_verify.identity;
+            }
+            _renderStudentRegistrationProgress(studentData);
+            _renderStudentPersonalInfo(studentData);
+            _renderStudentEducationInfo(studentData.student_education_background_data)
 
-            Student.getStudentInfo(_currentUserId)
-                .then((res) => {
-                    return res.json();
-                }).then((json) => {
-
-                if (json.student_qualification_verify) {
-                    _systemId = json.student_qualification_verify.system_id;
-                    _identityId = json.student_qualification_verify.identity;
-                }
-
-                _renderStudentRegistrationProgress(json);
-                _renderStudentPersonalInfo(json);
-                _renderStudentEducationInfo(json.student_education_background_data);
-                if (_systemId == 1) {
-                    _renderStudentAdmissionSelectionOrder(json.student_department_admission_selection_order);
-                    _renderStudentAdmissionPlacementOrder(json.student_department_admission_placement_order);
-                }
-                if (_systemId == 2) {
-                    _renderStudentAdmissionSelectionOrder(json.student_two_year_tech_department_admission_selection_order);
+            switch(_systemId){
+                case 1:
+                    _renderStudentAdmissionSelectionOrder(studentData.student_department_admission_selection_order);
+                    _renderStudentAdmissionPlacementOrder(studentData.student_department_admission_placement_order);
+                    break;
+                case 2:
+                    _renderStudentAdmissionSelectionOrder(studentData.student_two_year_tech_department_admission_selection_order);
                     _renderStudentAdmissionPlacementOrder('x');
-                }
-                if (_systemId == 3 || _systemId == 4) {
-                    _renderStudentAdmissionSelectionOrder(json.student_graduate_department_admission_selection_order);
+                    break;
+                case 3:
+                case 4:
+                    _renderStudentAdmissionSelectionOrder(studentData.student_graduate_department_admission_selection_order);
                     _renderStudentAdmissionPlacementOrder('x');
-                }
-            }).then(() => {
-                    //_reviewDivAction();
-                    _showSpecailForm();
-                    _handleOtherDisabilityCategoryForm();
-                    _switchDadDataForm();
-                    _switchMomDataForm();
-                    _setResidenceContinent();
-                    _setSchoolContinent();
+                    break;
+            }
+            _showSpecailForm();
+            _handleOtherDisabilityCategoryForm();
+            _switchDadDataForm();
+            _switchMomDataForm();
+            _setResidenceContinent();
+            _setSchoolContinent();
+            await $editStudentInfoModal.modal({
+                backdrop: 'static',
+                keyboard: false
+            });
 
-                    $editStudentInfoModal.modal({
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-
-                    stopLoading();
-                })
+            await stopLoading();
         }
         catch(e) {
             e.json && e.json().then((data) => {
@@ -865,9 +859,9 @@ var studentInfo = (function () {
     function _renderStudentAdmissionPlacementOrder(json) {
         //console.log(json);
         let placementHTML = '';
-        if ( json == 'x')
+        if ( json == 'x'){
             placementHTML = `<tr><td colspan="3" style="font-size: xx-large; text-align: center;">不適用</td></tr>`;
-        else {
+        } else {
             json.forEach((value, index) => {
                 index= parseInt(index,10) + 1;
                 var note ='';
