@@ -17,6 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <!-- <script src="https://cdn.jsdelivr.net/gh/CarlosBonetti/jquery-loading/dist/jquery.loading.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easy-loading/1.3.0/jquery.loading.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="./env.js"></script>
     <script src="./js/miscellaneous.js"></script>
@@ -33,8 +34,13 @@
     <link rel="mask-icon" href="https://api.overseas.ncnu.edu.tw/0verseas-favicons/safari-pinned-tab.svg" color="#5bbad5">
     <script>
         function openLoading() {
-            $('body').loading();
-            $('.loading-overlay').css({'z-index': 11111, top: 0});
+            $('body').loading('start');
+            $('.loading-overlay').css({
+                'display': 'flex',
+                'justify-content': 'center',
+                'align-items': 'center',
+                'font-size': 'xxx-large'
+            });
         }
 
         function stopLoading() {
