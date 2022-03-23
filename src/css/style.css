@@ -5,3 +5,8 @@
 .hide {
     display: none;
 }
+
+.loading-overlay{
+    opacity: 0.8;
+    background: white;
+}
