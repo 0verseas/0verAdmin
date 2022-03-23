@@ -861,7 +861,12 @@ var studentInfo = (function () {
         let placementHTML = '';
         if ( json == 'x'){
             placementHTML = `<tr><td colspan="3" style="font-size: xx-large; text-align: center;">不適用</td></tr>`;
+            $('.placementList-tab').hide();
+            $('.educationInfo-tab').hide();
+            $('#pills-qualify-tab').click();
         } else {
+            $('.placementList-tab').show();
+            $('.educationInfo-tab').show();
             json.forEach((value, index) => {
                 index= parseInt(index,10) + 1;
                 var note ='';
