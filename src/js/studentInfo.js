@@ -1196,6 +1196,7 @@ var studentInfo = (function () {
     function _switchDadDataForm() {
         if (_currentDadStatus === "undefined") {
             $dadDataForm.hide();
+            $('.br-father').hide();
         } else {
             $dadDataForm.fadeIn();
         }
@@ -1210,6 +1211,7 @@ var studentInfo = (function () {
     function _switchMomDataForm() {
         if (_currentMomStatus === "undefined") {
             $momDataForm.hide();
+            $('.br-mother').hide();
         } else {
             $momDataForm.fadeIn();
         }
