@@ -372,6 +372,7 @@ var studentInfo = (function () {
                 _systemId = studentData.student_qualification_verify.system_id;
                 _identityId = studentData.student_qualification_verify.identity;
             }
+            $('#pills-qualify-tab').click(); // 總之重新渲染就切回填報狀態頁簽
             _renderStudentRegistrationProgress(studentData);
             _renderStudentPersonalInfo(studentData);
             _renderStudentEducationInfo(studentData.student_education_background_data)
@@ -840,8 +841,13 @@ var studentInfo = (function () {
             }
 
             var note ='';
-            if(value.deleted_at != null)
-                note = '註銷';
+            if(value.deleted_at != null){
+                if(value.give_up){
+                    note = '註銷，自願放棄';
+                } else {
+                    note = '註銷，切結放棄';
+                }
+            }
             selectionHTML += `
                         <tr>
                         <td>` + index + `</td>
@@ -863,7 +869,6 @@ var studentInfo = (function () {
             placementHTML = `<tr><td colspan="3" style="font-size: xx-large; text-align: center;">不適用</td></tr>`;
             $('.placementList-tab').hide();
             $('.educationInfo-tab').hide();
-            $('#pills-qualify-tab').click();
         } else {
             $('.placementList-tab').show();
             $('.educationInfo-tab').show();
