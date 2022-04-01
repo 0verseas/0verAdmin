@@ -842,7 +842,7 @@ var studentInfo = (function () {
 
             var note ='';
             if(value.deleted_at != null){
-                if(value.give_up){
+                if(value.give_up === 1){
                     note = '註銷，自願放棄';
                 } else {
                     note = '註銷，切結放棄';
