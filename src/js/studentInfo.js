@@ -656,6 +656,10 @@ var studentInfo = (function () {
                 $subjectForm.show();
                 $majorSubject.val(json.student_personal_data.major_subject);
                 $minorSubject.val(json.student_personal_data.minor_subject);
+            } else {
+                $subjectForm.hide();
+                $majorSubject.val();
+                $minorSubject.val();
             }
 
             // 入學時間、畢業時間初始化
