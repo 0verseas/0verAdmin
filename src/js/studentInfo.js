@@ -656,6 +656,10 @@ var studentInfo = (function () {
                 $subjectForm.show();
                 $majorSubject.val(json.student_personal_data.major_subject);
                 $minorSubject.val(json.student_personal_data.minor_subject);
+            } else {
+                $subjectForm.hide();
+                $majorSubject.val();
+                $minorSubject.val();
             }
 
             // 入學時間、畢業時間初始化
@@ -1040,7 +1044,7 @@ var studentInfo = (function () {
     }
 
     function _splitWithSemicolon(phoneNum) {
-        let i = phoneNum.indexOf(";");
+        let i = phoneNum.indexOf("-");
         return [phoneNum.slice(0,i), phoneNum.slice(i+1)];
     }
 
