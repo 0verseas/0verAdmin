@@ -1,11 +1,24 @@
-version: '3'
+version: '3.7'
+
+networks:
+  bridge:
+    external:
+      name: ${NETWORKS}
+
 services:
-    nginx:
-        image: nginx:alpine
-        container_name: 0verAdmin
-        restart: unless-stopped
-        tty: true
-        environment:
-            - TZ=Asia/Taipei
-        volumes:
-            - ./app/dist/:/usr/share/nginx/html/admin/
+  admin:
+    image: nginx:alpine
+    container_name: 0verAdmin
+    restart: unless-stopped
+    tty: true
+    environment:
+      - TZ=Asia/Taipei
+    volumes:
+      - ./app/dist/:/usr/share/nginx/html/admin/
+    networks:
+      - bridge
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.admin.entrypoints=websecure"
+      - "traefik.http.routers.admin.tls.certresolver=lets-encr"
+      - "traefik.http.routers.admin.rule=Host(``)"
