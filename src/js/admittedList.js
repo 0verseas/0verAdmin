@@ -2,6 +2,7 @@ var admittedList = (function () {
     /**
      * cache DOM
      */
+    const $all_admitted = $('#all_admitted_list'); //錄取學生總名冊
     const $stage_zero = $('#s0_admitted_list');  // 個人申請錄取者聯絡清冊
     const $stage_zero_only_bachelor = $('#s0_admitted_list_only_bachelor');  // 個人申請錄取者聯絡清冊（只有學士班）
     const $stage_zero_only_graduate = $('#s0_admitted_list_only_graduate');  // 個人申請錄取者聯絡清冊（只有研究所）
@@ -57,5 +58,7 @@ var admittedList = (function () {
         $stage_four.attr('href', env.baseUrl + '/admins/admit/stage_four');
 
         $stage_five.attr('href', env.baseUrl + '/admins/admit/stage_five');
+
+        $all_admitted.attr('href', env.baseUrl + '/admins/admit/all_student_detail');
     }
 })();
