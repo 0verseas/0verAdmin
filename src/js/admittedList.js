@@ -3,6 +3,10 @@ var admittedList = (function () {
      * cache DOM
      */
     const $all_admitted = $('#all_admitted_list'); //錄取學生總名冊
+    const $bachelor_admitted = $('#bachelor_admitted_list'); //學士班錄取學生名冊
+    const $twoYear_admitted = $('#twoYear_admitted_list'); //港二技錄取學生名冊
+    const $master_admitted = $('#master_admitted_list'); //碩士班錄取學生名冊
+    const $phd_admitted = $('#phd_admitted_list'); //博士班錄取學生名冊
     const $stage_zero = $('#s0_admitted_list');  // 個人申請錄取者聯絡清冊
     const $stage_zero_only_bachelor = $('#s0_admitted_list_only_bachelor');  // 個人申請錄取者聯絡清冊（只有學士班）
     const $stage_zero_only_graduate = $('#s0_admitted_list_only_graduate');  // 個人申請錄取者聯絡清冊（只有研究所）
@@ -59,6 +63,10 @@ var admittedList = (function () {
 
         $stage_five.attr('href', env.baseUrl + '/admins/admit/stage_five');
 
-        $all_admitted.attr('href', env.baseUrl + '/admins/admit/all_student_detail');
+        $all_admitted.attr('href', env.baseUrl + '/admins/admit/all_student_detail/all');
+        $bachelor_admitted.attr('href', env.baseUrl + '/admins/admit/all_student_detail/1');
+        $twoYear_admitted.attr('href', env.baseUrl + '/admins/admit/all_student_detail/2');
+        $master_admitted.attr('href', env.baseUrl + '/admins/admit/all_student_detail/3');
+        $phd_admitted.attr('href', env.baseUrl + '/admins/admit/all_student_detail/4');
     }
 })();
