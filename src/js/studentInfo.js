@@ -544,32 +544,51 @@ var studentInfo = (function () {
             `;
         }
         // 有stage_of_admit才顯示
-        if(value.student_misc_data.stage_of_admit !== null){
+        if(value.student_misc_data.stage_of_admit !== null ){
             let admission_result = ''; // 錄取結果
+            let department_title = '';
+            let school_title = '';
+            if(value.student_misc_data.department_data == null
+                && value.student_misc_data.two_year_tech_department_data == null
+                && value.student_misc_data.graduate_department_data == null){
+                school_title = '此學校學系已註銷';
+                department_title = '此學系已註銷';
+            } else {
+                if(value.student_misc_data.stage_of_admit == 'T'){
+                    school_title = value.student_misc_data.two_year_tech_department_data.school.title;
+                    department_title = value.student_misc_data.two_year_tech_department_data.title;
+                } else if(value.student_misc_data.stage_of_admit == 'N'){
+                    school_title = value.student_misc_data.graduate_department_data.school.title;
+                    department_title = value.student_misc_data.graduate_department_data.title;
+                } else{
+                    school_title = value.student_misc_data.department_data.school.title;
+                    department_title = value.student_misc_data.department_data.title;
+                }
+            }
             switch(value.student_misc_data.stage_of_admit){
                 case 'T':
-                    admission_result = '港二技個人申請錄取結果：<br/>' + value.student_misc_data.two_year_tech_department_data.school.title + '<br/>' + value.student_misc_data.two_year_tech_department_data.title;
+                    admission_result = '港二技個人申請錄取結果：<br/>' + school_title + '<br/>' + department_title;
                     break;
                 case 'N':
-                    admission_result = '研究所個人申請錄取結果：<br/>' + value.student_misc_data.graduate_department_data.school.title + '<br/>' + value.student_misc_data.graduate_department_data.title;
+                    admission_result = '研究所個人申請錄取結果：<br/>' + school_title + '<br/>' + department_title;
                     break;
                 case '0':
-                    admission_result = '學士班個人申請錄取結果：<br/>' + value.student_misc_data.department_data.school.title + '<br/>' + value.student_misc_data.department_data.title;
+                    admission_result = '學士班個人申請錄取結果：<br/>' + school_title + '<br/>' + department_title;
                     break;
                 case '1':
-                    admission_result = '學士班第一梯次錄取結果：<br/>' + value.student_misc_data.department_data.school.title + '<br/>' + value.student_misc_data.department_data.title;
+                    admission_result = '學士班第一梯次錄取結果：<br/>' + school_title + '<br/>' + department_title;
                     break;
                 case '2':
-                    admission_result = '學士班第二梯次錄取結果：<br/>' + value.student_misc_data.department_data.school.title + '<br/>' + value.student_misc_data.department_data.title;
+                    admission_result = '學士班第二梯次錄取結果：<br/>' + school_title + '<br/>' + department_title;
                     break;
                 case '3':
-                    admission_result = '學士班第三梯次錄取結果：<br/>' + value.student_misc_data.department_data.school.title + '<br/>' + value.student_misc_data.department_data.title;
+                    admission_result = '學士班第三梯次錄取結果：<br/>' + school_title + '<br/>' + department_title;
                     break;
                 case '4':
-                    admission_result = '學士班第四梯次錄取結果：<br/>' + value.student_misc_data.department_data.school.title + '<br/>' + value.student_misc_data.department_data.title;
+                    admission_result = '學士班第四梯次錄取結果：<br/>' + school_title + '<br/>' + department_title;
                     break;
                 case '5':
-                    admission_result = '學士班第五梯次錄取結果：<br/>' + value.student_misc_data.department_data.school.title + '<br/>' + value.student_misc_data.department_data.title;
+                    admission_result = '學士班第五梯次錄取結果：<br/>' + school_title + '<br/>' + department_title;
                     break;
             }
             progressListHTML +=`
