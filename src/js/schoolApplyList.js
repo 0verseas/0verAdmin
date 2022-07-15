@@ -23,6 +23,7 @@
     const $conbineDeptIdInput1 = $('#conbine-dept-id-1');
     const $conbineDeptIdInput2 = $('#conbine-dept-id-2');
     
+    const $rejectBtn = $('#reject-btn'); // 退還按鈕
     const $completedBtn = $('#completed-btn'); // 完成按鈕
 
     // 編輯模板上傳檔案相關物件
@@ -41,6 +42,7 @@
     let currentApplyID = 0; // 當前請求的ID
 
     $refreshBtn.on('click', init);
+    $rejectBtn.on('click', _handleReject)
     $completedBtn.on('click', _handleCompleted);
     
     $('body').on('click', '.img-thumbnail', _handleShowFile);
@@ -200,31 +202,65 @@
 		});
     }
 
-    // 請求儲存事件
-    function _handleCompleted() {
-
-        openLoading();
-        School.updateApply(currentApplyID)
-        .then((res) => {
-            if(res.ok) {
-                return res.json();
-            } else {
-                throw res;
-            }
-        })
-        .then((json) => {
-            // console.log(json);
-            alert(json.messages[0]);
-            stopLoading();
-            location.reload();
-        })
-        .catch((err) => {
-            err.json && err.json().then((data) => {
-                console.error(data);
-                alert(`ERROR: \n${data.messages[0]}`);
+    // 退回請求事件
+    function _handleReject(){
+        if(confirm('確定要退回此請求？')){
+            openLoading();
+            School.rejectApply(currentApplyID)
+            .then((res) => {
+                if(res.ok) {
+                    return res.json();
+                } else {
+                    throw res;
+                }
+            })
+            .then((json) => {
+                // console.log(json);
+                $imgModal.modal('hide');
+                alert('退回成功');
+            })
+            .then(()=>{
+                location.reload();
+            })
+            .then(()=>{
                 stopLoading();
+            })
+            .catch((err) => {
+                err.json && err.json().then((data) => {
+                    console.error(data);
+                    alert(`ERROR: \n${data.messages[0]}`);
+                    stopLoading();
+                });
             });
-        });
+        }
+    }
+
+    // 完成請求事件
+    function _handleCompleted() {
+        if(confirm('確定要更新此請求為已完成？')){
+            openLoading();
+            School.updateApply(currentApplyID)
+            .then((res) => {
+                if(res.ok) {
+                    return res.json();
+                } else {
+                    throw res;
+                }
+            })
+            .then((json) => {
+                // console.log(json);
+                alert(json.messages[0]);
+                stopLoading();
+                location.reload();
+            })
+            .catch((err) => {
+                err.json && err.json().then((data) => {
+                    console.error(data);
+                    alert(`ERROR: \n${data.messages[0]}`);
+                    stopLoading();
+                });
+            });
+        }
     }
 
     // 檔案渲染事件

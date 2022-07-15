@@ -23,10 +23,21 @@ var School = (function () {
         });
     }
 
+    function rejectApply(id) {
+        return fetch(baseUrl + `/admins/school-apply-list/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+				'Content-Type': 'application/json'
+			}
+        });
+    }
+
     return {
         getSchooApplyList,
         getApplyInfo,
-        updateApply
+        updateApply,
+        rejectApply
     };
 
 })();
