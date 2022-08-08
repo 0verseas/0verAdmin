@@ -563,6 +563,9 @@ var studentInfo = (function () {
                 } else{
                     school_title = value.student_misc_data.department_data.school.title;
                     department_title = value.student_misc_data.department_data.title;
+                    if(value.student_misc_data.distribution_list_memo === '(特輔班)'){
+                        department_title += '(特輔班)';
+                    }
                 }
             }
             switch(value.student_misc_data.stage_of_admit){
