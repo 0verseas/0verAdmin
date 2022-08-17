@@ -598,7 +598,7 @@ var studentInfo = (function () {
                 <li>
                     ${admission_result}
                 </li>
-            `
+            `;
         }
         // school5 = Y 才顯示
         if(value.student_misc_data.school5 == 'Y'){
@@ -606,11 +606,11 @@ var studentInfo = (function () {
                 <li>
                     中五學制學生
                 </li>
-            `
+            `;
         }
         progressListHTML +=`
             </ul>
-        `
+        `;
         $('#pills-qualify').html(progressListHTML);
     }
     function _renderStudentPersonalInfo(json) {
@@ -882,7 +882,7 @@ var studentInfo = (function () {
                         <td>` + review_result_string + `</td>
                         <td>` + note + `</td>
                         </tr>
-                        `
+                        `;
         });
         $('#tbody-selection').html(selectionHTML);
 
@@ -903,8 +903,8 @@ var studentInfo = (function () {
                 var note ='';
                 if(value.deleted_at != null)
                     note = '註銷';
-                schoolTitle = (value.department_data!=null && value.department_data.school!=null)  ? value.department_data.school.title : '';
-                departmentTitle = (value.department_data!=null)  ? value.department_data.title : '';
+                let schoolTitle = (value.department_data!=null && value.department_data.school!=null)  ? value.department_data.school.title : '';
+                let departmentTitle = (value.department_data!=null)  ? value.department_data.title : '';
                 placementHTML += `
 							<tr>
 							<td>` + index + `</td>
@@ -912,7 +912,7 @@ var studentInfo = (function () {
 							<td>` + schoolTitle + ' ' + departmentTitle + `</td>
 							<td>` + note + `</td>
 							</tr>
-							`
+							`;
             });
         }
         $('#tbody-placement').html(placementHTML);
@@ -925,7 +925,7 @@ var studentInfo = (function () {
                 _countryList = json;
                 let stateHTML = '<option value="-1" data-continentIndex="-1">Continent</option>';
                 json.forEach((obj, index) => {
-                    stateHTML += `<option value="${index}" data-continentIndex="${index}">${obj.continent}</option>`
+                    stateHTML += `<option value="${index}" data-continentIndex="${index}">${obj.continent}</option>`;
                 });
                 $birthContinent.html(stateHTML);
                 $residenceContinent.html(stateHTML);
@@ -989,7 +989,7 @@ var studentInfo = (function () {
                 countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
             })
         } else {
-            countryHTML = '<option value="">Country</option>'
+            countryHTML = '<option value="">Country</option>';
         }
         $countrySelect.html(countryHTML);
         $countrySelect.change();
@@ -1014,7 +1014,7 @@ var studentInfo = (function () {
                 countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
             })
         } else {
-            countryHTML = '<option value="">Country</option>'
+            countryHTML = '<option value="">Country</option>';
         }
         $residentLocation.html(countryHTML);
     }
@@ -1033,7 +1033,7 @@ var studentInfo = (function () {
                 countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
             })
         } else {
-            countryHTML = '<option value="">Country</option>'
+            countryHTML = '<option value="">Country</option>';
         }
         $schoolCountry.html(countryHTML);
         $schoolCountry.change();
