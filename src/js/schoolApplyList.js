@@ -24,6 +24,7 @@
     const $conbineDeptIdInput2 = $('#conbine-dept-id-2');
     
     const $rejectBtn = $('#reject-btn'); // 退還按鈕
+    const $executeBtn = $('#execute-btn'); // 執行按鈕
     const $completedBtn = $('#completed-btn'); // 完成按鈕
 
     // 編輯模板上傳檔案相關物件
@@ -40,10 +41,12 @@
     let applyListArray = []; // 目前請求有哪些
     let $uploadedFiles = []; // 當前請求有哪些檔案
     let currentApplyID = 0; // 當前請求的ID
+    let username = ''; // 當前使用者帳號
 
     $refreshBtn.on('click', init);
     $rejectBtn.on('click', _handleReject)
     $completedBtn.on('click', _handleCompleted);
+    $executeBtn.on('click', _handleExecute);
     
     $('body').on('click', '.img-thumbnail', _handleShowFile);
     // 如果關閉已上傳檔案modal 依舊保持focus在文憑成績編輯modal上
@@ -125,6 +128,11 @@
     function _handleEditModalShow() {
         // show modal
         $applyModal.modal();
+        // 只有admin1可以執行請求
+        username = User.getUserInfo().username;
+        if (username !== 'admin1') {
+            $executeBtn.hide();
+        }
         // 取得 請求的id
         currentApplyID = $(this).data('id');
         // 呼叫渲染文憑成績資料事件
@@ -233,6 +241,42 @@
                 });
             });
         }
+    }
+
+    // 執行請求事件
+    function _handleExecute() {
+        if (username !== 'admin') {
+            alert('無操作權限！');
+            return;
+        } else {
+            School.executeApply(currentApplyID)
+            .then((res) => {
+                if(res.ok) {
+                    return res.json();
+                } else {
+                    throw res;
+                }
+            })
+            .then((json) => {
+                // console.log(json);
+                $imgModal.modal('hide');
+                alert('執行成功');
+            })
+            .then(()=>{
+                location.reload();
+            })
+            .then(()=>{
+                stopLoading();
+            })
+            .catch((err) => {
+                err.json && err.json().then((data) => {
+                    console.error(data);
+                    alert(`ERROR: \n${data.messages[0]}`);
+                    stopLoading();
+                });
+            });
+        }
+        
     }
 
     // 完成請求事件

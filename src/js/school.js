@@ -33,11 +33,18 @@ var School = (function () {
         });
     }
 
+    function executeApply(id) {
+        return fetch(baseUrl + `/admins/execute-school-apply?id=${id}`, {
+            credentials: 'include'
+        });
+    }
+
     return {
         getSchooApplyList,
         getApplyInfo,
         updateApply,
-        rejectApply
+        rejectApply,
+        executeApply
     };
 
 })();
