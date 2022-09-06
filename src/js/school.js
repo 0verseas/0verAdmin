@@ -35,7 +35,16 @@ var School = (function () {
 
     function executeApply(id) {
         return fetch(baseUrl + `/admins/execute-school-apply?id=${id}`, {
+            method: 'GET',
             credentials: 'include'
+        });
+    }
+
+    function updateModify(data) {
+        return fetch(baseUrl + `/admins/execute-school-apply`, {
+            method: 'POST',
+            credentials: 'include',
+            body: data
         });
     }
 

@@ -1,34 +1,13 @@
 (()=>{
     const $paginationContainer = $('#pagination-container'); // 分頁器區域
     const $applyList = $('#apply-list') // 請求列表
-    const $applyModal = $('#editApplyModal'); // 請求編輯模板
-    const $refreshBtn = $('#refresh-btn'); // 請求編輯模板
-
-    // 請求編輯模板物件
-    const $action = $('#action') // 請求之動作
-    const $system = $('#system') // 請求之系所學制
-    const $departmentType = $('#department-type') // 請求之系所類型
-    const $departmentGroup = $('#department-group') // 請求之系所類組
-    const $departmentTitle = $('#department-title') // 請求之核定系名
-    const $applyDetailedInput = $('.apply-detailed-input'); // 請求之詳細資訊輸入區域
-    const $deptIdForm = $('#deptIdForm');
-    const $changeDepartmentTitleForm = $('#changeDepartmentTitleForm');
-    const $changeGroupCodeForm = $('#changeGroupCodeForm');
-    const $ConbineDeptIdForm = $('#ConbineDeptIdForm');
-    const $deptIdInput = $('#dept-id');
-    const $oldDepeTitleInput = $('#old-dept-title');
-    const $newDepeTitleInput = $('#new-dept-title');
-    const $oldGroupCodeSelector = $('#old-group-code-selector');
-    const $newGroupCodeSelector = $('#new-group-code-selector');
-    const $conbineDeptIdInput1 = $('#conbine-dept-id-1');
-    const $conbineDeptIdInput2 = $('#conbine-dept-id-2');
     
     const $rejectBtn = $('#reject-btn'); // 退還按鈕
     const $executeBtn = $('#execute-btn'); // 執行按鈕
     const $completedBtn = $('#completed-btn'); // 完成按鈕
+    const $selectBtn = $('#select-btn'); // 選取按鈕
 
     // 編輯模板上傳檔案相關物件
-    const $uploadedFileArea = document.getElementById('uploadedFileArea');
     const $imgModal = $('#img-modal');
     const $imgModalBody= $('#img-modal-body');
 
@@ -39,14 +18,16 @@
     const group_array = ['','第一類組','第二類組','第三類組'];
 
     let applyListArray = []; // 目前請求有哪些
-    let $uploadedFiles = []; // 當前請求有哪些檔案
     let currentApplyID = 0; // 當前請求的ID
     let username = ''; // 當前使用者帳號
 
-    $refreshBtn.on('click', init);
     $rejectBtn.on('click', _handleReject)
     $completedBtn.on('click', _handleCompleted);
     $executeBtn.on('click', _handleExecute);
+
+    $selectBtn.on('click', _handleSelect); // 全選按鈕
+    $('#save-btn').on('click', _handleSave); // 暫存按鈕
+    $('#verified-btn').on('click', _handleVerified); // 鎖定按鈕
     
     $('body').on('click', '.img-thumbnail', _handleShowFile);
     // 如果關閉已上傳檔案modal 依舊保持focus在文憑成績編輯modal上
@@ -73,14 +54,18 @@
             // 進行文憑列表分頁初始化渲染工作
             $paginationContainer.pagination({
                 dataSource: applyListArray,
-                pageSize: 10,
+                pageSize: 50,
                 callback: function(applyListArray,pagination) {
                     _applyListTamplate(applyListArray, pagination.pageNumber);
                     const $editApplyInfoBtn = $('.btn-editApplyInfo'); // 新增編輯按鈕的觸發事件（開啟 Modal）
                     $editApplyInfoBtn.on('click', _handleEditModalShow);
                 }
             });
-
+            // 只有admin1可以執行請求
+            username = User.getUserInfo().username;
+            if (username !== 'admin1') {
+                $executeBtn.hide();
+            }
             stopLoading();
 		})
 		.catch((err) => {
@@ -100,121 +85,198 @@
         // console.log(datas);
         datas.forEach(function (data, index) {
             // console.log(data);
-            const schoolCode = data.school_code;
             const schoolTitle = (data.school.title) ?data.school.title:'';
             const action = action_array[data.action_id];
             const system = system_array[data.system_id];
             const type = type_array[data.dept_type];
             const group = group_array[data.group_code];
             const deptTitle = (data.dept_title) ?data.dept_title:'';
+            const stage = (data.executed_at)? 'item-executed':((data.verified_at)? 'item-verified':0);
             
-            let listHtml = `<tr class="btn-editApplyInfo" data-id="${data.id}">`;
-            listHtml += `<td>${index+1+((page-1)*10)}</td>`;
-            listHtml += `<td>${schoolCode}</td>`;
-            listHtml += `<td>${schoolTitle}</td>`;
-            listHtml += `<td>${action}</td>`;
-            listHtml += `<td>${system}</td>`;
-            listHtml += `<td>${type}</td>`;
-            listHtml += `<td>${group}</td>`;
-            listHtml += `<td>${deptTitle}</td>`;
-            listHtml += `<td><button class="btn btn-outline-info" id="btn-apply-edit"><i class="fa fa-search fa-fw" aria-hidden="true"></i> 點擊查看</button></td>`;
-            listHtml += `<td></td>`;
-            listHtml += `</tr>`
-            $applyList.append(listHtml);
-        });
-    }
+            let listHtml = `
+                <div class="show-list row" data-id="${data.id}">
+                    <h5 class="col-12" style="margin:10px; margin-bottom:-7px;">
+                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
+                        #${index+1+((page-1)*10)} &nbsp;&nbsp; ${schoolTitle}`;
+            if (stage == 'item-executed') {
+                listHtml += `&nbsp;&nbsp; (已執行)`;
+            } else if (stage == 'item-verified') {
+                listHtml += `&nbsp;&nbsp; (已鎖定)`;
+            }
+            listHtml += `
+                    </h5>
+                    <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"> 請求動作 </span></label>
+                        <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${action}" disabled>
+                    </div>
+                    <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"> 系所學制 </span></label>
+                        <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${system}" disabled>
+                    </div>
+                    <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"> 系所類型 </span></label>
+                        <input type="text" id="apply-info" class="form-control" style="width:130px;" maxlength ="191" value="${type}" disabled>
+                    </div>
+                    <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 系所類型 </span></label>
+                        <select class="form-control" id="type-selector">
+                            <option value="0">一般系所</option>
+                            <option value="1">重點產業系所</option>
+                            <option value="2">國際專修部</option>
+                        </select>
+                    </div>
+                    <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"> 系所類組 </span></label>
+                        <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group}" disabled>
+                    </div>
+                    <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"> 核定系名 </span></label>
+                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${deptTitle}" disabled>
+                    </div>
+                    <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 核定系名 </span></label>
+                        <input type="text" id="apply-info" class="form-control v_title" style="width:250px;" maxlength ="191" value="">
+                    </div>
+            `;
 
-    // 開啟編輯model
-    function _handleEditModalShow() {
-        // show modal
-        $applyModal.modal();
-        // 只有admin1可以執行請求
-        username = User.getUserInfo().username;
-        if (username !== 'admin1') {
-            $executeBtn.hide();
-        }
-        // 取得 請求的id
-        currentApplyID = $(this).data('id');
-        // 呼叫渲染文憑成績資料事件
-        _setApplyData(currentApplyID);
-    }
-
-    // 渲染請求資訊到編輯模板
-    function _setApplyData(id) {
-        openLoading();
-        School.getApplyInfo(id)
-        .then((res) => {
-			if(res.ok) {
-				return res.json();
-			} else {
-				throw res;
-			}
-		})
-        .then((json) => {
-            // console.log(json[1]);
-            const actionText = action_array[json[0].action_id];
-            const systemText = system_array[json[0].system_id];
-            const typeText = type_array[json[0].dept_type];
-            const groupText = group_array[json[0].group_code];
-            const departmentTitleText = (json[0].dept_title) ?json[0].dept_title:'';
-
-            $action.val(actionText);
-            $system.val(systemText);
-            $departmentType.val(typeText);
-            $departmentGroup.val(groupText);
-            $departmentTitle.val(departmentTitleText);
-            $deptIdInput.val(json[0].dept_id);
-            $oldDepeTitleInput.val(json[0].old_dept_title);
-            $newDepeTitleInput.val(json[0].new_dept_title);
-            $oldGroupCodeSelector.val(json[0].old_group_code);
-            $newGroupCodeSelector.val(json[0].new_group_code);
-            $conbineDeptIdInput1.val(json[0].conbine_dept_id_1);
-            $conbineDeptIdInput2.val(json[0].conbine_dept_id_2);
-
-            $deptIdForm.hide();
-            $changeDepartmentTitleForm.hide();
-            $changeGroupCodeForm.hide();
-            $ConbineDeptIdForm.hide();
-
-            switch(json[0].action_id){
+            switch (data.action_id) {
                 case 1:
-                    $applyDetailedInput.hide();
+                    listHtml += `
+                        <div style="margin-right: 5px;">
+                            <label for="apply-info"><span class="info-label"> 原學系代碼(選填) </span></label>
+                            <input type="text" id="apply-info" class="form-control org_id" maxlength ="5" value="">
+                        </div>
+                    `;
                     break;
                 case 2:
-                    $applyDetailedInput.show();
-                    $deptIdForm.show();
-                    $changeDepartmentTitleForm.show();
+                    listHtml += `
+                        <div style="margin-right: 5px;">
+                            <label for="apply-info"><span class="info-label"> 學系代碼 </span></label>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                        </div>
+                        <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"> 新系所名稱 </span></label>
+                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
+                        </div>
+                        <div style="margin-right: 5px;">
+                            <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 新系所名稱 </span></label>
+                            <input type="text" id="apply-info" class="form-control new_title" style="width:250px;" maxlength ="191" value="">
+                        </div>
+                    `;
                     break;
                 case 3:
-                    $applyDetailedInput.show();
-                    $deptIdForm.show();
-                    $changeGroupCodeForm.show();
+                    listHtml += `
+                        <div style="margin-right: 5px;">
+                            <label for="apply-info"><span class="info-label"> 學系代碼 </span></label>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                        </div>
+                        <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"> 新系所類組 </span></label>
+                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_group_code}" disabled>
+                        </div>
+                        <div style="margin-right: 5px;">
+                            <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 新系所類組 </span></label>
+                            <input type="text" id="apply-info" class="form-control new_group" style="width:250px;" maxlength ="191" value="">
+                        </div>
+                    `;
                     break;
                 case 4:
-                    $applyDetailedInput.show();
-                    $ConbineDeptIdForm.show();
+                    listHtml += `
+                        <div style="margin-right: 5px;">
+                        <label for="apply-info"><span class="info-label"> 欲合併系所代碼1 </span></label>
+                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_1}" disabled>
+                        </div>
+                        <div style="margin-right: 5px;">
+                            <label for="apply-info"><span class="info-label"> 欲合併系所代碼2 </span></label>
+                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_2}" disabled>
+                        </div>
+                    `;
                     break;
             }
-            $uploadedFiles = json[1];            
-		}).then(()=>{
-            _handleRenderFile();
-            stopLoading();
-        })
-		.catch((err) => {
-            stopLoading();
-			err.json && err.json().then((data) => {
-				console.error(data);
-				alert(`ERROR: \n${data.messages[0]}`);
-                location.reload();
-			});
-		});
+
+            const file = data.file[0];
+            if (file) {
+                const fileType = _getFileType(file.split('.')[1]);
+                // console.log(file);
+                // console.log(fileType);
+                if(fileType === 'img'){
+                    listHtml += `
+                        <a class="img-thumbnail"
+                        style="margin-right: 5px;"
+                        src="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
+                        data-toggle="modal"
+                        data-filename="${file}"
+                        data-target=".img-modal"
+                        data-filetype="img"
+                        data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit">
+                            核定公文 <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                        </a>
+                    `
+                } else {
+                    listHtml += `
+                        <div
+                            class="img-thumbnail non-img-file-thumbnail"
+                            data-toggle="modal"
+                            data-target=".img-modal"
+                            data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
+                            data-filename="${file}"
+                            data-filetype="${fileType}"
+                            data-icon="fa-file-${fileType}-o"
+                        >
+                            核定公文 <i class="fa fa-file-${fileType}-o" data-filename="${file}" data-icon="fa-file-${fileType}-o" aria-hidden="true"></i>
+                        </div>
+                    `;
+                }
+            }
+            listHtml += `
+                    <div style="flex-grow: 1;">
+                        <label for="apply-info"><span class="info-label"> 處理說明(上限2000字) </span></label>
+                        <textarea class="form-control" id="apply-info" rows="3" style="width:100%; resize: both;" placeholder="請輸入處理說明">${(data.note)? data.note:''}</textarea>
+                    </div>
+                </div><hr>
+            `;
+            $applyList.append(listHtml);
+            
+            // 修正後的欄位預設填入原本的值
+            if (data.verified_dept_type) {
+                $(`div[data-id='${data.id}'] select`).children(`[value=${data.verified_dept_type}]`).prop('selected', true);
+            } else {
+                $(`div[data-id='${data.id}'] select`).children(`[value=${data.dept_type}]`).prop('selected', true);
+            }
+        });
     }
 
     // 退回請求事件
     function _handleReject(){
-        if(confirm('確定要退回此請求？')){
+        if(confirm('確定要退回請求？')){
             openLoading();
-            School.rejectApply(currentApplyID)
+            idSelected = [];
+            conti = true; // 確認繼續退回
+            $('input[id=select-chk]').each(function (index){
+                if ($(this).prop('checked')) {
+                    if($(this).val() == 'item-executed') {
+                        alert('已執行的請求無法被退回，請聯繫資服組人員或取消勾選');
+                        conti = false;
+                        return;
+                    } else if ($(this).val() == 'item-verified') {
+                        if (confirm('欲退回的請求含有已鎖定的項目，是否確認退回？')) {
+                            idSelected.push($(this).data('id'));
+                        } else {
+                            conti = false;
+                            return;
+                        }
+                    } else {
+                        idSelected.push($(this).data('id'));
+                    }
+                }
+            });
+            if (!conti){
+                alert('已取消退回');
+                stopLoading();
+                return;
+            }
+
+            School.rejectApply(idSelected.toString())
             .then((res) => {
                 if(res.ok) {
                     return res.json();
@@ -223,9 +285,8 @@
                 }
             })
             .then((json) => {
-                // console.log(json);
                 $imgModal.modal('hide');
-                alert('退回成功');
+                alert(json.messages);
             })
             .then(()=>{
                 location.reload();
@@ -245,27 +306,23 @@
 
     // 執行請求事件
     function _handleExecute() {
-        if (username !== 'admin') {
+        if (username !== 'admin1') {
             alert('無操作權限！');
             return;
         } else {
+            if(!confirm('確定要執行此請求？')) return;
+            openLoading();
             School.executeApply(currentApplyID)
             .then((res) => {
                 if(res.ok) {
-                    return res.json();
+                    $imgModal.modal('hide');
+                    alert('執行成功');
                 } else {
                     throw res;
                 }
             })
-            .then((json) => {
-                // console.log(json);
-                $imgModal.modal('hide');
-                alert('執行成功');
-            })
             .then(()=>{
                 location.reload();
-            })
-            .then(()=>{
                 stopLoading();
             })
             .catch((err) => {
@@ -307,42 +364,6 @@
         }
     }
 
-    // 檔案渲染事件
-    function _handleRenderFile() {
-        let uploadedAreaHtml = '';
-        $uploadedFiles.forEach((file) => {
-            const fileType = _getFileType(file.split('.')[1]);
-            if(fileType === 'img'){
-                uploadedAreaHtml += `
-                    <img
-                        class="img-thumbnail"
-                        src="${env.baseUrl}/admins/school-apply-list/${currentApplyID}-${file}/edit"
-                        data-toggle="modal"
-                        data-filename="${file}"
-						data-target=".img-modal"
-                        data-filetype="img"
-                        data-filelink="${env.baseUrl}/admins/school-apply-list/${currentApplyID}-${file}/edit"
-                    />
-                `
-            } else {
-                uploadedAreaHtml += `
-					<div
-						class="img-thumbnail non-img-file-thumbnail"
-						data-toggle="modal"
-						data-target=".img-modal"
-						data-filelink="${env.baseUrl}/admins/school-apply-list/${currentApplyID}-${file}/edit"
-						data-filename="${file}"
-                        data-filetype="${fileType}"
-						data-icon="fa-file-${fileType}-o"
-					>
-						<i class="fa fa-file-${fileType}-o" data-filename="${file}" data-icon="fa-file-${fileType}-o" aria-hidden="true"></i>
-					</div>
-				`;
-            }
-        })
-        $uploadedFileArea.innerHTML = uploadedAreaHtml;
-    }
-
     // 檔案放大顯示事件
     function _handleShowFile() {
         // 取得點選的檔案名稱及類別
@@ -355,7 +376,7 @@
 		if (fileType === 'img') {
 			$imgModalBody.html(`
 				<img
-					src="${this.src}"
+					src="${this.dataset.filelink}"
 					class="img-fluid rounded img-ori"
 				>
 			`);
@@ -389,5 +410,49 @@
 				return 'img';
 		}
 	}
+
+    function _handleSelect() {
+        // console.log($('input[name=target]:checked').val());
+        if ($selectBtn.html() == '選取') {
+            $selectBtn.html('取消選取');
+            switch ($('input[name=target]:checked').val()) {
+                case 'all':
+                    // console.log($('input[id=select-chk]'));
+                    $('input[id=select-chk]').prop('checked', true);
+                    break;
+                case 'verified':
+                    $('input[value=item-verified]').prop('checked', true);
+                    break;
+                case 'executed':
+                    $('input[value=item-executed]').prop('checked', true);
+                    break;
+            }
+        } else {
+            $selectBtn.html('選取');
+            $('input[id=select-chk]').prop('checked', false);
+        }
+    }
+
+    function _handleSave() {
+        openLoading();
+
+        // 取要送往後端的資料
+        data = [];
+        $('input[id=select-chk]').each(function (index){
+            if ($(this).prop('checked')) {
+                if($(this).val() != 'item-executed' && $(this).val() != 'item-verified') {
+                    console.log($(`div[data-id=${$(this).data('id')}]`).children(`[class=v_title]`));
+                    // switch ($(``)) {}
+                    // data.push([]);
+                }
+            }
+        });
+        stopLoading();
+
+    }
+
+    function _handleVerified() {
+        
+    }
 
 })();
