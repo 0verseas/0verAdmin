@@ -32,6 +32,13 @@
     margin-bottom: 50px;
 }
 
+#sidebar {
+    position: sticky;
+    overflow-y: scroll;
+    top: 40px;
+    bottom: 20px;
+}
+
 @media screen and (max-width: 767px) {
     #sidebarWrap {
         background: #fff;

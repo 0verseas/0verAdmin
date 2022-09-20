@@ -40,11 +40,21 @@ var School = (function () {
         });
     }
 
-    function updateModify(data) {
-        return fetch(baseUrl + `/admins/execute-school-apply`, {
+    function updateModify(data, verified) {
+        return fetch(baseUrl + `/admins/execute-school-apply?verified=${verified}`, {
             method: 'POST',
             credentials: 'include',
-            body: data
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+    }
+
+    function checkApply(id) {
+        return fetch(baseUrl + `/admins/check-school-apply?id=${id}`, {
+            method: 'GET',
+            credentials: 'include'
         });
     }
 
@@ -53,7 +63,8 @@ var School = (function () {
         getApplyInfo,
         updateApply,
         rejectApply,
-        executeApply
+        executeApply,
+        updateModify
     };
 
 })();

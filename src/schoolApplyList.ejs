@@ -1,23 +1,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.0.8/pagination.css">
+<div id="fixed-top">
+<h2 class="title">學校請求清單</h2>
 
-<h2 class="text-center title">學校請求清單</h2>
-<div class="row justify-content-end col-12">
-    <button class="btn btn-outline-danger" id="reject-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
-    <button class="btn btn-outline-info" id="execute-btn" style="margin-left: 5px;"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button>
-    <button class="btn btn-outline-success" id="completed-btn" style="margin-left: 5px;"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
-</div>
-<div class="row justify-content-between col-12" style="padding-top: 7px;">
+<div class="row justify-content-between col-12" style="padding-top: 12px;">
     <div>
-        <button class="btn btn-outline-secondary" style="height: 32px; padding: 3px 5px;" id="select-btn">選取</button>&nbsp;
+        <button class="btn btn-outline-secondary" id="select-btn">選取</button>&nbsp;
         <input type="radio" name="target" value="all" checked><label>全部</label>&nbsp;
         <input type="radio" name="target" value="verified"><label>已鎖定</label>&nbsp;
         <input type="radio" name="target" value="executed"><label>已執行</label>&nbsp;&nbsp;
-        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+        <a title="操作說明" data-toggle="modal" data-target=".info-modal" style="cursor: pointer;">
+            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+        </a>
     </div>
     <div>
-        <button class="btn btn-outline-success" style="height: 32px; padding: 3px 5px;" id="save-btn">暫存修正</button>
-        <button class="btn btn-outline-danger" style="height: 32px; padding: 3px 5px;" id="verified-btn">確認鎖定</button>
+        <button class="btn btn-outline-secondary" id="save-btn">儲存修正</button>
+        <button class="btn btn-outline-secondary" id="verified-btn">確認鎖定</button>
+        <button class="btn btn-outline-danger" id="reject-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
+        <button class="btn btn-outline-info" id="execute-btn"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button>
+        <button class="btn btn-outline-success" id="completed-btn"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
     </div>
+</div>
 </div>
 <div class="col-12" id="form-addNewDepartmentApply">
     <hr>
@@ -31,11 +33,6 @@
         </div>
     </div>
 </div>
-<div class="row justify-content-end col-12">
-    <button class="btn btn-outline-danger" id="reject-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
-    <button class="btn btn-outline-info" id="execute-btn" style="margin-left: 5px;"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button>
-    <button class="btn btn-outline-success" id="completed-btn" style="margin-left: 5px;"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
-</div>
 
 <!-- 顯示公文modal -->
 <div class="modal fade img-modal" tabindex="-1" role="dialog" aria-labelledby="imgModal" aria-hidden="true" id="img-modal">
@@ -43,6 +40,21 @@
 		<div class="modal-content">
 			<div class="modal-body text-center" id="img-modal-body">
 				<img src="" class="img-fluid rounded img-ori">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-dark" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> 離開</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 顯示說明modal -->
+<div class="modal fade info-modal" tabindex="-1" role="dialog" aria-labelledby="infoModal" aria-hidden="true" id="info-modal">
+	<div class="modal-dialog" style="min-width: 80%;">
+		<div class="modal-content">
+			<div class="modal-body text-center">
+                <img src="./img/schoolApply.png" style="width: 100%; max-width:900px; padding-bottom:15px;">
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-outline-dark" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> 離開</button>
