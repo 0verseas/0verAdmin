@@ -76,23 +76,27 @@ $(document).ready(function () {
 
         function _checkForm() {
             var $inputs = page.find('.required');
-            var valid = true;
             for (let input of $inputs) {
                 if (!$(input).val()) {
                     $(input).focus();
-                    valid = false;
-                    break;
+                    return false;
                 }
             }
-            // 檢查密碼複雜度
-            if (!checkPasswordComplex(password.val())){
-                valid = false;
+
+            // 如果有要更新密碼的話
+            if(password.val()){
+                // 檢查密碼複雜度
+                if (!checkPasswordComplex(password.val())){
+                    return false;
+                }
+
+                // 檢查兩次輸入的密碼如果不同
+                if (passwordSecond.val() !== password.val()) {
+                    return false;
+                }
             }
-            // 檢查兩次輸入的密碼如果不同
-            if (passwordSecond.val() !== password.val()) {
-                valid = false;
-            }
-            return valid;
+            
+            return true;
         }
 
         // 儲存使用者資料
