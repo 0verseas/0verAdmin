@@ -37,6 +37,7 @@
         openLoading();
         School.getSchooApplyList()
         .then((res) => {
+            // console.log(res);
 			if(res.ok) {
 				return res.json();
 			} else {
@@ -44,7 +45,6 @@
 			}
 		})
         .then((json) => {
-            // console.log(json);
             applyListArray = json;
             // 只有admin1可以執行請求
             username = User.getUserInfo().username;
@@ -92,7 +92,7 @@
             
             let listHtml = `
                 <div class="show-list row">
-                    <h5 class="col-12" style="margin:10px; margin-bottom:-7px;">
+                    <h5 class="col-12" style="margin:10px; margin-bottom:-7px;" data-id=${data.id}>
                         <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
                         #${index+1+((page-1)*10)} &nbsp;&nbsp; ${schoolTitle}`;
             if (stage == 'item-executed') {
@@ -135,6 +135,7 @@
                         <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 核定系名 </span></label>
                         <input type="text" id="apply-info" class="form-control v_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}">
                     </div>
+                    <div style="display:flex;" class="show-list">
             `;
 
             switch (data.action_id) {
@@ -237,11 +238,12 @@
             listHtml += `
                             </div>
                         </div>
-                        <div style="flex-grow: 1;">
-                            <label for="apply-info"><span class="info-label"> 處理說明(上限2000字) </span></label>
-                            <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; resize:both; min-width:150px;" placeholder="請輸入處理說明">${(data.note)? data.note:''}</textarea>
-                        </div>
-                    </div><hr>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <label for="apply-info"><span class="info-label"> 處理說明(上限2000字) </span></label>
+                        <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明">${(data.note)? data.note:''}</textarea>
+                    </div>
+                </div><hr>
             `;
             $applyList.append(listHtml);
 
@@ -258,7 +260,7 @@
     function _handleReject(){
         if(confirm('確定要退回請求？')){
             openLoading();
-            idSelected = [];
+            let idSelected = [];
             conti = true; // 確認繼續退回
             $('input[id=select-chk]').each(function (index){
                 if ($(this).prop('checked')) {
@@ -267,11 +269,17 @@
                         conti = false;
                         return;
                     } else if ($(this).val() == 'item-verified') {
-                        if (confirm('欲退回的請求含有已鎖定的項目，是否確認退回？')) {
-                            idSelected.push($(this).data('id'));
-                        } else {
-                            conti = false;
-                            return;
+                        let label = $(`h5[data-id='${$(this).data('id')}']`).html().split(' ');
+                        for (let i=0; i<label.length; i++) {
+                            if(label[i].includes('#')) {
+                                if (confirm(`項目 ${label[i]} 已鎖定，確認要將此項目退回嗎？`)) {
+                                    idSelected.push($(this).data('id'));
+                                } else {
+                                    conti = false;
+                                    return;
+                                }
+                                break;
+                            }
                         }
                     } else {
                         idSelected.push($(this).data('id'));
@@ -280,6 +288,11 @@
             });
             if (!conti){
                 alert('已取消退回');
+                stopLoading();
+                return;
+            }
+            if (idSelected.length == 0){
+                alert('請選取至少一項請求！');
                 stopLoading();
                 return;
             }
@@ -313,14 +326,14 @@
     }
 
     // 執行請求事件
-    function _handleExecute() {
+    async function _handleExecute() {
         // console.log(username);
         if (username !== 'admin1') {
             alert('無操作權限！');
             return;
         } else {
             if(!confirm('確定要執行此請求？')) return;
-            idSelected = [];
+            let idSelected = [];
             conti = true;
             $('input[id=select-chk]').each(function (index){
                 if ($(this).prop('checked')) {
@@ -334,8 +347,6 @@
             });
             openLoading();
 
-            // 檢查是否合法
-
             if (!conti){
                 alert('僅可執行已鎖定、且未執行的請求！');
                 stopLoading();
@@ -346,36 +357,91 @@
                 stopLoading();
                 return;
             }
-
-            // 執行請求
-            School.executeApply(idSelected.toString())
-            .then((res) => {
-                if(res.ok) {
+            try {
+                // 檢查例外
+                let res = await School.checkApply(idSelected.toString());
+                if(res) {
                     $imgModal.modal('hide');
-                    alert('執行成功');
+                    let errmsg = '';
+                    res.forEach(el => {
+                        let data = el.split(',');
+                        let label = $(`h5[data-id='${data[0]}']`).html().split(' ');
+                        if(errmsg.length > 0) errmsg += '，';
+                        for (let i=0; i<label.length; i++) {
+                            if(label[i].includes('#')) {
+                                errmsg += `${label[i]} ${data[1]}`;
+                                break;
+                            }
+                        }
+                    });
+                    if(errmsg.length > 0) {
+                        if(!confirm(`發現例外情況：${errmsg}。是否要繼續執行？`)) {
+                            stopLoading();
+                            return;
+                        }
+                    }
+                    // 開始執行
+                    res = await School.executeApply(idSelected.toString());
+                    if(res.ok) {
+                        $imgModal.modal('hide');
+                        await alert('執行成功');
+                        location.reload();
+                        stopLoading();
+                    } else {
+                        throw res;
+                    }
                 } else {
                     throw res;
                 }
-            })
-            .then(()=>{
-                location.reload();
-                stopLoading();
-            })
-            .catch((err) => {
+            } catch (err) {
+                console.log(err);
                 err.json && err.json().then((data) => {
                     console.error(data);
                     alert(`ERROR: \n${data.messages[0]}`);
                     stopLoading();
                 });
-            });
+            }
         }
     }
 
     // 完成請求事件
     function _handleCompleted() {
-        if(confirm('確定要更新此請求為已完成？')){
+        if(confirm('確定要更新請求為已完成？')){
             openLoading();
-            School.updateApply(currentApplyID)
+            let idSelected = [];
+            conti = true; // 繼續執行
+            $('input[id=select-chk]').each(function (index){
+                if ($(this).prop('checked')) {
+                    if($(this).val() != 'item-executed') {
+                        let label = $(`h5[data-id='${$(this).data('id')}']`).html().split(' ');
+                        console.log(label);
+                        for (let i=0; i<label.length; i++) {
+                            if(label[i].includes('#')) {
+                                if (confirm(`項目 ${label[i]} 未完成，是否確認將此項目標示為完成？`)) {
+                                    idSelected.push($(this).data('id'));
+                                } else {
+                                    conti = false;
+                                    return;
+                                }
+                                break;
+                            }
+                        }
+                    } else {
+                        idSelected.push($(this).data('id'));
+                    }
+                }
+            });
+            if (!conti){
+                alert('已取消動作');
+                stopLoading();
+                return;
+            }
+            if (idSelected.length == 0){
+                alert('請選取至少一項請求！');
+                stopLoading();
+                return;
+            }
+            School.updateApply(idSelected.toString())
             .then((res) => {
                 if(res.ok) {
                     return res.json();
@@ -446,6 +512,7 @@
 		}
 	}
 
+    // 批次選取
     function _handleSelect() {
         // console.log($('input[name=target]:checked').val());
         if ($selectBtn.html() == '選取') {
@@ -468,6 +535,7 @@
         }
     }
 
+    // 儲存修正
     async function _handleSave() {
         openLoading();
         // 取要送往後端的資料
@@ -502,6 +570,7 @@
         }
     }
 
+    // 確認鎖定
     async function _handleVerified() {
         openLoading();
         // 取要送往後端的資料
@@ -535,6 +604,7 @@
         });
     }
 
+    // 儲存前檢查
     function _validateForm() {
         // 取要送往後端的資料
         let data = [];

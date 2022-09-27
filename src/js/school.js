@@ -9,13 +9,6 @@ var School = (function () {
         });
     }
 
-    function getApplyInfo(id) {
-        return fetch(baseUrl + `/admins/school-apply-list/${id}`, {
-            method: 'GET',
-            credentials: 'include'
-        });
-    }
-
     function updateApply(id) {
         return fetch(baseUrl + `/admins/school-apply-list/${id}`, {
             method: 'PUT',
@@ -55,16 +48,24 @@ var School = (function () {
         return fetch(baseUrl + `/admins/check-school-apply?id=${id}`, {
             method: 'GET',
             credentials: 'include'
-        });
+        }).then((res) => {
+            console.log(res);
+            if (res.ok) {
+                return res.json();
+            } else {
+                return false;
+            }
+        })
+        
     }
 
     return {
         getSchooApplyList,
-        getApplyInfo,
         updateApply,
         rejectApply,
         executeApply,
-        updateModify
+        updateModify,
+        checkApply
     };
 
 })();
