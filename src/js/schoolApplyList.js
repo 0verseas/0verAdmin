@@ -33,46 +33,48 @@
 
     init();
 
-    function init() {
-        openLoading();
-        School.getSchooApplyList()
-        .then((res) => {
-            // console.log(res);
-			if(res.ok) {
-				return res.json();
-			} else {
-				throw res;
-			}
-		})
-        .then((json) => {
-            applyListArray = json;
-            // 只有admin1可以執行請求
-            username = User.getUserInfo().username;
-            // console.log(username);
-            if (username !== 'admin1') {
-                $executeBtn.hide();
-            }
-
-            // 進行文憑列表分頁初始化渲染工作
-            $paginationContainer.pagination({
-                dataSource: applyListArray,
-                pageSize: 50,
-                callback: function(applyListArray,pagination) {
-                    _applyListTamplate(applyListArray, pagination.pageNumber);
-                    const $editApplyInfoBtn = $('.btn-editApplyInfo'); // 新增編輯按鈕的觸發事件（開啟 Modal）
-                    $editApplyInfoBtn.on('click', _handleEditModalShow);
+    async function init() {
+        let res = await User.isLogin();
+        if (res == true) {
+            openLoading();
+            School.getSchooApplyList()
+            .then((res) => {
+                // console.log(res);
+                if(res.ok) {
+                    return res.json();
+                } else {
+                    throw res;
                 }
+            })
+            .then((json) => {
+                applyListArray = json;
+                // 只有admin1可以執行請求
+                username = User.getUserInfo().username;
+                // console.log(username);
+                if (username !== 'admin1') {
+                    $executeBtn.hide();
+                }
+    
+                // 進行文憑列表分頁初始化渲染工作
+                $paginationContainer.pagination({
+                    dataSource: applyListArray,
+                    pageSize: 50,
+                    callback: function(applyListArray,pagination) {
+                        _applyListTamplate(applyListArray, pagination.pageNumber);
+                    }
+                });
+                stopLoading();
+            })
+            .catch((err) => {
+                stopLoading();
+                console.log(err);
+                err.json && err.json().then((data) => {
+                    console.error(data);
+                    swal({title: `錯誤`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                    location.reload();
+                });
             });
-            stopLoading();
-		})
-		.catch((err) => {
-            stopLoading();
-			err.json && err.json().then((data) => {
-				console.error(data);
-				alert(`ERROR: \n${data.messages[0]}`);
-                location.reload();
-			});
-		});
+        }
     }
 
     // 請求列表轉換並渲染
@@ -258,45 +260,57 @@
 
     // 退回請求事件
     function _handleReject(){
-        if(confirm('確定要退回請求？')){
+        swal({
+            title: `確認要退回請求嗎？`,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確認',
+            cancelButtonText: '取消',
+            reverseButtons: true
+        })
+        .then(async (res) => {
             openLoading();
             let idSelected = [];
-            conti = true; // 確認繼續退回
-            $('input[id=select-chk]').each(function (index){
-                if ($(this).prop('checked')) {
-                    if($(this).val() == 'item-executed') {
-                        alert('已執行的請求無法被退回，請聯繫資服組人員或取消勾選');
-                        conti = false;
+            for(let i=0; i<$('input[id=select-chk]').length; i++){
+
+                if ($('input[id=select-chk]')[i].checked) {
+                    if($('input[id=select-chk]')[i].value == 'item-executed') {
+                        await swal({title: `錯誤`, text: '已執行的請求無法被退回，請聯繫資服組人員或取消勾選', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                        location.reload();
+                        stopLoading();
                         return;
-                    } else if ($(this).val() == 'item-verified') {
-                        let label = $(`h5[data-id='${$(this).data('id')}']`).html().split(' ');
-                        for (let i=0; i<label.length; i++) {
-                            if(label[i].includes('#')) {
-                                if (confirm(`項目 ${label[i]} 已鎖定，確認要將此項目退回嗎？`)) {
-                                    idSelected.push($(this).data('id'));
-                                } else {
-                                    conti = false;
-                                    return;
-                                }
+                    } else if ($('input[id=select-chk]')[i].value == 'item-verified') {
+                        let label = $(`h5[data-id='${$('input[id=select-chk]')[i].getAttribute('data-id')}']`).html().split(' ');
+                        for (let j=0; j<label.length; j++) {
+                            if(label[j].includes('#')) {
+                                await swal({
+                                    title: `項目 ${label[j]} 已鎖定，確認要將此項目退回嗎？`,
+                                    type: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: '確認',
+                                    cancelButtonText: '取消',
+                                    reverseButtons: true
+                                }).then(() => {
+                                    idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
+                                });
                                 break;
                             }
                         }
                     } else {
-                        idSelected.push($(this).data('id'));
+                        idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
                     }
                 }
-            });
-            if (!conti){
-                alert('已取消退回');
-                stopLoading();
-                return;
             }
             if (idSelected.length == 0){
-                alert('請選取至少一項請求！');
-                stopLoading();
-                return;
+                swal({title: '請選取至少一項請求！', type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                    location.reload();
+                    stopLoading();
+                    return;
+                });
             }
 
+            console.log('conti');
+            
             School.rejectApply(idSelected.toString())
             .then((res) => {
                 if(res.ok) {
@@ -307,59 +321,76 @@
             })
             .then((json) => {
                 $imgModal.modal('hide');
-                alert(json.messages);
-            })
-            .then(()=>{
-                location.reload();
-            })
-            .then(()=>{
-                stopLoading();
+                console.log(json.messages);
+                swal({title: json.messages[0], type:"success", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                    location.reload();
+                    stopLoading();
+                    return;
+                });
             })
             .catch((err) => {
                 err.json && err.json().then((data) => {
                     console.error(data);
-                    alert(`ERROR: \n${data.messages[0]}`);
-                    stopLoading();
+                    swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                        location.reload();
+                        stopLoading();
+                        return;
+                    });
                 });
             });
-        }
+        })
+        .catch(async (err) => {
+            if (err == 'cancel') {
+                await swal({title: '已取消退回', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+            } else {
+                await swal({title: '發生錯誤', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+            }
+            location.reload();
+            stopLoading();
+            return;
+        });
     }
 
     // 執行請求事件
     async function _handleExecute() {
         // console.log(username);
         if (username !== 'admin1') {
-            alert('無操作權限！');
+            await swal({title: `無操作權限！`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+            location.reload();
             return;
         } else {
-            if(!confirm('確定要執行此請求？')) return;
-            let idSelected = [];
-            conti = true;
-            $('input[id=select-chk]').each(function (index){
-                if ($(this).prop('checked')) {
-                    if($(this).val() == 'item-verified') {
-                        idSelected.push($(this).data('id'));
-                    } else {
-                        conti = false;
-                        return;
+            swal({
+                title: `確認要執行請求嗎？`,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '確認',
+                cancelButtonText: '取消',
+                reverseButtons: true
+            }).then(async () => {
+                openLoading();
+                let idSelected = [];
+                for(let i=0; i<$('input[id=select-chk]').length; i++){
+                    if ($('input[id=select-chk]')[i].checked) {
+                        if($('input[id=select-chk]')[i].value == 'item-verified') {
+                            idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
+                        } else {
+                            await swal({title: `錯誤`, text: '僅可執行已鎖定且未執行的請求！', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                            location.reload();
+                            stopLoading();
+                            return;
+                        }
                     }
                 }
-            });
-            openLoading();
-
-            if (!conti){
-                alert('僅可執行已鎖定、且未執行的請求！');
-                stopLoading();
-                return;
-            }
-            if (idSelected.length == 0){
-                alert('請選取至少一項請求！');
-                stopLoading();
-                return;
-            }
-            try {
+                if (idSelected.length == 0){
+                    swal({title: '請選取至少一項請求！', type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                        location.reload();
+                        stopLoading();
+                        return;
+                    });
+                }
                 // 檢查例外
                 let res = await School.checkApply(idSelected.toString());
+                console.log(res);
                 if(res) {
                     $imgModal.modal('hide');
                     let errmsg = '';
@@ -375,72 +406,88 @@
                         }
                     });
                     if(errmsg.length > 0) {
-                        if(!confirm(`發現例外情況：${errmsg}。是否要繼續執行？`)) {
+                        await swal({
+                            title: `發現例外情況：${errmsg}。是否要繼續執行？`,
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: '繼續',
+                            cancelButtonText: '取消',
+                            reverseButtons: true
+                        }).then(async() => {
+                            // 開始執行
+                            res = await School.executeApply(idSelected.toString());
+                            if(res.ok) {
+                                $imgModal.modal('hide');
+                                await swal({title: '執行成功', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+                                location.reload();
+                                stopLoading();
+                            } else {
+                                throw res;
+                            }
+                        }).catch(async (err) => {
+                            await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+                            location.reload();
                             stopLoading();
                             return;
-                        }
-                    }
-                    // 開始執行
-                    res = await School.executeApply(idSelected.toString());
-                    if(res.ok) {
-                        $imgModal.modal('hide');
-                        await alert('執行成功');
-                        location.reload();
-                        stopLoading();
-                    } else {
-                        throw res;
+                        });
                     }
                 } else {
                     throw res;
                 }
-            } catch (err) {
-                console.log(err);
-                err.json && err.json().then((data) => {
-                    console.error(data);
-                    alert(`ERROR: \n${data.messages[0]}`);
-                    stopLoading();
-                });
-            }
+            }).catch(async (err) => {
+                await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+                location.reload();
+                stopLoading();
+                return;
+            });
         }
     }
 
     // 完成請求事件
     function _handleCompleted() {
-        if(confirm('確定要更新請求為已完成？')){
+        swal({
+            title: `確定要更新請求為已完成？`,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確認',
+            cancelButtonText: '取消',
+            reverseButtons: true
+        }).then(async () => {
             openLoading();
             let idSelected = [];
-            conti = true; // 繼續執行
-            $('input[id=select-chk]').each(function (index){
-                if ($(this).prop('checked')) {
-                    if($(this).val() != 'item-executed') {
-                        let label = $(`h5[data-id='${$(this).data('id')}']`).html().split(' ');
-                        console.log(label);
-                        for (let i=0; i<label.length; i++) {
-                            if(label[i].includes('#')) {
-                                if (confirm(`項目 ${label[i]} 未完成，是否確認將此項目標示為完成？`)) {
-                                    idSelected.push($(this).data('id'));
-                                } else {
-                                    conti = false;
-                                    return;
-                                }
-                                break;
+            for(let i=0; i<$('input[id=select-chk]').length; i++){
+                if ($('input[id=select-chk]')[i].checked) {
+                    if($('input[id=select-chk]')[i].value != 'item-executed') {
+                        let label = $(`h5[data-id='${$('input[id=select-chk]')[i].getAttribute('data-id')}']`).html().split(' ');
+                        for (let j=0; j<label.length; j++) {
+                            if(label[j].includes('#')) {
+                                await swal({
+                                    title: `項目 ${label[j]} 還未執行，確認要將此項目標示為已完成嗎？`,
+                                    type: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: '確認',
+                                    cancelButtonText: '取消',
+                                    reverseButtons: true
+                                }).then(() => {
+                                    idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
+                                });
+                                continue;
                             }
                         }
                     } else {
-                        idSelected.push($(this).data('id'));
+                        idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
                     }
                 }
-            });
-            if (!conti){
-                alert('已取消動作');
-                stopLoading();
-                return;
             }
             if (idSelected.length == 0){
-                alert('請選取至少一項請求！');
-                stopLoading();
-                return;
+                swal({title: '請選取至少一項請求！', type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                    location.reload();
+                    stopLoading();
+                    return;
+                });
             }
+            
+            // 檢查例外
             School.updateApply(idSelected.toString())
             .then((res) => {
                 if(res.ok) {
@@ -450,19 +497,30 @@
                 }
             })
             .then((json) => {
-                // console.log(json);
-                alert(json.messages[0]);
-                stopLoading();
-                location.reload();
+                $imgModal.modal('hide');
+                console.log(json.messages);
+                swal({title: json.messages[0], type:"success", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                    location.reload();
+                    stopLoading();
+                    return;
+                });
             })
             .catch((err) => {
                 err.json && err.json().then((data) => {
                     console.error(data);
-                    alert(`ERROR: \n${data.messages[0]}`);
-                    stopLoading();
+                    swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                        location.reload();
+                        stopLoading();
+                        return;
+                    });
                 });
             });
-        }
+        }).catch(async (err) => {
+            await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+            location.reload();
+            stopLoading();
+            return;
+        });
     }
 
     // 檔案放大顯示事件
@@ -551,8 +609,7 @@
             })
             .then(async (json) => {
                 // console.log(json);
-                // swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
-                alert('儲存成功！');
+                await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
                 location.reload();
                 stopLoading();
             })
@@ -564,7 +621,7 @@
                 stopLoading();
             });
         } else {
-            alert('請選擇至少一筆未鎖定/未執行的請求！');
+            await swal({title:"請選擇至少一筆未鎖定/未執行的請求！", type:"error", confirmButtonText: '確定'});
             stopLoading();
             return;
         }
@@ -572,35 +629,48 @@
 
     // 確認鎖定
     async function _handleVerified() {
-        openLoading();
-        // 取要送往後端的資料
-        let data = await _validateForm();
-        if (data.length < 1) {
-            alert('請選擇至少一筆未鎖定/未執行的請求！');
-            stopLoading();
-            return;
-        }
-        School.updateModify(data, 1)
-        .then((res) => {
-            if (res.ok) {
-                return res.json();
-            } else {
-                throw res;
+        swal({
+            title: `確認要鎖定已選擇的請求嗎？`,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確認',
+            cancelButtonText: '取消',
+            reverseButtons: true
+        }).then(async () => {
+            openLoading();
+            // 取要送往後端的資料
+            let data = await _validateForm();
+            if (data.length < 1) {
+                await swal({title:"請選擇至少一筆未鎖定/未執行的請求！", type:"error", confirmButtonText: '確定'});
+                stopLoading();
+                return;
             }
-        })
-        .then(async (json) => {
-            // console.log(json);
-            // swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
-            alert('資料已鎖定！');
+            School.updateModify(data, 1)
+            .then((res) => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    throw res;
+                }
+            })
+            .then(async (json) => {
+                // console.log(json);
+                await swal({title:"資料已鎖定！", type:"success", confirmButtonText: '確定'});
+                location.reload();
+                stopLoading();
+            })
+            .catch((err) => {
+                err.json && err.json().then((data) => {
+                    // console.error(data);
+                    // swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                });
+                stopLoading();
+            });
+        }).catch(async (err) => {
+            await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
             location.reload();
             stopLoading();
-        })
-        .catch((err) => {
-            err.json && err.json().then((data) => {
-                console.error(data);
-                // swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
-            });
-            stopLoading();
+            return;
         });
     }
 

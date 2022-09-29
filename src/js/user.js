@@ -27,26 +27,26 @@ var User = (function () {
     function isLogin() {
         return fetch(baseUrl + '/admins/login', {
             credentials: 'include'
-        });
-    }
-
-    // permission: 'admin'
-    function checkLogin(permission) {
-        return isLogin().then(function (res) {
+        }).then((res) => {
             if(res.ok) {
                 return res.json();
             } else {
                 throw res.status;
             }
-        }).then(function (json) {
-            if (!json[permission] || json[permission].has_banned) {
+        }).then((json) => {
+            if (!json['admin'] || json['admin'].has_banned) {
                 location.replace('./login.html');
             } else {
                 _setUserInfo(json);
+                return true;
             }
-        }).catch(function (err) {
+        }).catch((err) => {
             if (err == 401) {
-                location.replace('./login.html');
+                swal({title: `請先登入！`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+                .then((res) => {
+                    location.replace('./login.html');
+                    return false;
+                });
             }
         });
     }
@@ -79,7 +79,6 @@ var User = (function () {
         login,
         logout,
         isLogin,
-        checkLogin,
         getUserInfo,
         update
     }

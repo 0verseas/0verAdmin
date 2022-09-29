@@ -15,30 +15,17 @@ var reviewerInfo = (function () {
      */
     init();
 
-    function init(){
-        User.isLogin().then(function (res) {
-            if(res.ok) {
-                return res.json();
-            } else {
-                throw res.status;
-            }
-        }).then(function (json) {
-            if (!json['admin'] || json['admin'].has_banned) {
-                location.replace('./login.html');
-            } else {
-                _setData();
-            }
-        }).catch(function (err) {
-            if (err == 401) {
-                alert('請先登入！！');
-            }
-        });
+    async function init(){
+        let res = await User.isLogin();
+        if(res == true) {
+            _setData();
+        }
     }
 
     function _setData() {
         //openLoading();
 
-        SchoolReviewer.getSchoolReviewerList() // 取得 school reviewer 列表
+        AccountList.getSchoolReviewerList() // 取得 school reviewer 列表
             .then((res) => {
                 if(res.ok) { // 有資料則開始頁面初始化
                     return res.json();
@@ -76,8 +63,7 @@ var reviewerInfo = (function () {
         }).catch((err) => {
             err.json && err.json().then((data) => {
                 console.error(data);
-                alert(`ERROR: \n${data.messages[0]}`);
-
+                swal({title: `錯誤`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                 stopLoading();
             });
         })

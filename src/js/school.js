@@ -49,13 +49,20 @@ var School = (function () {
             method: 'GET',
             credentials: 'include'
         }).then((res) => {
-            console.log(res);
             if (res.ok) {
                 return res.json();
             } else {
-                return false;
+                throw res.status;
             }
-        })
+        }).catch((err) => {
+            if (err == 401) {
+                swal({title: `警告`, text: '請先登入！', type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+                .then((res) => {
+                    location.replace('./login.html');
+                    return false;
+                });
+            }
+        });
         
     }
 
