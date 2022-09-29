@@ -22,12 +22,10 @@ var Sidebar = (function () {
      */
     init();
 
-    function init(){
-        async function init(){
-            let res = await User.isLogin();
-            if(res == true) {
-                showUserInfo();
-            }
+    async function init(){
+        let res = await User.isLogin();
+        if(res == true) {
+            showUserInfo();
         }
     }
     
