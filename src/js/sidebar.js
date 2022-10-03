@@ -46,7 +46,7 @@ var Sidebar = (function () {
                 throw res.status;
             }
         }).catch(function(err) {
-            console.log("error: " + err);
+            // console.log("error: " + err);
         })
     }
 

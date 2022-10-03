@@ -66,7 +66,7 @@ var editorInfo = (function () {
                 stopLoading();
             }).catch((err) => {
                 err.json && err.json().then((data) => {
-                    console.error(data);
+                    // console.error(data);
                     swal({title: `錯誤`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                     stopLoading();
                 });

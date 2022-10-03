@@ -67,9 +67,9 @@
             })
             .catch((err) => {
                 stopLoading();
-                console.log(err);
+                // console.log(err);
                 err.json && err.json().then((data) => {
-                    console.error(data);
+                    // console.error(data);
                     swal({title: `錯誤`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                     location.reload();
                 });
@@ -300,9 +300,6 @@
                     return;
                 });
             }
-
-            console.log('conti');
-            
             School.rejectApply(idSelected.toString())
             .then((res) => {
                 if(res.ok) {
@@ -313,7 +310,7 @@
             })
             .then((json) => {
                 $imgModal.modal('hide');
-                console.log(json.messages);
+                // console.log(json.messages);
                 swal({title: json.messages[0], type:"success", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
                     location.reload();
                     stopLoading();
@@ -322,7 +319,7 @@
             })
             .catch((err) => {
                 err.json && err.json().then((data) => {
-                    console.error(data);
+                    // console.error(data);
                     swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
                         location.reload();
                         stopLoading();
@@ -365,7 +362,7 @@
                 }
                 // 檢查例外
                 let res = await School.checkApply(idSelected.toString());
-                console.log(res);
+                // console.log(res);
                 if(res) {
                     $imgModal.modal('hide');
                     let errmsg = '';
@@ -461,7 +458,7 @@
             })
             .then((json) => {
                 $imgModal.modal('hide');
-                console.log(json.messages);
+                // console.log(json.messages);
                 swal({title: json.messages[0], type:"success", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
                     location.reload();
                     stopLoading();
@@ -470,7 +467,7 @@
             })
             .catch((err) => {
                 err.json && err.json().then((data) => {
-                    console.error(data);
+                    // console.error(data);
                     swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
                         location.reload();
                         stopLoading();
@@ -613,7 +610,7 @@
                 stopLoading();
             })
             .catch((err) => {
-                console.error(err);
+                // console.error(err);
                 err.json && err.json().then((data) => {
                     // swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                 });
