@@ -259,16 +259,8 @@
     }
 
     // 退回請求事件
-    function _handleReject(){
-        swal({
-            title: `確認要退回請求嗎？`,
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '確認',
-            cancelButtonText: '取消',
-            reverseButtons: true
-        })
-        .then(async (res) => {
+    async function _handleReject(){
+        if(await _confirmExec(`確認要儲存修改嗎？`)) {
             openLoading();
             let idSelected = [];
             for(let i=0; i<$('input[id=select-chk]').length; i++){
@@ -338,17 +330,7 @@
                     });
                 });
             });
-        })
-        .catch(async (err) => {
-            if (err == 'cancel') {
-                await swal({title: '已取消退回', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
-            } else {
-                await swal({title: '發生錯誤', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
-            }
-            location.reload();
-            stopLoading();
-            return;
-        });
+        }
     }
 
     // 執行請求事件
@@ -359,14 +341,7 @@
             location.reload();
             return;
         } else {
-            swal({
-                title: `確認要執行請求嗎？`,
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '確認',
-                cancelButtonText: '取消',
-                reverseButtons: true
-            }).then(async () => {
+            if(await _confirmExec(`確認要執行請求嗎？`)) {
                 openLoading();
                 let idSelected = [];
                 for(let i=0; i<$('input[id=select-chk]').length; i++){
@@ -434,25 +409,13 @@
                 } else {
                     throw res;
                 }
-            }).catch(async (err) => {
-                await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
-                location.reload();
-                stopLoading();
-                return;
-            });
+            }
         }
     }
 
     // 完成請求事件
-    function _handleCompleted() {
-        swal({
-            title: `確定要更新請求為已完成？`,
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '確認',
-            cancelButtonText: '取消',
-            reverseButtons: true
-        }).then(async () => {
+    async function _handleCompleted() {
+        if(await _confirmExec(`確認要完成請求嗎？`)) {
             openLoading();
             let idSelected = [];
             for(let i=0; i<$('input[id=select-chk]').length; i++){
@@ -515,12 +478,7 @@
                     });
                 });
             });
-        }).catch(async (err) => {
-            await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
-            location.reload();
-            stopLoading();
-            return;
-        });
+        }
     }
 
     // 檔案放大顯示事件
@@ -595,48 +553,43 @@
 
     // 儲存修正
     async function _handleSave() {
-        openLoading();
-        // 取要送往後端的資料
-        let data = await _validateForm();
-        if (data.length > 0) {
-            School.updateModify(data, 0)
-            .then((res) => {
-                if (res.ok) {
-                    return res.json();
-                } else {
-                    throw res;
-                }
-            })
-            .then(async (json) => {
-                // console.log(json);
-                await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
-                location.reload();
-                stopLoading();
-            })
-            .catch((err) => {
-                err.json && err.json().then((data) => {
-                    // console.error(data);
-                    // swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+        if(await _confirmExec(`確認要儲存修改嗎？`)) {
+            openLoading();
+            // 取要送往後端的資料
+            let data = await _validateForm();
+            if (data.length > 0) {
+                School.updateModify(data, 0)
+                .then((res) => {
+                    if (res.ok) {
+                        return res.json();
+                    } else {
+                        throw res;
+                    }
+                })
+                .then(async (json) => {
+                    // console.log(json);
+                    await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
+                    location.reload();
+                    stopLoading();
+                })
+                .catch((err) => {
+                    err.json && err.json().then((data) => {
+                        // console.error(data);
+                        // swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                    });
+                    stopLoading();
                 });
+            } else {
+                await swal({title:"請選擇至少一筆未鎖定/未執行的請求！", type:"error", confirmButtonText: '確定'});
                 stopLoading();
-            });
-        } else {
-            await swal({title:"請選擇至少一筆未鎖定/未執行的請求！", type:"error", confirmButtonText: '確定'});
-            stopLoading();
-            return;
+                return;
+            }
         }
     }
 
     // 確認鎖定
     async function _handleVerified() {
-        swal({
-            title: `確認要鎖定已選擇的請求嗎？`,
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '確認',
-            cancelButtonText: '取消',
-            reverseButtons: true
-        }).then(async () => {
+        if(await _confirmExec(`確認要儲存修改並鎖定資料嗎？`)) {
             openLoading();
             // 取要送往後端的資料
             let data = await _validateForm();
@@ -660,18 +613,13 @@
                 stopLoading();
             })
             .catch((err) => {
+                console.error(err);
                 err.json && err.json().then((data) => {
-                    // console.error(data);
                     // swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                 });
                 stopLoading();
             });
-        }).catch(async (err) => {
-            await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
-            location.reload();
-            stopLoading();
-            return;
-        });
+        }
     }
 
     // 儲存前檢查
@@ -723,6 +671,26 @@
         });
         // console.log(data);
         return data;
+    }
+
+    async function _confirmExec(msg) {
+        return swal({
+            title: msg,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確認',
+            cancelButtonText: '取消',
+            reverseButtons: true
+        })
+        .then(() => {
+            return true;
+        })
+        .catch(async(err) => {
+            await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+            location.reload();
+            stopLoading();
+            return;
+        })
     }
 
 })();
