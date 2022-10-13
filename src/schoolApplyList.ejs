@@ -55,6 +55,32 @@
 		<div class="modal-content">
 			<div class="modal-body text-center">
                 <img src="./img/schoolApply.png" style="width: 100%; max-width:900px; padding-bottom:15px;">
+                <br/>
+                <div class="text-left" style="margin-left: 8%;">
+                    <b>注意事項：</b><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span>各請求最後執行結果以修正欄位為主，若修正欄位無填入值，以原請求內容為主。</span><br>
+                    <b>例外情況：</b>
+                    <ol>
+                        <li>新增系所</li>
+                        <ul>
+                            <li>若系所情況為：「原已存在該系所，但被刪除」，填入原系所代碼後，系統將重新啟用原系所，並更新核定系名。</li>
+                        </ul>
+                        <li>更改系名</li>
+                        <ul>
+                            <li>若系所代碼不存在，系統將執行新增系所。</li>
+                        </ul>
+                        <li>更換類組</li>
+                        <ul>
+                            <li>若系所代碼不存在，系統將執行新增系所。</li>
+                            <li>若學制為學士班，系統將執行新增系所、並將連動表格對應id修改，再將原系所軟刪除</li>
+                        </ul>
+                        <li>合併系所</li>
+                        <ul>
+                            <li>若欲合併的代碼於該學校該學制下僅一個存在，對該存在的系所執行更改系名/更換類組</li>
+                            <li>若欲合併的代碼於該學校該學制下皆不存在，執行新增系所</li>
+                        </ul>
+                    </ol>
+                </div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-outline-dark" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> 離開</button>

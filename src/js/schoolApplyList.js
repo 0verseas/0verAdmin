@@ -18,7 +18,6 @@
     const group_array = ['','第一類組','第二類組','第三類組'];
 
     let applyListArray = []; // 目前請求有哪些
-    let currentApplyID = 0; // 當前請求的ID
     var username = ''; // 當前使用者帳號
 
     $rejectBtn.on('click', _handleReject)
@@ -145,7 +144,7 @@
                     listHtml += `
                         <div style="margin-right: 5px;">
                             <label for="apply-info"><span class="info-label"> 原學系代碼(選填) </span></label>
-                            <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? dept_id:''}">
+                            <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}">
                         </div>
                     `;
                     break;
@@ -260,7 +259,7 @@
 
     // 退回請求事件
     async function _handleReject(){
-        if(await _confirmExec(`確認要儲存修改嗎？`)) {
+        if(await _confirmExec(`確認要退回請求嗎？`)) {
             openLoading();
             let idSelected = [];
             for(let i=0; i<$('input[id=select-chk]').length; i++){
@@ -284,6 +283,10 @@
                                     reverseButtons: true
                                 }).then(() => {
                                     idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
+                                }).catch((e) => {
+                                    location.reload();
+                                    stopLoading();
+                                    return;
                                 });
                                 break;
                             }
@@ -362,7 +365,7 @@
                 }
                 // 檢查例外
                 let res = await School.checkApply(idSelected.toString());
-                // console.log(res);
+                console.log(res);
                 if(res) {
                     $imgModal.modal('hide');
                     let errmsg = '';
@@ -385,26 +388,31 @@
                             confirmButtonText: '繼續',
                             cancelButtonText: '取消',
                             reverseButtons: true
-                        }).then(async() => {
-                            // 開始執行
-                            res = await School.executeApply(idSelected.toString());
-                            if(res.ok) {
-                                $imgModal.modal('hide');
-                                await swal({title: '執行成功', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
-                                location.reload();
-                                stopLoading();
-                            } else {
-                                throw res;
-                            }
                         }).catch(async (err) => {
+                            console.log(err);
+                            err.json && err.json().then((data) => {
+                                swal({title: data.messages, type:"error", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                                    location.reload();
+                                    stopLoading();
+                                    return;
+                                });
+                            });
                             await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
                             location.reload();
                             stopLoading();
                             return;
                         });
                     }
+                }
+                res = await School.executeApply(idSelected.toString());
+                if(res.ok) {
+                    $imgModal.modal('hide');
+                    await swal({title: '執行成功', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+                    location.reload();
+                    stopLoading();
                 } else {
-                    throw res;
+                    await swal({title: '執行途中發生錯誤', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                    stopLoading();
                 }
             }
         }
