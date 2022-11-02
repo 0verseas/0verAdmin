@@ -1,0 +1,38 @@
+.p_card {
+    color: #0063b1;
+    /*0063b1 fffff0*/
+    background-color: #fee4c8;
+    /*fee4c8 5e9ea4*/
+    border-radius: 15px;
+    font-size: 2em;
+    font-weight: bold;
+    /*padding: 1%;*/
+    padding-left: 2%;
+}
+
+.link {
+    color: #067b76;
+    /*5e9ea4 4a67d4*/
+    font-size: large;
+    line-height: 30px;
+    font-weight: bold;
+}
+
+.no-link {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    margin-bottom: 15px;
+}
