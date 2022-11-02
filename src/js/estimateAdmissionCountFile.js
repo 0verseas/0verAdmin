@@ -21,12 +21,6 @@ var estimateAdmissionCountFile = (function () {
     const $phd_university = $('#phd_university');
     const $phd_technology = $('#phd_technology');
     const $phd_all = $('#phd_all');
-
-    const $has_restrict_department = $('#has-restrict-department');
-    const $bachelor_has_english_taught_department = $('#bachelor-has-english-taught-department');
-    const $twoYear_has_english_taught_department = $('#twoYear-has-english-taught-department');
-    const $master_has_english_taught_department = $('#master-has-english-taught-department');
-    const $phd_has_english_taught_department = $('#phd-has-english-taught-department');
     /**
      * bind event
      */
@@ -75,12 +69,6 @@ var estimateAdmissionCountFile = (function () {
 
         $phd_university.attr('href', env.baseUrl + '/admins/estimate-admission-count-file/university/system/phd');
         $phd_technology.attr('href', env.baseUrl + '/admins/estimate-admission-count-file/technology/system/phd');
-        $phd_all.attr('href', env.baseUrl + '/admins/estimate-admission-count-file/all/system/phd');
-
-        $has_restrict_department.attr('href', env.baseUrl + '/admins/has-birth-and-gender-limit-department-list');
-        $bachelor_has_english_taught_department.attr('href', env.baseUrl + '/admins/all-english-department-list/bachelor');
-        $master_has_english_taught_department.attr('href', env.baseUrl + '/admins/all-english-department-list/master');
-        $phd_has_english_taught_department.attr('href', env.baseUrl + '/admins/all-english-department-list/phd');
-        
+        $phd_all.attr('href', env.baseUrl + '/admins/estimate-admission-count-file/all/system/phd');        
     }
 })();
