@@ -492,22 +492,23 @@ var studentInfo = (function () {
             not_to_FF = "學生<a class='text-success'>願意</a>被分發至僑先部";
         }
 
-        let propose = value.student_misc_data.propose != null ? value.student_misc_data.propose : '';  // 保薦單位
+        let propose = value.student_misc_data.propose != null ? value.student_misc_data.propose : '無';  // 保薦單位
 
         let progressListHTML ='';
         progressListHTML =`
-            <ul style="font-size: 30px; margin-left: 20%; line-height: 190%;     color: chocolate;">
+            <ul style="font-size: 22px; margin-left: 2%; line-height: 190%; color: sienna;">
                 <li>
-                    【 ${system_name} 】  ${identity_name}
+                    【 ${system_name} 】${identity_name}
                 </li>
                 <li>
-                    僑居地：${countryName}<br/>保薦單位：${propose}
+                    僑居地：${countryName}<br/>
+                    保薦單位：${propose}
                 </li>
                 <li>
-                    ${is_join_admission_selection}
+                    個人申請：${is_join_admission_selection}
                 </li>
                 <li>
-                    聯分採計： ${admission_placement_apply_name}
+                    聯分採計：${admission_placement_apply_name}
                 </li>
                 <li>
                     ${is_confirmed}
