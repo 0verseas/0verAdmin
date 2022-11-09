@@ -492,7 +492,7 @@ var studentInfo = (function () {
             not_to_FF = "學生<a class='text-success'>願意</a>被分發至僑先部";
         }
 
-        let propose = value.student_misc_data.propose != null ? value.student_misc_data.propose : '無';  // 保薦單位
+        let propose = value.student_misc_data.propose != null ? value.student_misc_data.propose : '';  // 保薦單位
 
         let progressListHTML ='';
         progressListHTML =`
