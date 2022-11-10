@@ -40,12 +40,14 @@ var User = (function () {
             }
         }).then(function (json) {
             if (!json[permission] || json[permission].has_banned) {
+                alert('請重新登入。');
                 location.replace('./login.html');
             } else {
                 _setUserInfo(json);
             }
         }).catch(function (err) {
             if (err == 401) {
+                alert('請重新登入！');
                 location.replace('./login.html');
             }
         });

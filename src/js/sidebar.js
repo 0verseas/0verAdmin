@@ -35,11 +35,7 @@ var Sidebar = (function () {
             } else {
                 showUserInfo();
             }
-        }).catch(function (err) {
-            if (err == 401) {
-                alert('請先登入！！');
-            }
-        });
+        }).catch(function (err) {});
     }
     
 

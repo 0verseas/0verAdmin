@@ -28,11 +28,7 @@ var officeInfo = (function () {
             } else {
                 _setData();
             }
-        }).catch(function (err) {
-            if (err == 401) {
-                alert('請先登入！！');
-            }
-        });
+        }).catch(function (err) {});
     }
 
     function _setData() {
@@ -112,7 +108,6 @@ var officeInfo = (function () {
             err.json && err.json().then((data) => {
                 console.error(data);
                 alert(`ERROR: \n${data.messages[0]}`);
-
                 stopLoading();
             });
         })

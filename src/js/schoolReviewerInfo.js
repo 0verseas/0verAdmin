@@ -28,11 +28,7 @@ var reviewerInfo = (function () {
             } else {
                 _setData();
             }
-        }).catch(function (err) {
-            if (err == 401) {
-                alert('請先登入！！');
-            }
-        });
+        }).catch(function (err) {});
     }
 
     function _setData() {
