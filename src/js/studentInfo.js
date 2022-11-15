@@ -495,7 +495,7 @@ var studentInfo = (function () {
 
         let progressListHTML ='';
         progressListHTML =`
-            <ul style="font-size: 22px; margin-left: 2%; line-height: 190%; color: sienna;">
+            <ul style="font-size: 30px; margin-left: 2%; line-height: 190%; color: sienna;">
                 <li>
                     【 ${system_name} 】${identity_name}
                 </li>
