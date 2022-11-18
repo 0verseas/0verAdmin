@@ -53,20 +53,24 @@
                 if (username !== 'admin1') {
                     $executeBtn.hide();
                 }
-    
-                // 進行文憑列表分頁初始化渲染工作
-                $paginationContainer.pagination({
-                    dataSource: applyListArray,
-                    pageSize: 50,
-                    callback: function(applyListArray,pagination) {
-                        _applyListTamplate(applyListArray, pagination.pageNumber);
-                    }
-                });
+                // 有資料才渲染分頁
+                if (applyListArray.length == 0) {
+                    $applyList.html('無未完成的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $paginationContainer.pagination({
+                        dataSource: applyListArray,
+                        pageSize: 50,
+                        callback: function(applyListArray,pagination) {
+                            _applyListTamplate(applyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
                 stopLoading();
             })
             .catch((err) => {
                 stopLoading();
-                // console.log(err);
+                console.log(err);
                 err.json && err.json().then((data) => {
                     // console.error(data);
                     swal({title: `錯誤`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
