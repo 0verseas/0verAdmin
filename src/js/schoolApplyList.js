@@ -38,7 +38,6 @@
             openLoading();
             School.getSchooApplyList()
             .then((res) => {
-                // console.log(res);
                 if(res.ok) {
                     return res.json();
                 } else {
@@ -49,7 +48,6 @@
                 applyListArray = json;
                 // 只有admin1可以執行請求
                 username = User.getUserInfo().username;
-                // console.log(username);
                 if (username !== 'admin1') {
                     $executeBtn.hide();
                 }
@@ -70,9 +68,8 @@
             })
             .catch((err) => {
                 stopLoading();
-                console.log(err);
+                // console.log(err);
                 err.json && err.json().then((data) => {
-                    // console.error(data);
                     swal({title: `錯誤`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                     location.reload();
                 });
@@ -84,16 +81,14 @@
     function _applyListTamplate(datas,page) {
         // 渲染 請求列表
         $applyList.html('');
-        // console.log(datas);
         datas.forEach(function (data, index) {
-            // console.log(data);
-            const schoolTitle = (data.school.title) ?data.school.title:'';
+            const schoolTitle = (data.school.title)? data.school.title: '';
             const action = action_array[data.action_id];
             const system = system_array[data.system_id];
             const type = type_array[data.dept_type];
             const group = group_array[data.group_code];
             const deptTitle = (data.dept_title) ?data.dept_title:'';
-            const stage = (data.executed_at)? 'item-executed':((data.verified_at)? 'item-verified':0);
+            const stage = (data.executed_at)? 'item-executed': ((data.verified_at)? 'item-verified': 0);
             
             let listHtml = `
                 <div class="show-list row">
@@ -317,7 +312,6 @@
             })
             .then((json) => {
                 $imgModal.modal('hide');
-                // console.log(json.messages);
                 swal({title: json.messages[0], type:"success", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
                     location.reload();
                     stopLoading();
@@ -326,7 +320,6 @@
             })
             .catch((err) => {
                 err.json && err.json().then((data) => {
-                    // console.error(data);
                     swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
                         location.reload();
                         stopLoading();
@@ -339,7 +332,6 @@
 
     // 執行請求事件
     async function _handleExecute() {
-        // console.log(username);
         if (username !== 'admin1') {
             await swal({title: `無操作權限！`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
             location.reload();
@@ -470,7 +462,6 @@
             })
             .then((json) => {
                 $imgModal.modal('hide');
-                // console.log(json.messages);
                 swal({title: json.messages[0], type:"success", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
                     location.reload();
                     stopLoading();
@@ -479,7 +470,6 @@
             })
             .catch((err) => {
                 err.json && err.json().then((data) => {
-                    // console.error(data);
                     swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
                         location.reload();
                         stopLoading();
@@ -539,12 +529,10 @@
 
     // 批次選取
     function _handleSelect() {
-        // console.log($('input[name=target]:checked').val());
         if ($selectBtn.html() == '選取') {
             $selectBtn.html('取消選取');
             switch ($('input[name=target]:checked').val()) {
                 case 'all':
-                    // console.log($('input[id=select-chk]'));
                     $('input[id=select-chk]').prop('checked', true);
                     break;
                 case 'verified':
@@ -576,15 +564,13 @@
                     }
                 })
                 .then(async (json) => {
-                    // console.log(json);
                     await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
                     location.reload();
                     stopLoading();
                 })
                 .catch((err) => {
                     err.json && err.json().then((data) => {
-                        // console.error(data);
-                        // swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                        swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                     });
                     stopLoading();
                 });
@@ -616,7 +602,6 @@
                 }
             })
             .then(async (json) => {
-                // console.log(json);
                 await swal({title:"資料已鎖定！", type:"success", confirmButtonText: '確定'});
                 location.reload();
                 stopLoading();
@@ -624,7 +609,7 @@
             .catch((err) => {
                 // console.error(err);
                 err.json && err.json().then((data) => {
-                    // swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                    swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                 });
                 stopLoading();
             });
@@ -678,7 +663,6 @@
                 }
             }
         });
-        // console.log(data);
         return data;
     }
 
