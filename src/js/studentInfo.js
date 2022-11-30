@@ -466,10 +466,14 @@ var studentInfo = (function () {
         else
             countryName = _findCountryName(_findContinent(value.student_personal_data.resident_location), value.student_personal_data.resident_location);
 
-        if(value.student_misc_data.admission_placement_apply_way_data != null)
+        if(value.student_misc_data.admission_placement_apply_way_data != null){
             admission_placement_apply_name = value.student_misc_data.admission_placement_apply_way_data.description;
-        else
+            if(value.student_misc_data.myanmar_test_area){
+                admission_placement_apply_name += '<br/> 學科測驗考區：'+value.student_misc_data.myanmar_test_area;
+            }
+        } else {
             admission_placement_apply_name = '無';
+        }
         if(value.student_misc_data.qualification_to_distribute != null)
             qualification_to_distribute = value.student_misc_data.qualification_to_distribute;
         else
