@@ -21,7 +21,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.office.entrypoints=websecure"
       - "traefik.http.routers.office.tls.certresolver=lets-encr"
-      - "traefik.http.routers.office.rule=Host(``)"
+      - "traefik.http.routers.office.rule=Host(`${DOMAIN_NAME}`)"
       - "traefik.http.routers.office.tls.options=default"
       - "traefik.http.routers.office.middlewares=secure-headers@file"
 
@@ -41,6 +41,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.admin.entrypoints=websecure"
       - "traefik.http.routers.admin.tls.certresolver=lets-encr"
-      - "traefik.http.routers.admin.rule=Host(``) && PathPrefix(`/admin`)"
+      - "traefik.http.routers.admin.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/admin`)"
       - "traefik.http.routers.admin.tls.options=default"
       - "traefik.http.routers.admin.middlewares=secure-headers@file"
