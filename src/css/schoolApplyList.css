@@ -4,6 +4,7 @@
 	border-radius: 10px;
 	text-indent: 5px;
 	width: 110px;
+	min-width: 110px;
 }
 
 #type-selector {
@@ -15,10 +16,10 @@
 	background-color: #ffffff;
 	color: #345386;
 	border-radius: 10px;
-	top:16px;
+	top:10px;
 	left: 10px;
 	width: auto;
-	font-size: small;
+	font-size: 14px;
 }
 
 .show-list {
@@ -26,9 +27,17 @@
 	margin-top: 5px;
 }
 
+#list-element {
+	margin-right: 5px;
+	display: inline-table;
+}
+
 #apply-list {
 	margin-top: 5px;
 	margin-bottom: 10px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding: 5px;
 }
 
 .img-thumbnail {
@@ -47,4 +56,24 @@
 	z-index: 10;
 	background-color: rgba(253, 253, 253, 0.85);
 	top:2px;
+}
+
+.info-label {
+	font-weight: bold;
+}
+
+@media screen {
+	#apply-list {
+		height: 700px;
+	}
+}
+@media screen and (min-width:481px) and (max-width:768px) {
+	#apply-list {
+		height: 500px;
+	}
+}
+@media screen and (max-width:480px) {
+	#apply-list {
+		height: 400px;
+	}
 }

@@ -33,6 +33,17 @@ var School = (function () {
         });
     }
 
+    function returnApply(data) {
+        return fetch(baseUrl + `/admins/return-school-apply`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+    }
+
     function updateModify(data, verified) {
         return fetch(baseUrl + `/admins/execute-school-apply?verified=${verified}`, {
             method: 'POST',
@@ -72,6 +83,7 @@ var School = (function () {
         rejectApply,
         executeApply,
         updateModify,
+        returnApply,
         checkApply
     };
 

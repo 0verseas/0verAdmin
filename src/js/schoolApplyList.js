@@ -29,6 +29,10 @@
     $('#verified-btn').on('click', _handleVerified); // 鎖定按鈕
     
     $('body').on('click', '.img-thumbnail', _handleShowFile);
+    // 請求標題行可以選取/取消選取該請求
+    $('body').on('click', 'h5', function(e){
+        $(this).children('input').prop('checked', !$(this).children('input').is(':checked'));
+    });
 
     init();
 
@@ -91,8 +95,8 @@
             const stage = (data.executed_at)? 'item-executed': ((data.verified_at)? 'item-verified': 0);
             
             let listHtml = `
-                <div class="show-list row">
-                    <h5 class="col-12" style="margin:10px; margin-bottom:-7px;" data-id=${data.id}>
+                <div class="show-list">
+                    <h5 class="col-12" style="margin:10px; margin-bottom:-5px;" data-id=${data.id}>
                         <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
                         #${index+1+((page-1)*10)} &nbsp;&nbsp; ${schoolTitle}`;
             if (stage == 'item-executed') {
@@ -102,19 +106,19 @@
             }
             listHtml += `
                     </h5>
-                    <div style="margin-right: 5px;">
+                    <div id="list-element">
                         <label for="apply-info"><span class="info-label"> 請求動作 </span></label>
                         <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength ="191" value="${action}" disabled>
                     </div>
-                    <div style="margin-right: 5px;">
+                    <div id="list-element">
                         <label for="apply-info"><span class="info-label"> 系所學制 </span></label>
                         <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${system}" disabled>
                     </div>
-                    <div style="margin-right: 5px;">
+                    <div id="list-element">
                         <label for="apply-info"><span class="info-label"> 系所類型 </span></label>
                         <input type="text" id="apply-info" class="form-control" style="width:130px;" maxlength ="191" value="${type}" disabled>
                     </div>
-                    <div style="margin-right: 5px;">
+                    <div id="list-element">
                         <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 系所類型 </span></label>
                         <select class="form-control new_type" id="type-selector" data-id=${data.id}>
                             <option value=""></option>
@@ -123,127 +127,144 @@
                             <option value="2">國際專修部</option>
                         </select>
                     </div>
-                    <div style="margin-right: 5px;">
+                    <div id="list-element">
                         <label for="apply-info"><span class="info-label"> 系所類組 </span></label>
                         <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group}" disabled>
                     </div>
-                    <div style="margin-right: 5px;">
+                    <div id="list-element">
                         <label for="apply-info"><span class="info-label"> 核定系名 </span></label>
                         <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${deptTitle}" disabled>
                     </div>
-                    <div style="margin-right: 5px;">
+                    <div id="list-element">
                         <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 核定系名 </span></label>
                         <input type="text" id="apply-info" class="form-control v_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}">
                     </div>
-                    <div style="display:flex;" class="show-list">
             `;
 
             switch (data.action_id) {
                 case 1:
                     listHtml += `
-                        <div style="margin-right: 5px;">
-                            <label for="apply-info"><span class="info-label"> 原學系代碼(選填) </span></label>
-                            <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}">
-                        </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"><span style="color:red;"> 原系代碼</span>(選填) </span></label>
+                        <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}">
+                    </div>
                     `;
                     break;
                 case 2:
                     listHtml += `
-                        <div style="margin-right: 5px;">
-                            <label for="apply-info"><span class="info-label"> 學系代碼 </span></label>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
-                        </div>
-                        <div style="margin-right: 5px;">
-                        <label for="apply-info"><span class="info-label"> 新系所名稱 </span></label>
-                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
-                        </div>
-                        <div style="margin-right: 5px;">
-                            <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 新系所名稱 </span></label>
-                            <input type="text" id="apply-info" class="form-control new_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_new_dept_title)?data.verified_new_dept_title:''}">
-                        </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"> 學系代碼 </span></label>
+                        <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                    </div>
+                    <div id="list-element">
+                    <label for="apply-info"><span class="info-label"> 新系所名稱 </span></label>
+                    <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
+                    </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 新系所名稱 </span></label>
+                        <input type="text" id="apply-info" class="form-control new_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_new_dept_title)?data.verified_new_dept_title:''}">
+                    </div>
                     `;
                     break;
                 case 3:
                     listHtml += `
-                        <div style="margin-right: 5px;">
-                            <label for="apply-info"><span class="info-label"> 學系代碼 </span></label>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
-                        </div>
-                        <div style="margin-right: 5px;">
-                        <label for="apply-info"><span class="info-label"> 新系所類組 </span></label>
-                        <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
-                        </div>
-                        <div style="margin-right: 5px;">
-                            <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 新系所類組 </span></label>
-                            <select class="form-control new_group" id="type-selector" data-id=${data.id}>
-                                <option value=""></option>
-                                <option value="1">第一類組</option>
-                                <option value="2">第二類組</option>
-                                <option value="3">第三類組</option>
-                            </select>
-                        </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"> 學系代碼 </span></label>
+                        <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                    </div>
+                    <div id="list-element">
+                    <label for="apply-info"><span class="info-label"> 新系所類組 </span></label>
+                    <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
+                    </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 新系所類組 </span></label>
+                        <select class="form-control new_group" id="type-selector" data-id=${data.id}>
+                            <option value=""></option>
+                            <option value="1">第一類組</option>
+                            <option value="2">第二類組</option>
+                            <option value="3">第三類組</option>
+                        </select>
+                    </div>
                     `;
                     break;
                 case 4:
                     listHtml += `
-                        <div style="margin-right: 5px;">
-                            <label for="apply-info"><span class="info-label"> 欲合併系所代碼1 </span></label>
-                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_1}" disabled>
-                        </div>
-                        <div style="margin-right: 5px;">
-                            <label for="apply-info"><span class="info-label"> 欲合併系所代碼2 </span></label>
-                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_2}" disabled>
-                        </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"> 欲合併系所代碼1 </span></label>
+                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_1}" disabled>
+                    </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"> 欲合併系所代碼2 </span></label>
+                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_2}" disabled>
+                    </div>
                     `;
                     break;
             }
             listHtml += `
-                        <div style="margin-right: 5px;">
-                            <label for="apply-info"><span class="info-label"> 核定公文 </span></label>
-                            <div id="apply-info" class="form-control">
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"> 核定公文 </span></label>
+                        <div id="apply-info" class="form-control">
                     `;
             data.file.forEach(file => {
                 if (file) {
                     const fileType = _getFileType(file.split('.')[1]);
                     if(fileType === 'img'){
                         listHtml += `
-                                <a class="img-thumbnail"
-                                style="margin-right: 5px;"
-                                src="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
-                                data-toggle="modal"
-                                data-filename="${file}"
-                                data-target=".img-modal"
-                                data-filetype="img"
-                                data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit">
-                                    <i class="fa fa-file-image-o" aria-hidden="true"></i>
-                                </a>
+                            <a class="img-thumbnail"
+                            style="margin-right: 5px;"
+                            src="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
+                            data-toggle="modal"
+                            data-filename="${file}"
+                            data-target=".img-modal"
+                            data-filetype="img"
+                            data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit">
+                                <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            </a>
                         `
                     } else {
                         listHtml += `
-                                <a
-                                    class="img-thumbnail non-img-file-thumbnail"
-                                    data-toggle="modal"
-                                    data-target=".img-modal"
-                                    data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
-                                    data-filename="${file}"
-                                    data-filetype="${fileType}"
-                                    data-icon="fa-file-${fileType}-o"
-                                >
-                                    <i class="fa fa-file-${fileType}-o" data-filename="${file}" data-icon="fa-file-${fileType}-o" aria-hidden="true"></i>
-                                </a>
+                            <a
+                                class="img-thumbnail non-img-file-thumbnail"
+                                data-toggle="modal"
+                                data-target=".img-modal"
+                                data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
+                                data-filename="${file}"
+                                data-filetype="${fileType}"
+                                data-icon="fa-file-${fileType}-o"
+                            >
+                                <i class="fa fa-file-${fileType}-o" data-filename="${file}" data-icon="fa-file-${fileType}-o" aria-hidden="true"></i>
+                            </a>
                         `;
                     }
                 }
             });
             listHtml += `
-                            </div>
                         </div>
                     </div>
-                    <div style="flex-grow: 1;">
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"> 申請人姓名 </span></label>
+                        <textarea class="form-control return_reason" id="apply-info" style="resize: horizontal;" disabled>${(data.applicant_name)? data.applicant_name:''}</textarea>
+                    </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"> 申請人電話 </span></label>
+                        <textarea class="form-control return_reason" id="apply-info" style="resize: horizontal; width:150px; white-space:nowrap;" disabled>${(data.applicant_phone)?data.applicant_phone:''}</textarea>
+                    </div>
+                    <div id="list-element">
+                        <label for="apply-info"><span class="info-label"> 申請人信箱 </span></label>
+                        <textarea class="form-control return_reason" id="apply-info" style="resize: horizontal; width:350px; white-space:nowrap;" disabled>${(data.applicant_email)?data.applicant_email:''}</textarea>
+                    </div>
+                </div>
+                <div style="display:flex;" class="show-list">
+                    <div id="list-element" style="width: 400px;">
+                        <label for="apply-info"><span class="info-label"> 退回原因(上限1000字) </span></label>
+                        <textarea class="form-control return_reason" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因">${(data.return_reason)? data.return_reason:''}</textarea>
+                    </div>
+                    <div id="list-element" style="flex-grow: 1;">
                         <label for="apply-info"><span class="info-label"> 處理說明(上限2000字) </span></label>
                         <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明">${(data.note)? data.note:''}</textarea>
                     </div>
-                </div><hr>
+                </div>
+            </div><hr>
             `;
             $applyList.append(listHtml);
 
@@ -260,7 +281,7 @@
     async function _handleReject(){
         if(await _confirmExec(`確認要退回請求嗎？`)) {
             openLoading();
-            let idSelected = [];
+            let data = [];
             for(let i=0; i<$('input[id=select-chk]').length; i++){
 
                 if ($('input[id=select-chk]')[i].checked) {
@@ -281,7 +302,10 @@
                                     cancelButtonText: '取消',
                                     reverseButtons: true
                                 }).then(() => {
-                                    idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
+                                    data.push({
+                                        id: $('input[id=select-chk]')[i].getAttribute('data-id'),
+                                        reason: $(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val()
+                                    });
                                 }).catch((e) => {
                                     location.reload();
                                     stopLoading();
@@ -291,18 +315,21 @@
                             }
                         }
                     } else {
-                        idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
+                        data.push({
+                            id: $('input[id=select-chk]')[i].getAttribute('data-id'),
+                            reason: $(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val()
+                        });
                     }
                 }
             }
-            if (idSelected.length == 0){
+            if (data.length == 0){
                 swal({title: '請選取至少一項請求！', type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
-                    location.reload();
                     stopLoading();
                     return;
                 });
             }
-            School.rejectApply(idSelected.toString())
+            // 先儲存退回原因再退回請求
+            School.returnApply(data)
             .then((res) => {
                 if(res.ok) {
                     return res.json();
@@ -321,7 +348,6 @@
             .catch((err) => {
                 err.json && err.json().then((data) => {
                     swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
-                        location.reload();
                         stopLoading();
                         return;
                     });

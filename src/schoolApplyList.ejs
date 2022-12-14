@@ -1,25 +1,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.0.8/pagination.css">
-<div id="fixed-top">
-<h2 class="title">學校請求清單</h2>
+<div>
+    <h2 class="title">學校請求清單</h2>
 
-<div class="row justify-content-between col-12" style="padding-top: 12px;">
-    <div>
-        <button class="btn btn-outline-secondary" id="select-btn">選取</button>&nbsp;
-        <input type="radio" name="target" value="all" checked><label>全部</label>&nbsp;
-        <input type="radio" name="target" value="verified"><label>已鎖定</label>&nbsp;
-        <input type="radio" name="target" value="executed"><label>已執行</label>&nbsp;&nbsp;
-        <a title="操作說明" data-toggle="modal" data-target=".info-modal" style="cursor: pointer;">
-            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-        </a>
+    <div class="row justify-content-between col-12" style="padding-top: 12px;">
+        <div>
+            <button class="btn btn-outline-secondary" id="select-btn">選取</button>&nbsp;
+            <input type="radio" name="target" value="all" checked><label>全部</label>&nbsp;
+            <input type="radio" name="target" value="verified"><label>已鎖定</label>&nbsp;
+            <input type="radio" name="target" value="executed"><label>已執行</label>&nbsp;&nbsp;
+            <a title="操作說明" data-toggle="modal" data-target=".info-modal" style="cursor: pointer;">
+                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div>
+            <button class="btn btn-outline-secondary" id="save-btn">儲存修正</button>
+            <button class="btn btn-outline-secondary" id="verified-btn">確認鎖定</button>
+            <button class="btn btn-outline-danger" id="reject-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
+            <!-- <button class="btn btn-outline-info" id="execute-btn"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button> -->
+            <button class="btn btn-outline-success" id="completed-btn"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
+        </div>
     </div>
-    <div>
-        <button class="btn btn-outline-secondary" id="save-btn">儲存修正</button>
-        <button class="btn btn-outline-secondary" id="verified-btn">確認鎖定</button>
-        <button class="btn btn-outline-danger" id="reject-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
-        <button class="btn btn-outline-info" id="execute-btn"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button>
-        <button class="btn btn-outline-success" id="completed-btn"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
-    </div>
-</div>
 </div>
 <div class="col-12" id="form-addNewDepartmentApply">
     <hr>
@@ -58,8 +58,8 @@
                 <br/>
                 <div class="text-left" style="margin-left: 8%;">
                     <b>注意事項：</b><br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span>各請求最後執行結果以修正欄位為主，若修正欄位無填入值，以原請求內容為主。</span><br>
-                    <b>例外情況：</b>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span>各請求最後執行結果，若修正欄位有輸入修正資料就以修正內容為主；若未輸入修正資料則以原請求內容為主。</span><br>
+                    <!-- <b>例外情況：</b>
                     <ol>
                         <li>新增系所</li>
                         <ul>
@@ -79,7 +79,7 @@
                             <li>若欲合併的代碼於該學校該學制下僅一個存在，對該存在的系所執行更改系名/更換類組</li>
                             <li>若欲合併的代碼於該學校該學制下皆不存在，執行新增系所</li>
                         </ul>
-                    </ol>
+                    </ol> -->
                 </div>
 			</div>
 			<div class="modal-footer">
