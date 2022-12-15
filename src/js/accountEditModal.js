@@ -103,7 +103,7 @@ $(document).ready(function () {
         function _store() {
             // check dom value
             if (!_checkForm()) {
-                alert('輸入有誤');
+                swal({title: `輸入有誤`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                 return;
             }
             // check password is changed
@@ -132,8 +132,8 @@ $(document).ready(function () {
                 stopLoading();
             }).catch(function(err) {
                 err.json && err.json().then((data) => {
-                    console.error(data);
-                    alert(`ERROR: \n${data.messages[0]}`);
+                    // console.error(data);
+                    swal({title: `錯誤`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                     stopLoading();
                 });
             });

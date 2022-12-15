@@ -12,6 +12,7 @@
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/CarlosBonetti/jquery-loading/dist/jquery.loading.min.css"> -->
     <!-- Custom styles for this template -->
     <link href="./css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.11.2/sweetalert2.min.css">
     <link href="./css/<%= current.source %>.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
@@ -23,10 +24,8 @@
     <script src="./js/miscellaneous.js"></script>
     <script src="./js/user.js"></script>
     <script src="./js/school.js"></script>
-    <script src="./js/schoolEditor.js"></script>
-    <script src="./js/schoolReviewer.js"></script>
-    <script src="./js/office.js"></script>
     <script src="./js/student.js"></script>
+    <script src="./js/accountList.js"></script>
     <!-- favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="https://api.overseas.ncnu.edu.tw/0verseas-favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://api.overseas.ncnu.edu.tw/0verseas-favicons/favicon-32x32.png">
@@ -51,7 +50,7 @@
         openLoading();
 
         if(!Browser.checkBrowserSupport()) {
-            alert('請使用 Chrome, Firefox, Safari 或 Edge 版本 > 14 的瀏覽器。');
+            swal({title: `提示`, text: '請使用 Chrome, Firefox, Safari 或 Edge 版本 > 14 的瀏覽器。', type:"warning", confirmButtonText: '確定', allowOutsideClick: false});
             window.history.back();
         }
     </script>
@@ -92,6 +91,7 @@
         </div>
     </footer>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.11.2/sweetalert2.min.js"></script>
 <script src="./js/<%= current.source %>.js"></script>
 </body>
 </html>

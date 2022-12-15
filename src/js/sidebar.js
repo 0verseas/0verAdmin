@@ -22,20 +22,11 @@ var Sidebar = (function () {
      */
     init();
 
-    function init(){
-        User.isLogin().then(function (res) {
-            if(res.ok) {
-                return res.json();
-            } else {
-                throw res.status;
-            }
-        }).then(function (json) {
-            if (!json['admin'] || json['admin'].has_banned) {
-                location.replace('./login.html');
-            } else {
-                showUserInfo();
-            }
-        }).catch(function (err) {});
+    async function init(){
+        let res = await User.isLogin();
+        if(res == true) {
+            showUserInfo();
+        }
     }
     
 
@@ -55,7 +46,7 @@ var Sidebar = (function () {
                 throw res.status;
             }
         }).catch(function(err) {
-            console.log("error: " + err);
+            // console.log("error: " + err);
         })
     }
 

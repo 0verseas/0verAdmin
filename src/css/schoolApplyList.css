@@ -1,45 +1,79 @@
-.table td, tr{
-    text-align: center;
+#apply-info {
+	height: 40px;
+	min-height: 40px;
+	border-radius: 10px;
+	text-indent: 5px;
+	width: 110px;
+	min-width: 110px;
 }
 
-.table > tbody > tr > th {
-	vertical-align: middle;
+#type-selector {
+	border-radius: 10px;
 }
 
-.table > tfoot > tr > th {
-	vertical-align: middle;
+.info-label {
+	position: relative;
+	background-color: #ffffff;
+	color: #345386;
+	border-radius: 10px;
+	top:10px;
+	left: 10px;
+	width: auto;
+	font-size: 14px;
+}
+
+.show-list {
+	width: 100%;
+	margin-top: 5px;
+}
+
+#list-element {
+	margin-right: 5px;
+	display: inline-table;
+}
+
+#apply-list {
+	margin-top: 5px;
+	margin-bottom: 10px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding: 5px;
 }
 
 .img-thumbnail {
-	max-width: 200px;
-	max-height: 200px;
-	margin: 2px;
+	border: none;
+	cursor: pointer;
+	z-index: 20;
 }
 
-/* 非圖片檔案用 icon 當縮圖 */
-.non-img-file-thumbnail {
-	width: 140px;
-	height: 158px;
-	display: inline-block;
-	text-align: center;
-	vertical-align: middle;
+.btn {
+	margin-top: 2px;
 }
 
-.non-img-file-thumbnail > i {
-	display: block;
-	font-size: 9rem;
+#fixed-top {
+	padding: 5px 0px;
+	position:sticky;
+	z-index: 10;
+	background-color: rgba(253, 253, 253, 0.85);
+	top:2px;
 }
 
-.non-img-file-ori {
-	font-size: 10rem;
+.info-label {
+	font-weight: bold;
 }
 
-.non-img-file-download {
-	/* 有點空間，比較好看 */
-	margin-top: 1rem;
+@media screen {
+	#apply-list {
+		height: 700px;
+	}
 }
-
-li {
-	/*上下都留空增加行距*/
-	margin: 5px auto;
+@media screen and (min-width:481px) and (max-width:768px) {
+	#apply-list {
+		height: 500px;
+	}
+}
+@media screen and (max-width:480px) {
+	#apply-list {
+		height: 400px;
+	}
 }

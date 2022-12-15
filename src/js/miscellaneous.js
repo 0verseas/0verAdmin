@@ -31,7 +31,7 @@ var Miscellaneous = (function () {
                 return groups;
             } catch (e) {
                 console.log('Boooom!!');
-                console.log(e);
+                // console.log(e);
             }
         }
     }
