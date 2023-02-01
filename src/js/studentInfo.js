@@ -511,7 +511,7 @@ var studentInfo = (function () {
                 </li>
                 <li>
                     資格不符原因：${qualification_to_distribute}
-                </li>                
+                </li>
         `;
         if(value.student_misc_data.confirmed_placement_at != null){
             progressListHTML+=`
@@ -521,8 +521,8 @@ var studentInfo = (function () {
             `;
         }
         // 報名學士班且不是僑先部結業生有參加聯合分發不是報名僑先部或特輔班才顯示
-        if (value.student_qualification_verify && 
-            value.student_qualification_verify.system_id === 1 && 
+        if (value.student_qualification_verify &&
+            value.student_qualification_verify.system_id === 1 &&
             (value.student_qualification_verify.identity < 4 || value.student_qualification_verify.identity == 7) &&
             value.student_misc_data.admission_placement_apply_way_data != null &&
             (
@@ -810,7 +810,7 @@ var studentInfo = (function () {
             $twContactWorkplaceAddress.val("");
         }
     }
-    
+
     function _renderStudentEducationInfo(student_education_background_data) {
         if (student_education_background_data) {
             $primarySchoolName.val(student_education_background_data.primary_school_name || "");
@@ -851,7 +851,7 @@ var studentInfo = (function () {
             // console.log(value.department_data.school_code);
             // console.log(value.department_data.school.title);
             // console.log(value.dept_id);
-            // console.log(value.department_data.title);
+            console.log(value.department_data.is_extended_department);
 
             let review_result_string = '';
             if(value.review_result){
@@ -868,11 +868,19 @@ var studentInfo = (function () {
                     note = '註銷，切結放棄';
                 }
             }
+            let schoo_dept_title = value.department_data.school.title + ' ';
+            if(value.department_data.is_extended_department == 1){
+                schoo_dept_title = schoo_dept_title + '<span class="badge badge-warning">重點產業系所</span> ' + value.department_data.title;
+            } else if(value.department_data.is_extended_department == 2){
+                schoo_dept_title = schoo_dept_title + '<span class="badge table-primary">國際專修部</span> ' + value.department_data.title;
+            } else {
+                schoo_dept_title = schoo_dept_title + value.department_data.title;
+            }
             selectionHTML += `
                         <tr>
                         <td>` + index + `</td>
                         <td>` + value.dept_id + `</td>
-                        <td>` + value.department_data.school.title + ' ' + value.department_data.title + `</td>
+                        <td>` + schoo_dept_title + `</td>
                         <td>` + review_result_string + `</td>
                         <td>` + note + `</td>
                         </tr>
@@ -897,13 +905,22 @@ var studentInfo = (function () {
                 var note ='';
                 if(value.deleted_at != null)
                     note = '註銷';
-                let schoolTitle = (value.department_data!=null && value.department_data.school!=null)  ? value.department_data.school.title : '';
-                let departmentTitle = (value.department_data!=null)  ? value.department_data.title : '';
+                let schoo_dept_title = '';
+                if (value.department_data != null) {
+                    schoo_dept_title = (value.department_data.school!=null) ? value.department_data.school.title + ' ' : '';
+                    if(value.department_data.is_extended_department == 1){
+                        schoo_dept_title = schoo_dept_title + '<span class="badge badge-warning">重點產業系所</span> ' + value.department_data.title;
+                    } else if(value.department_data.is_extended_department == 2){
+                        schoo_dept_title = schoo_dept_title + '<span class="badge table-primary">國際專修部</span> ' + value.department_data.title ;
+                    } else {
+                        schoo_dept_title = schoo_dept_title + value.department_data.title;
+                    }
+                }
                 placementHTML += `
 							<tr>
 							<td>` + index + `</td>
 							<td>` + value.dept_id + `</td>
-							<td>` + schoolTitle + ' ' + departmentTitle + `</td>
+							<td>` + schoo_dept_title + `</td>
 							<td>` + note + `</td>
 							</tr>
 							`;
