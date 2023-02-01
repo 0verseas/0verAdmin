@@ -851,7 +851,7 @@ var studentInfo = (function () {
             // console.log(value.department_data.school_code);
             // console.log(value.department_data.school.title);
             // console.log(value.dept_id);
-            console.log(value.department_data.is_extended_department);
+            // console.log(value.department_data.is_extended_department);
 
             let review_result_string = '';
             if(value.review_result){
