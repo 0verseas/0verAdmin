@@ -367,15 +367,18 @@ var studentInfo = (function () {
                 case 1:
                     _renderStudentAdmissionSelectionOrder(studentData.student_department_admission_selection_order);
                     _renderStudentAdmissionPlacementOrder(studentData.student_department_admission_placement_order);
+                    _renderStudentAdmissionOlympiaOrder(studentData.student_olympia_aspiration_order);
                     break;
                 case 2:
                     _renderStudentAdmissionSelectionOrder(studentData.student_two_year_tech_department_admission_selection_order);
                     _renderStudentAdmissionPlacementOrder('x');
+                    _renderStudentAdmissionOlympiaOrder('x');
                     break;
                 case 3:
                 case 4:
                     _renderStudentAdmissionSelectionOrder(studentData.student_graduate_department_admission_selection_order);
                     _renderStudentAdmissionPlacementOrder('x');
+                    _renderStudentAdmissionOlympiaOrder('x');
                     break;
             }
             _showSpecailForm();
@@ -413,6 +416,7 @@ var studentInfo = (function () {
         var system_name = '';
         var identity_name = '';
         var is_join_admission_selection = '';
+        var has_olympia = '';
         var is_confirmed = '';
         var is_selection_document_lock = '';
         var countryName = '';
@@ -438,6 +442,14 @@ var studentInfo = (function () {
             is_join_admission_selection = '無參加個人申請資格';
         else
             is_join_admission_selection = '無';
+
+        if (value.student_qualification_verify.system_id == 1) {
+            has_olympia = `
+                <li>
+                    曾獲國際數理奧林匹亞競賽/美國國際科展獎項：${(value.student_misc_data.has_olympia_aspiration)? '是': '否'}
+                </li>
+            `;
+        }
 
         if (value.student_misc_data.confirmed_at != null)
             is_confirmed = '已完成填報';
@@ -500,6 +512,7 @@ var studentInfo = (function () {
                 <li>
                     個人申請：${is_join_admission_selection}
                 </li>
+                ${has_olympia}
                 <li>
                     聯分採計：${admission_placement_apply_name}
                 </li>
@@ -888,6 +901,43 @@ var studentInfo = (function () {
         });
         $('#tbody-selection').html(selectionHTML);
 
+    }
+
+    function _renderStudentAdmissionOlympiaOrder(json) {
+        // console.log(json);
+        let olympiaHTML = '';
+        if ( json == 'x'){
+            olympiaHTML = `<tr><td colspan="3" style="font-size: xx-large; text-align: center;">不適用</td></tr>`;
+            $('.olympiaList-tab').hide();
+        } else {
+            $('.olympiaList-tab').show();
+            json.forEach((value, index) => {
+                index= parseInt(index,10) + 1;
+                var note ='';
+                if(value.deleted_at != null)
+                    note = '註銷';
+                let schoo_dept_title = '';
+                if (value.department_data != null) {
+                    schoo_dept_title = (value.department_data.school!=null) ? value.department_data.school.title + ' ' : '';
+                    if(value.department_data.is_extended_department == 1){
+                        schoo_dept_title = schoo_dept_title + '<span class="badge badge-warning">重點產業系所</span> ' + value.department_data.title;
+                    } else if(value.department_data.is_extended_department == 2){
+                        schoo_dept_title = schoo_dept_title + '<span class="badge table-primary">國際專修部</span> ' + value.department_data.title ;
+                    } else {
+                        schoo_dept_title = schoo_dept_title + value.department_data.title;
+                    }
+                }
+                olympiaHTML += `
+							<tr>
+							<td>` + index + `</td>
+							<td>` + value.dept_id + `</td>
+							<td>` + schoo_dept_title + `</td>
+							<td>` + note + `</td>
+							</tr>
+							`;
+            });
+        }
+        $('#tbody-olympia').html(olympiaHTML);
     }
 
     function _renderStudentAdmissionPlacementOrder(json) {
