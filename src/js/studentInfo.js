@@ -523,6 +523,9 @@ var studentInfo = (function () {
                     ${is_selection_document_lock}
                 </li>
                 <li>
+                    最高學歷核驗：${(value.student_misc_data.distribution_school_verify)?'已核驗':'未核驗'}
+                </li>
+                <li>
                     資格不符原因：${qualification_to_distribute}
                 </li>
         `;
@@ -911,31 +914,35 @@ var studentInfo = (function () {
             $('.olympiaList-tab').hide();
         } else {
             $('.olympiaList-tab').show();
-            json.forEach((value, index) => {
-                index= parseInt(index,10) + 1;
-                var note ='';
-                if(value.deleted_at != null)
-                    note = '註銷';
-                let schoo_dept_title = '';
-                if (value.department_data != null) {
-                    schoo_dept_title = (value.department_data.school!=null) ? value.department_data.school.title + ' ' : '';
-                    if(value.department_data.is_extended_department == 1){
-                        schoo_dept_title = schoo_dept_title + '<span class="badge badge-warning">重點產業系所</span> ' + value.department_data.title;
-                    } else if(value.department_data.is_extended_department == 2){
-                        schoo_dept_title = schoo_dept_title + '<span class="badge table-primary">國際專修部</span> ' + value.department_data.title ;
-                    } else {
-                        schoo_dept_title = schoo_dept_title + value.department_data.title;
+            try {
+                json.forEach((value, index) => {
+                    index= parseInt(index,10) + 1;
+                    var note ='';
+                    if(value.deleted_at != null)
+                        note = '註銷';
+                    let schoo_dept_title = '';
+                    if (value.department_data != null) {
+                        schoo_dept_title = (value.department_data.school!=null) ? value.department_data.school.title + ' ' : '';
+                        if(value.department_data.is_extended_department == 1){
+                            schoo_dept_title = schoo_dept_title + '<span class="badge badge-warning">重點產業系所</span> ' + value.department_data.title;
+                        } else if(value.department_data.is_extended_department == 2){
+                            schoo_dept_title = schoo_dept_title + '<span class="badge table-primary">國際專修部</span> ' + value.department_data.title ;
+                        } else {
+                            schoo_dept_title = schoo_dept_title + value.department_data.title;
+                        }
                     }
-                }
-                olympiaHTML += `
-							<tr>
-							<td>` + index + `</td>
-							<td>` + value.dept_id + `</td>
-							<td>` + schoo_dept_title + `</td>
-							<td>` + note + `</td>
-							</tr>
-							`;
-            });
+                    olympiaHTML += `
+                                <tr>
+                                <td>` + index + `</td>
+                                <td>` + value.dept_id + `</td>
+                                <td>` + schoo_dept_title + `</td>
+                                <td>` + note + `</td>
+                                </tr>
+                                `;
+                });
+            } catch (e) {
+                // console.log(e);
+            }
         }
         $('#tbody-olympia').html(olympiaHTML);
     }
