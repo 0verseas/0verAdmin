@@ -75,11 +75,22 @@ var User = (function () {
         return _userInfo
     }
 
+    function getAdmissionOpenTime(){
+        return fetch(baseUrl + '/admins/admission-open-time', {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+    }
+
     return {
         login,
         logout,
         isLogin,
         getUserInfo,
-        update
+        update,
+        getAdmissionOpenTime
     }
 })();
