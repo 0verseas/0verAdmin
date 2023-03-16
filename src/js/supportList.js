@@ -25,17 +25,20 @@ var estimateAdmissionCountFile = (function () {
             _setData();
         }
 
+        // 跟後台發送請求抓取開放時間資料
         res = await User.getAdmissionOpenTime();
+        // 有成功抓到就渲染
         if(res.ok){
             let admissionOpenTimeData = await res.json();
-            console.log(admissionOpenTimeData);
             let html = '';
+            // 把每一條開放時間 轉換成 html table body 格式
             admissionOpenTimeData.forEach((element, index) => {
-                let start = new Date(element.admission_start_at);
-                let end = new Date(element.admission_end_at);
-                let now =  new Date();
+                let start = new Date(element.admission_start_at); // 開始時間
+                let end = new Date(element.admission_end_at); // 結束時間
+                let now =  new Date(); // 目前時間
                 let description = element.description;
                 let colorClass;
+                // 根據目前時間顯示不同文字與顏色
                 if(now>end){
                     description += `<a class="text-danger">（已截止）</a>`;
                     colorClass = `table-secondary`;
