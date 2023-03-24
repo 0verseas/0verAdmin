@@ -523,12 +523,23 @@ var studentInfo = (function () {
                     ${is_selection_document_lock}
                 </li>
                 <li>
-                    最高學歷核驗：${(value.student_misc_data.distribution_school_verify)?'已核驗':'未核驗'}
-                </li>
-                <li>
                     資格不符原因：${qualification_to_distribute}
                 </li>
         `;
+        if(value.student_misc_data.distribution_school_verify){
+            progressListHTML +=`
+                <li>
+                    最高學歷已核驗
+                </li>
+            `;
+        }
+        if(value.student_misc_data.not_for_medicine_dentist){
+            progressListHTML +=`
+                <li>
+                    居留未滿八年，不得分發醫牙相關學系
+                </li>
+            `;
+        }
         if(value.student_misc_data.confirmed_placement_at != null){
             progressListHTML+=`
                 <li>
