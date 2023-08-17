@@ -1,10 +1,58 @@
+.row.show-list {
+	flex: 0 0 100%;
+    max-width: 100%;
+    margin: 0;
+}
+
 #apply-info {
-	height: 40px;
-	min-height: 40px;
 	border-radius: 10px;
-	text-indent: 5px;
 	width: 110px;
 	min-width: 110px;
+}
+
+#select-chk, .filter-btn {
+	width: 20px;   
+    height: 20px;  
+}
+
+.filter-and-handle {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.required-title-type, .filter-btn-type{
+	display: flex !important;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+	margin: 0;
+	padding: 0 5px;
+}
+
+.handle-btn-type {
+	margin: 0 2.5px;
+}
+
+.filter-type {
+	display: flex !important;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-items: center;
+	margin: 0;
+	flex: 0 0 50%;
+    max-width: 50%;
+	padding: 0 20px;
+}
+
+.handle-type {
+	display: flex !important;
+    flex-wrap: wrap;
+    justify-content: right;
+    align-items: center;
+	margin: 0;
+	flex: 0 0 50%;
+    max-width: 50%;
+	padding: 0 20px;
 }
 
 #type-selector {
@@ -24,12 +72,59 @@
 
 .show-list {
 	width: 100%;
-	margin-top: 5px;
+}
+
+.handle-and-return {
+	padding-bottom: 5px;
+}
+
+.odd {
+	background-color: #f2f2f2;
+}
+
+.even {
+	background-color: #d9d9d9;
+}
+
+/* 新增系所 - 橘色背景 */
+.action-new {
+    background-color: rgb(211, 255, 186) !important;
+}
+
+/* 更改系名 - 紫色背景 */
+.action-rename {
+    background-color: rgb(255, 138, 210) !important;
+}
+
+/* 更換類組 - 黃色背景 */
+.action-change-group {
+    background-color: rgb(255, 255, 144) !important;
+}
+
+/* 合併系所 - 灰色背景 */
+.action-merge {
+    background-color: rgb(158, 232, 255) !important;
+}
+
+.action-type {
+	border-radius: 30px 0 !important;
+	text-align: center;
+	text-indent: 0 !important;
+	color: black;
+	display: inline-block;
+    width: 60%; 
+    margin: 0 10px; 
 }
 
 #list-element {
-	margin-right: 5px;
+	margin: 5px;
 	display: inline-table;
+}
+
+.apply-title {
+	display: flex;
+    align-items: center;
+    white-space: nowrap;
 }
 
 #apply-list {
@@ -50,6 +145,10 @@
 	margin-top: 2px;
 }
 
+.hr-type {
+	margin: 0.5rem;
+}
+
 #fixed-top {
 	padding: 5px 0px;
 	position:sticky;
@@ -62,6 +161,15 @@
 	font-weight: bold;
 }
 
+span.info-label {
+	display: contents;
+}
+
+.info-button {
+	margin: 5px;
+	width: 150px;
+}
+
 @media screen {
 	#apply-list {
 		height: 700px;
@@ -71,9 +179,29 @@
 	#apply-list {
 		height: 500px;
 	}
+	.filter-type {
+		flex: 0 0 100%;
+        max-width: 100%;
+	    padding: 0 20px;
+    }
+	.handle-type {
+        flex: 0 0 100%;
+        max-width: 100%;
+	    padding: 0 20px;
+    }
 }
 @media screen and (max-width:480px) {
 	#apply-list {
 		height: 400px;
 	}
+	.filter-type {
+		flex: 0 0 100%;
+        max-width: 100%;
+	    padding: 0 20px;
+    }
+	.handle-type {
+        flex: 0 0 100%;
+        max-width: 100%;
+	    padding: 0 20px;
+    }
 }

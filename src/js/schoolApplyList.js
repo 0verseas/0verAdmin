@@ -1,11 +1,13 @@
 (()=>{
     const $paginationContainer = $('#pagination-container'); // 分頁器區域
-    const $applyList = $('#apply-list') // 請求列表
+    const $applyList = $('#apply-list'); // 請求列表
     
+    const $selectBtn = $('#select-btn'); // 選取按鈕
+    const $saveBtn = $('#save-btn'); // 儲存按鈕
+    const $verifiedBtn = $('#verified-btn'); // 鎖定按鈕
     const $rejectBtn = $('#reject-btn'); // 退還按鈕
     const $executeBtn = $('#execute-btn'); // 執行按鈕
     const $completedBtn = $('#completed-btn'); // 完成按鈕
-    const $selectBtn = $('#select-btn'); // 選取按鈕
 
     // 編輯模板上傳檔案相關物件
     const $imgModal = $('#img-modal');
@@ -25,14 +27,10 @@
     $executeBtn.on('click', _handleExecute);
 
     $selectBtn.on('click', _handleSelect); // 全選按鈕
-    $('#save-btn').on('click', _handleSave); // 暫存按鈕
-    $('#verified-btn').on('click', _handleVerified); // 鎖定按鈕
+    $saveBtn.on('click', _handleSave); // 暫存按鈕
+    $verifiedBtn.on('click', _handleVerified); // 鎖定按鈕
     
     $('body').on('click', '.img-thumbnail', _handleShowFile);
-    // 請求標題行可以選取/取消選取該請求
-    $('body').on('click', 'h5', function(e){
-        $(this).children('input').prop('checked', !$(this).children('input').is(':checked'));
-    });
 
     init();
 
@@ -50,9 +48,9 @@
             })
             .then((json) => {
                 applyListArray = json;
-                // 只有admin1可以執行請求
+                // 只有admin_IS可以執行請求
                 username = User.getUserInfo().username;
-                if (username !== 'admin1') {
+                if (username !== 'admin_IS') { // 更改爲資服組專用的帳號
                     $executeBtn.hide();
                 }
                 // 有資料才渲染分頁
@@ -72,9 +70,8 @@
             })
             .catch((err) => {
                 stopLoading();
-                // console.log(err);
                 err.json && err.json().then((data) => {
-                    swal({title: `錯誤`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                    swal({title: '錯誤', text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                     location.reload();
                 });
             });
@@ -94,178 +91,405 @@
             const deptTitle = (data.dept_title) ?data.dept_title:'';
             const stage = (data.executed_at)? 'item-executed': ((data.verified_at)? 'item-verified': 0);
             
-            let listHtml = `
-                <div class="show-list">
-                    <h5 class="col-12" style="margin:10px; margin-bottom:-5px;" data-id=${data.id}>
-                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp;&nbsp; ${schoolTitle}`;
+            let listHtml = ``;
+        
+            // 判斷 stage， 然後再根據 stage 賦予 class 屬性和 不同的 icon
             if (stage == 'item-executed') {
-                listHtml += `&nbsp;&nbsp; (已執行)`;
+                if (index % 2 === 0) {
+                    listHtml += `
+                <div class="row show-list odd">
+                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
+                    <label class="required-title-type">
+                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                        <i class="fas fa-check-circle required-title-type"></i>
+                    </label>
+                    `;
+                } else {
+                    listHtml += `
+                <div class="row show-list even">
+                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
+                    <label class="required-title-type">
+                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                        <i class="fas fa-check-circle required-title-type"></i>
+                    </label>
+                    `;
+                }
             } else if (stage == 'item-verified') {
-                listHtml += `&nbsp;&nbsp; (已鎖定)`;
+                if (index % 2 === 0) {
+                    listHtml += `
+                <div class="row show-list odd">
+                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
+                    <label class="required-title-type">
+                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                        <i class="fas fa-lock required-title-type"></i>
+                    </label>
+                    
+                    `;
+                } else {
+                    listHtml += `
+                <div class="row show-list even">
+                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
+                    <label class="required-title-type">
+                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                        <i class="fas fa-lock required-title-type"></i>
+                    </label>
+                    
+                    `;
+                }
+            } else {
+                if (index % 2 === 0) {
+                    listHtml += `
+                <div class="row show-list odd">
+                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
+                    <label class="required-title-type">
+                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                        <i class="fas fa-lock-open required-title-type"></i>
+                    </label>
+                    
+                    `;
+                } else {
+                    listHtml += `
+                <div class="row show-list even">
+                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
+                    <label class="required-title-type">
+                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                        <i class="fas fa-lock-open required-title-type"></i>
+                    </label>
+                    
+                    `;
+                }
             }
+
             listHtml += `
                     </h5>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 請求動作 </span></label>
-                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength ="191" value="${action}" disabled>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 系所學制 </span></label>
-                        <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${system}" disabled>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 系所類型 </span></label>
-                        <input type="text" id="apply-info" class="form-control" style="width:130px;" maxlength ="191" value="${type}" disabled>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 系所類型 </span></label>
-                        <select class="form-control new_type" id="type-selector" data-id=${data.id}>
-                            <option value=""></option>
-                            <option value="0">一般系所</option>
-                            <option value="1">重點產業系所</option>
-                            <option value="2">國際專修部</option>
-                        </select>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 系所類組 </span></label>
-                        <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group}" disabled>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 核定系名 </span></label>
-                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${deptTitle}" disabled>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 核定系名 </span></label>
-                        <input type="text" id="apply-info" class="form-control v_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}">
-                    </div>
+                    <div class="col-10">
+                        <div id="list-element">
+                            <span class="info-label"> 系所學制 </span>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${system}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 系所類組 </span>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 系所類型 </span>
+                            <input type="text" id="apply-info" class="form-control" style="width:130px;" maxlength ="191" value="${type}" disabled>
+                        </div>
+                        
+                        <div id="list-element">
+                            <span class="info-label"> 核定系名 </span>
+                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${deptTitle}" disabled>
+                        </div><br>
             `;
+
+            if (stage == 'item-verified' || stage == 'item-executed') {
+                listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 系所類型 </span>
+                            <select class="form-control new_type" id="type-selector" data-id=${data.id} disabled>
+                                <option value=""></option>
+                                <option value="0">一般系所</option>
+                                <option value="1">重點產業系所</option>
+                                <option value="2">國際專修部</option>
+                            </select>
+                        </div><br>
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 核定系名 </span>
+                            <input type="text" id="apply-info" class="form-control v_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}" disabled>
+                        </div><br>
+                `;
+            } else {
+                listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 系所類型 </span>
+                            <select class="form-control new_type" id="type-selector" data-id=${data.id}>
+                                <option value=""></option>
+                                <option value="0">一般系所</option>
+                                <option value="1">重點產業系所</option>
+                                <option value="2">國際專修部</option>
+                            </select>
+                        </div><br>
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 核定系名 </span>
+                            <input type="text" id="apply-info" class="form-control v_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}">
+                        </div><br>
+                `;
+            }        
+
+            // 根據不同的請求賦予不同的屬性，好讓各請求使用不同的背景顏色做區分，可以更直觀的知道是什麼請求
+            $(document).ready(function() {
+                var actions = $(".action-type");
+                
+                actions.each(function() {
+                    var action = $(this).val().trim();
+                    switch (action) {
+                        case "新增系所":
+                            $(this).addClass("action-new");
+                            break;
+                        case "更改系名":
+                            $(this).addClass("action-rename");
+                            break;
+                        case "更換類組":
+                            $(this).addClass("action-change-group");
+                            break;
+                        case "合併系所":
+                            $(this).addClass("action-merge");
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            });
 
             switch (data.action_id) {
                 case 1:
-                    listHtml += `
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"><span style="color:red;"> 原系代碼</span>(選填) </span></label>
-                        <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}">
-                    </div>
-                    `;
+                    if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
+                        listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;"> 原系代碼</span>(選填) </span>
+                            <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}" disabled>
+                        </div>
+                        `;
+                    } else {
+                        listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;"> 原系代碼</span>(選填) </span>
+                            <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}">
+                        </div>
+                        `;
+                    }
                     break;
                 case 2:
-                    listHtml += `
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 學系代碼 </span></label>
-                        <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
-                    </div>
-                    <div id="list-element">
-                    <label for="apply-info"><span class="info-label"> 新系所名稱 </span></label>
-                    <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 新系所名稱 </span></label>
-                        <input type="text" id="apply-info" class="form-control new_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_new_dept_title)?data.verified_new_dept_title:''}">
-                    </div>
-                    `;
+                    if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
+                        listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"> 學系代碼 </span>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 新系所名稱 </span>
+                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
+                        </div><br>
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 新系所名稱 </span>
+                            <input type="text" id="apply-info" class="form-control new_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_new_dept_title)?data.verified_new_dept_title:''}" disabled>
+                        </div>
+                        `;
+                    } else {
+                        listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"> 學系代碼 </span>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 新系所名稱 </span>
+                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
+                        </div><br>
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 新系所名稱 </span>
+                            <input type="text" id="apply-info" class="form-control new_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_new_dept_title)?data.verified_new_dept_title:''}">
+                        </div>
+                        `;
+                    }
                     break;
                 case 3:
-                    listHtml += `
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 學系代碼 </span></label>
-                        <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
-                    </div>
-                    <div id="list-element">
-                    <label for="apply-info"><span class="info-label"> 新系所類組 </span></label>
-                    <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"><span style="color:red;">修正</span> 新系所類組 </span></label>
-                        <select class="form-control new_group" id="type-selector" data-id=${data.id}>
-                            <option value=""></option>
-                            <option value="1">第一類組</option>
-                            <option value="2">第二類組</option>
-                            <option value="3">第三類組</option>
-                        </select>
-                    </div>
-                    `;
+                    if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
+                        listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"> 學系代碼 </span>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 新系所類組 </span>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
+                        </div><br>
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 新系所類組 </span>
+                            <select class="form-control new_group" id="type-selector" data-id=${data.id} disabled>
+                                <option value=""></option>
+                                <option value="1">第一類組</option>
+                                <option value="2">第二類組</option>
+                                <option value="3">第三類組</option>
+                            </select>
+                        </div>
+                        `;
+                    } else {
+                        listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"> 學系代碼 </span>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 新系所類組 </span>
+                            <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
+                        </div><br>
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 新系所類組 </span>
+                            <select class="form-control new_group" id="type-selector" data-id=${data.id}>
+                                <option value=""></option>
+                                <option value="1">第一類組</option>
+                                <option value="2">第二類組</option>
+                                <option value="3">第三類組</option>
+                            </select>
+                        </div>
+                        `;
+                    }
                     break;
                 case 4:
                     listHtml += `
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 欲合併系所代碼1 </span></label>
-                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_1}" disabled>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 欲合併系所代碼2 </span></label>
-                        <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_2}" disabled>
-                    </div>
+                        <div id="list-element">
+                            <span class="info-label"> 欲合併系所代碼1 </span>
+                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_1}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 欲合併系所代碼2 </span>
+                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_2}" disabled>
+                        </div>
                     `;
                     break;
             }
+        
+            // 查看核定公文改爲按鈕和 modal 的形式呈現
             listHtml += `
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 核定公文 </span></label>
-                        <div id="apply-info" class="form-control">
-                    `;
+                    </div>
+                    <div class="col-2">
+                    <!--<button class="info-button btn btn-primary" data-toggle="modal" data-target="#authorized-official-documents-modal">查看核定公文</button>-->
+            `;
+                    
             data.file.forEach(file => {
                 if (file) {
                     const fileType = _getFileType(file.split('.')[1]);
-                    if(fileType === 'img'){
+            
+                    if (fileType === 'img') {
                         listHtml += `
-                            <a class="img-thumbnail"
-                            style="margin-right: 5px;"
-                            src="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
-                            data-toggle="modal"
-                            data-filename="${file}"
-                            data-target=".img-modal"
-                            data-filetype="img"
-                            data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit">
-                                <i class="fa fa-file-image-o" aria-hidden="true"></i>
-                            </a>
-                        `
+                        <button class="info-button btn btn-primary img-thumbnail"
+                        style="margin-right: 5px;"
+                        src="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
+                        data-toggle="modal"
+                        data-filename="${file}"
+                        data-target=".img-modal"
+                        data-filetype="img"
+                        data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit">
+                            查看核定公文
+                            <!--<i class="fa fa-file-image-o" aria-hidden="true"></i>-->
+                        </button>
+                        `;
                     } else {
                         listHtml += `
-                            <a
-                                class="img-thumbnail non-img-file-thumbnail"
-                                data-toggle="modal"
-                                data-target=".img-modal"
-                                data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
-                                data-filename="${file}"
-                                data-filetype="${fileType}"
-                                data-icon="fa-file-${fileType}-o"
-                            >
-                                <i class="fa fa-file-${fileType}-o" data-filename="${file}" data-icon="fa-file-${fileType}-o" aria-hidden="true"></i>
-                            </a>
+                        <button class="info-button btn btn-primary img-thumbnail non-img-file-thumbnail"
+                        data-toggle="modal"
+                        data-target=".img-modal"
+                        data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit"
+                        data-filename="${file}"
+                        data-filetype="${fileType}"
+                        data-icon="fa-file-${fileType}-o">
+                            查看核定公文
+                            <!--<i class="fa fa-file-${fileType}-o" data-filename="${file}" data-icon="fa-file-${fileType}-o" aria-hidden="true"></i>-->
+                        </button>
                         `;
                     }
                 }
             });
+
+            // 申請人資料也改爲按鈕和 modal 的形式呈現
             listHtml += `
+                        <button class="info-button btn btn-info" data-toggle="modal" data-target="#applicant-info-modal">顯示申請人資料</button>
+                    </div>
+                    
+                    <!-- Applicant Info Modal -->
+                    <div class="modal fade" id="applicant-info-modal" tabindex="-1" role="dialog" aria-labelledby="applicant-info-modal-label" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="applicant-info-modal-label">申請人資料</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <span class="info-label"> 申請人姓名 </span>
+                                        <input type="text" id="applicant-name" class="form-control" maxlength="191" value="${data.applicant_name}" disabled style="width: 100%;">
+                                    </div><br>
+                                    <div>
+                                        <span class="info-label"> 申請人電話 </span>
+                                        <input type="text" id="applicant-phone" class="form-control" maxlength="191" value="${data.applicant_phone}" disabled style="width: 100%;">
+                                    </div><br>
+                                    <div>
+                                        <span class="info-label"> 申請人信箱 </span>
+                                        <input type="text" id="applicant-email" class="form-control" maxlength="191" value="${data.applicant_email}" disabled style="width: 100%;">
+                                    </div><br>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> 離開</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 申請人姓名 </span></label>
-                        <textarea class="form-control return_reason" id="apply-info" style="resize: horizontal;" disabled>${(data.applicant_name)? data.applicant_name:''}</textarea>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 申請人電話 </span></label>
-                        <textarea class="form-control return_reason" id="apply-info" style="resize: horizontal; width:150px; white-space:nowrap;" disabled>${(data.applicant_phone)?data.applicant_phone:''}</textarea>
-                    </div>
-                    <div id="list-element">
-                        <label for="apply-info"><span class="info-label"> 申請人信箱 </span></label>
-                        <textarea class="form-control return_reason" id="apply-info" style="resize: horizontal; width:350px; white-space:nowrap;" disabled>${(data.applicant_email)?data.applicant_email:''}</textarea>
-                    </div>
-                </div>
-                <div style="display:flex;" class="show-list">
-                    <div id="list-element" style="width: 400px;">
-                        <label for="apply-info"><span class="info-label"> 退回原因(上限1000字) </span></label>
-                        <textarea class="form-control return_reason" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因">${(data.return_reason)? data.return_reason:''}</textarea>
-                    </div>
-                    <div id="list-element" style="flex-grow: 1;">
-                        <label for="apply-info"><span class="info-label"> 處理說明(上限2000字) </span></label>
-                        <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明">${(data.note)? data.note:''}</textarea>
-                    </div>
-                </div>
-            </div><hr>
             `;
+
+            // 退回原因和處理說明
+            if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
+                if (stage == 'item-executed') {
+                    listHtml += `
+                    <div style="display:flex;" class="show-list handle-and-return col-12">
+                        <div id="list-element" style="width: 400px;">
+                            <span class="info-label"> 退回原因(上限1000字) </span>
+                            <textarea class="form-control return_reason" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因" disabled>${(data.return_reason)? data.return_reason:''}</textarea>
+                        </div><br>
+                        <div id="list-element" style="flex-grow: 1;">
+                            <span class="info-label"> 處理說明(上限2000字) </span>
+                            <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明" disabled>${(data.note)? data.note:''}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <hr class="hr-type">
+                    `;
+                } else {
+                    listHtml += `
+                    <div style="display:flex;" class="show-list handle-and-return col-12">
+                        <div id="list-element" style="width: 400px;">
+                            <span class="info-label"> 退回原因(上限1000字) </span>
+                            <textarea class="form-control return_reason" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因">${(data.return_reason)? data.return_reason:''}</textarea>
+                        </div><br>
+                        <div id="list-element" style="flex-grow: 1;">
+                            <span class="info-label"> 處理說明(上限2000字) </span>
+                            <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明" disabled>${(data.note)? data.note:''}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <hr class="hr-type">
+                    `;
+                }
+            } else {
+                listHtml += `
+                    <div style="display:flex;" class="show-list handle-and-return col-12">
+                        <div id="list-element" style="width: 400px;">
+                            <span class="info-label"> 退回原因(上限1000字) </span>
+                            <textarea class="form-control return_reason" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因">${(data.return_reason)? data.return_reason:''}</textarea>
+                        </div><br>
+                        <div id="list-element" style="flex-grow: 1;">
+                            <span class="info-label"> 處理說明(上限2000字) </span>
+                            <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明">${(data.note)? data.note:''}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <hr class="hr-type">
+                `;
+            }
+
             $applyList.append(listHtml);
 
             if (data.verified_dept_type=="0" || data.verified_dept_type=="1" || data.verified_dept_type=="2") {
@@ -279,14 +503,21 @@
 
     // 退回請求事件
     async function _handleReject(){
-        if(await _confirmExec(`確認要退回請求嗎？`)) {
+        if(await _confirmExec("確認要退回請求嗎？")) {
             openLoading();
             let data = [];
+            let cancelconfirm = 0; // 宣告多一個控制值，用以判斷是否沒有選取任何項目
+            
             for(let i=0; i<$('input[id=select-chk]').length; i++){
 
                 if ($('input[id=select-chk]')[i].checked) {
                     if($('input[id=select-chk]')[i].value == 'item-executed') {
-                        await swal({title: `錯誤`, text: '已執行的請求無法被退回，請聯繫資服組人員或取消勾選', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                        await swal({title: "錯誤", text: "已執行的請求無法被退回，請聯繫資服組人員或取消勾選", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
+                        location.reload();
+                        stopLoading();
+                        return;
+                    } else if ($(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val() == "" || $(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val() == 0) {
+                        await swal({title: "錯誤", text: "無法被退回，請填寫退回原因", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
                         location.reload();
                         stopLoading();
                         return;
@@ -298,18 +529,28 @@
                                     title: `項目 ${label[j]} 已鎖定，確認要將此項目退回嗎？`,
                                     type: 'warning',
                                     showCancelButton: true,
-                                    confirmButtonText: '確認',
-                                    cancelButtonText: '取消',
-                                    reverseButtons: true
+                                    confirmButtonText: "確認",
+                                    cancelButtonText: "取消",
+                                    reverseButtons: true,
+                                    allowOutsideClick: false
                                 }).then(() => {
                                     data.push({
                                         id: $('input[id=select-chk]')[i].getAttribute('data-id'),
                                         reason: $(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val()
                                     });
-                                }).catch((e) => {
-                                    location.reload();
-                                    stopLoading();
-                                    return;
+                                }).catch(async (e) => {
+                                    if (e == 'cancel') { // 抓取當檢查到例外情況出現再選擇取消後的操作
+                                        await swal({
+                                            title: "已取消執行", 
+                                            type: 'success', 
+                                            confirmButtonText: "確定", 
+                                            allowOutsideClick: false
+                                        });
+                                        cancelconfirm = 1;
+                                        location.reload();
+                                        stopLoading();
+                                        return
+                                    }
                                 });
                                 break;
                             }
@@ -322,8 +563,9 @@
                     }
                 }
             }
-            if (data.length == 0){
-                swal({title: '請選取至少一項請求！', type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+            if (data.length == 0 && cancelconfirm == 0){ // 利用多一個控制值來判斷是否爲沒有選取任何項目
+                await swal({title: "錯誤", text: "請選擇至少一筆未鎖定/未執行的請求！", type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                    location.reload();
                     stopLoading();
                     return;
                 });
@@ -339,31 +581,24 @@
             })
             .then((json) => {
                 $imgModal.modal('hide');
-                swal({title: json.messages[0], type:"success", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                swal({title: json.messages[0], type: 'success', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                     location.reload();
                     stopLoading();
                     return;
                 });
             })
-            .catch((err) => {
-                err.json && err.json().then((data) => {
-                    swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
-                        stopLoading();
-                        return;
-                    });
-                });
-            });
+            ;
         }
     }
 
     // 執行請求事件
     async function _handleExecute() {
-        if (username !== 'admin1') {
-            await swal({title: `無操作權限！`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+        if (username !== 'admin_IS') { // 更改爲資服組專用的帳號
+            await swal({title: "無操作權限！", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
             location.reload();
             return;
         } else {
-            if(await _confirmExec(`確認要執行請求嗎？`)) {
+            if(await _confirmExec("確認要執行請求嗎？")) {
                 openLoading();
                 let idSelected = [];
                 for(let i=0; i<$('input[id=select-chk]').length; i++){
@@ -371,7 +606,7 @@
                         if($('input[id=select-chk]')[i].value == 'item-verified') {
                             idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
                         } else {
-                            await swal({title: `錯誤`, text: '僅可執行已鎖定且未執行的請求！', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                            await swal({title: "錯誤", text: "僅可執行已鎖定且未執行的請求！", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
                             location.reload();
                             stopLoading();
                             return;
@@ -379,7 +614,7 @@
                     }
                 }
                 if (idSelected.length == 0){
-                    swal({title: '請選取至少一項請求！', type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                    await swal({title: "錯誤",text: "請選取至少一項已鎖定的請求！", type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                         location.reload();
                         stopLoading();
                         return;
@@ -387,7 +622,6 @@
                 }
                 // 檢查例外
                 let res = await School.checkApply(idSelected.toString());
-                console.log(res);
                 if(res) {
                     $imgModal.modal('hide');
                     let errmsg = '';
@@ -404,37 +638,69 @@
                     });
                     if(errmsg.length > 0) {
                         await swal({
-                            title: `發現例外情況：${errmsg}。是否要繼續執行？`,
+                            title: "發現例外情況",
+                            text: `${errmsg}。是否要繼續執行？`,
                             type: 'warning',
                             showCancelButton: true,
-                            confirmButtonText: '繼續',
-                            cancelButtonText: '取消',
-                            reverseButtons: true
-                        }).catch(async (err) => {
-                            console.log(err);
-                            err.json && err.json().then((data) => {
-                                swal({title: data.messages, type:"error", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                            confirmButtonText: "繼續",
+                            cancelButtonText: "取消",
+                            reverseButtons: true,
+                            allowOutsideClick: false
+                        }).then(async (result) => { // 調整成發現例外情況再選擇繼續後，直接執行操作
+                            if (result) {
+                                res = School.executeApply(idSelected.toString());
+                                $imgModal.modal('hide');
+                                await swal({title: "執行成功", type: 'success', confirmButtonText: "確定", allowOutsideClick: false});
+                                location.reload();
+                                stopLoading();
+                                return;
+                            }                            
+                        }).catch(async (err) => { // 當發現例外情況再選擇取消後的操作
+                            if (err == 'cancel') {
+                                await swal({
+                                    title: "已取消執行", 
+                                    type: 'success', 
+                                    confirmButtonText: "確定", 
+                                    allowOutsideClick: false
+                                });
+                                location.reload();
+                                stopLoading();
+                                return
+                            }
+                            err.json && err.json().then(async (data) => {
+                                await swal({title: data.messages, type: 'error', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                                     location.reload();
                                     stopLoading();
                                     return;
                                 });
                             });
-                            await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+                        });
+                        location.reload();
+                        stopLoading();
+                        return;
+                    } else { // 新增當沒有出現例外情況的操作
+                        res = await School.executeApply(idSelected.toString());
+                        //console.log(res);
+                        if (res.ok) {
+                            $imgModal.modal('hide');
+                            await swal({
+                                title: '執行成功',
+                                type: "success",
+                                confirmButtonText: '確定',
+                                allowOutsideClick: false
+                            });
                             location.reload();
                             stopLoading();
-                            return;
-                        });
+                        } else {
+                            await swal({
+                                title: '執行途中發生錯誤',
+                                type: "error",
+                                confirmButtonText: '確定',
+                                allowOutsideClick: false
+                            });
+                            stopLoading();
+                        }
                     }
-                }
-                res = await School.executeApply(idSelected.toString());
-                if(res.ok) {
-                    $imgModal.modal('hide');
-                    await swal({title: '執行成功', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
-                    location.reload();
-                    stopLoading();
-                } else {
-                    await swal({title: '執行途中發生錯誤', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
-                    stopLoading();
                 }
             }
         }
@@ -442,9 +708,10 @@
 
     // 完成請求事件
     async function _handleCompleted() {
-        if(await _confirmExec(`確認要完成請求嗎？`)) {
+        if(await _confirmExec("確認要完成請求嗎？")) {
             openLoading();
             let idSelected = [];
+            let cancelconfirm = 0; // 宣告多一個控制值，用以判斷是否沒有選取任何項目
             for(let i=0; i<$('input[id=select-chk]').length; i++){
                 if ($('input[id=select-chk]')[i].checked) {
                     if($('input[id=select-chk]')[i].value != 'item-executed') {
@@ -452,14 +719,29 @@
                         for (let j=0; j<label.length; j++) {
                             if(label[j].includes('#')) {
                                 await swal({
-                                    title: `項目 ${label[j]} 還未執行，確認要將此項目標示為已完成嗎？`,
+                                    title: `項目 ${label[j]} 還未執行`,
+                                    text: "確認要將此項目標示為已完成嗎？",
                                     type: 'warning',
                                     showCancelButton: true,
-                                    confirmButtonText: '確認',
-                                    cancelButtonText: '取消',
-                                    reverseButtons: true
+                                    confirmButtonText: "確認",
+                                    cancelButtonText: "取消",
+                                    reverseButtons: true,
+                                    allowOutsideClick: false
                                 }).then(() => {
                                     idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
+                                }).catch(async (err) => {
+                                    if (err == 'cancel') { // 當發現例外情況再選擇取消後的操作
+                                        await swal({
+                                            title: "已取消執行", 
+                                            type: 'success', 
+                                            confirmButtonText: "確定", 
+                                            allowOutsideClick: false
+                                        });
+                                        location.reload();
+                                        stopLoading();
+                                        cancelconfirm = 1; // 確認還是有選擇項目
+                                        return;
+                                    }
                                 });
                                 continue;
                             }
@@ -469,8 +751,8 @@
                     }
                 }
             }
-            if (idSelected.length == 0){
-                swal({title: '請選取至少一項請求！', type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+            if (idSelected.length == 0 && cancelconfirm == 0){ // 利用多一個控制值來判斷是否爲沒有選取任何項目
+                await swal({title: "錯誤", text: "請選取至少一項請求！", type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                     location.reload();
                     stopLoading();
                     return;
@@ -488,7 +770,7 @@
             })
             .then((json) => {
                 $imgModal.modal('hide');
-                swal({title: json.messages[0], type:"success", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                swal({title: json.messages[0], type: 'success', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                     location.reload();
                     stopLoading();
                     return;
@@ -496,7 +778,7 @@
             })
             .catch((err) => {
                 err.json && err.json().then((data) => {
-                    swal({title: '錯誤', text: data.messages[0], type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                    swal({title: "錯誤", text: data.messages[0], type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                         location.reload();
                         stopLoading();
                         return;
@@ -555,11 +837,14 @@
 
     // 批次選取
     function _handleSelect() {
-        if ($selectBtn.html() == '選取') {
-            $selectBtn.html('取消選取');
+        if ($selectBtn.html() == "全選") {
+            $selectBtn.html("取消全選");
             switch ($('input[name=target]:checked').val()) {
                 case 'all':
                     $('input[id=select-chk]').prop('checked', true);
+                    break;
+                case 'not-verified': // 全選的部分新增未鎖定的條件
+                    $('input[value=0]').prop('checked', true);
                     break;
                 case 'verified':
                     $('input[value=item-verified]').prop('checked', true);
@@ -569,14 +854,14 @@
                     break;
             }
         } else {
-            $selectBtn.html('選取');
+            $selectBtn.html("全選");
             $('input[id=select-chk]').prop('checked', false);
         }
     }
 
     // 儲存修正
     async function _handleSave() {
-        if(await _confirmExec(`確認要儲存修改嗎？`)) {
+        if(await _confirmExec("確認要儲存修改嗎？")) {
             openLoading();
             // 取要送往後端的資料
             let data = await _validateForm();
@@ -590,18 +875,19 @@
                     }
                 })
                 .then(async (json) => {
-                    await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
+                    await swal({title: "儲存成功", type: 'success', confirmButtonText: '確定'});
                     location.reload();
                     stopLoading();
                 })
                 .catch((err) => {
                     err.json && err.json().then((data) => {
-                        swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                        swal({title: 'ERROR', text: data.messages[0], type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
                     });
                     stopLoading();
                 });
             } else {
-                await swal({title:"請選擇至少一筆未鎖定/未執行的請求！", type:"error", confirmButtonText: '確定'});
+                await swal({title:"錯誤", text: "請選擇至少一筆未鎖定/未執行的請求！", type: 'error', confirmButtonText: "確定"});
+                location.reload();
                 stopLoading();
                 return;
             }
@@ -610,12 +896,13 @@
 
     // 確認鎖定
     async function _handleVerified() {
-        if(await _confirmExec(`確認要儲存修改並鎖定資料嗎？`)) {
+        if(await _confirmExec("確認要儲存修改並鎖定資料嗎？")) {
             openLoading();
             // 取要送往後端的資料
             let data = await _validateForm();
             if (data.length < 1) {
-                await swal({title:"請選擇至少一筆未鎖定/未執行的請求！", type:"error", confirmButtonText: '確定'});
+                await swal({title: "錯誤", text: "請選擇至少一筆未鎖定/未執行的請求！", type: 'error', confirmButtonText: "確定"});
+                location.reload();
                 stopLoading();
                 return;
             }
@@ -628,14 +915,13 @@
                 }
             })
             .then(async (json) => {
-                await swal({title:"資料已鎖定！", type:"success", confirmButtonText: '確定'});
+                await swal({title: "資料已鎖定！", type: 'success', confirmButtonText: "確定"});
                 location.reload();
                 stopLoading();
             })
             .catch((err) => {
-                // console.error(err);
                 err.json && err.json().then((data) => {
-                    swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                    swal({title: 'ERROR', text: data.messages[0], type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
                 });
                 stopLoading();
             });
@@ -650,7 +936,7 @@
             if ($(this).prop('checked')) {
                 if($(this).val() != 'item-executed' && $(this).val() != 'item-verified') {
                     switch ($(`.action-type[data-id=${$(this).data('id')}]`).val()) {
-                        case '新增系所':
+                        case "新增系所":
                             data.push({
                                 'id': $(this).data('id'),
                                 'verified_dept_type': $(`.new_type[data-id=${$(this).data('id')}]`).find(':selected').val(),
@@ -659,7 +945,7 @@
                                 'note': $(`.note[data-id=${$(this).data('id')}]`).val()
                             });
                             break;
-                        case '更改系名':
+                        case "更改系名":
                             data.push({
                                 'id': $(this).data('id'),
                                 'verified_dept_type': $(`.new_type[data-id=${$(this).data('id')}]`).find(':selected').val(),
@@ -668,7 +954,7 @@
                                 'note': $(`.note[data-id=${$(this).data('id')}]`).val()
                             });
                             break;
-                        case '更換類組':
+                        case "更換類組":
                             data.push({
                                 'id': $(this).data('id'),
                                 'verified_dept_type': $(`.new_type[data-id=${$(this).data('id')}]`).find(':selected').val(),
@@ -677,7 +963,7 @@
                                 'note': $(`.note[data-id=${$(this).data('id')}]`).val()
                             });
                             break;
-                        case '合併系所':
+                        case "合併系所":
                             data.push({
                                 'id': $(this).data('id'),
                                 'verified_dept_type': $(`.new_type[data-id=${$(this).data('id')}]`).find(':selected').val(),
@@ -697,15 +983,15 @@
             title: msg,
             type: 'warning',
             showCancelButton: true,
-            confirmButtonText: '確認',
-            cancelButtonText: '取消',
+            confirmButtonText: "確認",
+            cancelButtonText: "取消",
             reverseButtons: true
         })
         .then(() => {
             return true;
         })
         .catch(async(err) => {
-            await swal({title: '已取消執行', type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+            await swal({title: "已取消執行", type: 'success', confirmButtonText: "確定", allowOutsideClick: false});
             location.reload();
             stopLoading();
             return;

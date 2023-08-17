@@ -1,24 +1,36 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.0.8/pagination.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <div>
     <h2 class="title">學校請求清單</h2>
+    
 
-    <div class="row justify-content-between col-12" style="padding-top: 12px;">
-        <div>
-            <button class="btn btn-outline-secondary" id="select-btn">選取</button>&nbsp;
-            <input type="radio" name="target" value="all" checked><label>全部</label>&nbsp;
-            <input type="radio" name="target" value="verified"><label>已鎖定</label>&nbsp;
-            <input type="radio" name="target" value="executed"><label>已執行</label>&nbsp;&nbsp;
+    <div class="row filter-and-handle" style="padding-top: 12px;">
+        <div class="filter-type">
+            <button class="btn btn-outline-secondary" id="select-btn">全選</button>&nbsp;
+            <label class="filter-btn-type">
+                <input class="filter-btn" type="radio" name="target" value="all" checked>全部
+            </label>&nbsp;
+            <label class="filter-btn-type">
+                <input class="filter-btn" type="radio" name="target" value="not-verified">未鎖定
+            </label>&nbsp;
+            <label class="filter-btn-type">
+                <input class="filter-btn" type="radio" name="target" value="verified">已鎖定
+            </label>&nbsp;
+            <label class="filter-btn-type">
+                <input class="filter-btn" type="radio" name="target" value="executed">已執行
+            </label>&nbsp;
             <a title="操作說明" data-toggle="modal" data-target=".info-modal" style="cursor: pointer;">
                 <i class="fa fa-question-circle-o" aria-hidden="true"></i>
             </a>
         </div>
-        <div>
-            <button class="btn btn-outline-secondary" id="save-btn">儲存修正</button>
-            <button class="btn btn-outline-secondary" id="verified-btn">確認鎖定</button>
-            <button class="btn btn-outline-danger" id="reject-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
-            <!-- <button class="btn btn-outline-info" id="execute-btn"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button> -->
-            <button class="btn btn-outline-success" id="completed-btn"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
+        <div class="handle-type">
+            <button class="btn btn-outline-secondary handle-btn-type" id="save-btn">儲存修正</button>
+            <button class="btn btn-outline-secondary handle-btn-type" id="verified-btn">確認鎖定</button>
+            <button class="btn btn-outline-danger handle-btn-type" id="reject-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
+            <button class="btn btn-outline-info handle-btn-type" id="execute-btn"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button>
+            <button class="btn btn-outline-success handle-btn-type" id="completed-btn"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
         </div>
+        
     </div>
 </div>
 <div class="col-12" id="form-addNewDepartmentApply">
@@ -42,12 +54,11 @@
 				<img src="" class="img-fluid rounded img-ori">
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-outline-dark" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> 離開</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> 離開</button>
 			</div>
 		</div>
 	</div>
 </div>
-
 
 <!-- 顯示說明modal -->
 <div class="modal fade info-modal" tabindex="-1" role="dialog" aria-labelledby="infoModal" aria-hidden="true" id="info-modal">
