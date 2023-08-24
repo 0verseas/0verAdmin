@@ -433,7 +433,7 @@
                                     </div><br>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> 離開</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> 離開</button>
                                 </div>
                             </div>
                         </div>
