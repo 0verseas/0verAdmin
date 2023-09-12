@@ -1,7 +1,19 @@
 (()=>{
-    const $paginationContainer = $('#pagination-container'); // 分頁器區域
-    const $applyList = $('#apply-list'); // 請求列表
-    
+    const $unlockPaginationContainer = $('#unlock-pagination-container'); // 分頁器區域
+    const $unlockApplyList = $('#unlock-apply-list'); // 請求列表
+
+    const $lockPaginationContainer = $('#lock-pagination-container'); // 分頁器區域
+    const $lockApplyList = $('#lock-apply-list'); // 請求列表
+
+    const $executedPaginationContainer = $('#executed-pagination-container'); // 分頁器區域
+    const $executedApplyList = $('#executed-apply-list'); // 請求列表
+
+    const $completedPaginationContainer = $('#completed-pagination-container'); // 分頁器區域
+    const $completedApplyList = $('#completed-apply-list'); // 請求列表
+
+    const $rejectPaginationContainer = $('#reject-pagination-container'); // 分頁器區域
+    const $rejectApplyList = $('#reject-apply-list'); // 請求列表
+
     const $selectBtn = $('#select-btn'); // 選取按鈕
     const $saveBtn = $('#save-btn'); // 儲存按鈕
     const $verifiedBtn = $('#verified-btn'); // 鎖定按鈕
@@ -20,7 +32,11 @@
     const type_array = ['一般系所','重點產業系所','國際專修班'];
     const group_array = ['','第一類組','第二類組','第三類組'];
 
-    let applyListArray = []; // 目前請求有哪些
+    let unlockApplyListArray = []; // 目前請求有哪些
+    let lockApplyListArray = []; // 目前請求有哪些
+    let executedApplyListArray = []; // 目前請求有哪些
+    let completedApplyListArray = []; // 目前請求有哪些
+    let rejectApplyListArray = []; // 目前請求有哪些
     var username = ''; // 當前使用者帳號
 
     $rejectBtn.on('click', _handleReject)
@@ -30,7 +46,84 @@
     $selectBtn.on('click', _handleSelect); // 全選按鈕
     $saveBtn.on('click', _handleSave); // 暫存按鈕
     $verifiedBtn.on('click', _handleVerified); // 鎖定按鈕
-    
+
+    $('#pills-tab button').on('click', function (event) {
+        const listType = $(this).data('target').replace('#','');
+        console.log(listType);
+        switch (listType){
+            case 'reject':
+                if (rejectApplyListArray.length == 0) {
+                    $rejectApplyList.html('無被退回的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $rejectPaginationContainer.pagination({
+                        dataSource: rejectApplyListArray,
+                        pageSize: 10,
+                        callback: function(rejectApplyListArray,pagination) {
+                            _applyListTamplate(listType,rejectApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+            case 'completed':
+                if (completedApplyListArray.length == 0) {
+                    $completedApplyList.html('無已完成的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $completedPaginationContainer.pagination({
+                        dataSource: completedApplyListArray,
+                        pageSize: 10,
+                        callback: function(completedApplyListArray,pagination) {
+                            _applyListTamplate(listType,completedApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+            case 'executed':
+                if (executedApplyListArray.length == 0) {
+                    $executedApplyList.html('無已執行的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $executedPaginationContainer.pagination({
+                        dataSource: executedApplyListArray,
+                        pageSize: 10,
+                        callback: function(executedApplyListArray,pagination) {
+                            _applyListTamplate(listType,executedApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+            case 'lock':
+                if (lockApplyListArray.length == 0) {
+                    $lockApplyList.html('無已鎖定的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $lockPaginationContainer.pagination({
+                        dataSource: lockApplyListArray,
+                        pageSize: 10,
+                        callback: function(lockApplyListArray,pagination) {
+                            _applyListTamplate(listType,lockApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+            case 'unlock':
+                if (unlockApplyListArray.length == 0) {
+                    $unlockApplyList.html('無未鎖定的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $unlockPaginationContainer.pagination({
+                        dataSource: unlockApplyListArray,
+                        pageSize: 10,
+                        callback: function(unlockApplyListArray,pagination) {
+                            _applyListTamplate(listType,unlockApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+        }
+    })
+
     $('body').on('click', '.img-thumbnail', _handleShowFile);
     $('body').on('click', '.applicant', _handleShowApplicant);
 
@@ -49,24 +142,102 @@
                 }
             })
             .then((json) => {
-                applyListArray = json;
+                ;
                 // 只有admin_IS可以執行請求
                 username = User.getUserInfo().username;
                 if (username !== 'admin_IS') { // 更改爲資服組專用的帳號
                     $executeBtn.hide();
                 }
-                // 有資料才渲染分頁
-                if (applyListArray.length == 0) {
-                    $applyList.html('無未完成的請求。');
-                } else {
-                    // 進行文憑列表分頁初始化渲染工作
-                    $paginationContainer.pagination({
-                        dataSource: applyListArray,
-                        pageSize: 50,
-                        callback: function(applyListArray,pagination) {
-                            _applyListTamplate(applyListArray, pagination.pageNumber);
+
+                console.log(json);
+
+                json.forEach(function (data, index) {
+                    if(data.returned_at != null){
+                        rejectApplyListArray.push(data);
+                    } else if(data.completed_at != null){
+                        completedApplyListArray.push(data);
+                    } else if(data.executed_at != null){
+                        executedApplyListArray.push(data);
+                    } else if(data.verified_at != null){
+                        lockApplyListArray.push(data);
+                    } else if(data.applied_at != null){
+                        unlockApplyListArray.push(data);
+                    }
+                });
+            }).then(() => {
+                const listType = $("#pills-tab").find(`[aria-selected=true]`).data('target').replace('#','');
+
+                switch (listType){
+                    case 'reject':
+                        if (rejectApplyListArray.length == 0) {
+                            $rejectApplyList.html('無被退回的請求。');
+                        } else {
+                            // 進行文憑列表分頁初始化渲染工作
+                            $rejectPaginationContainer.pagination({
+                                dataSource: rejectApplyListArray,
+                                pageSize: 10,
+                                callback: function(rejectApplyListArray,pagination) {
+                                    _applyListTamplate(listType,rejectApplyListArray, pagination.pageNumber);
+                                }
+                            });
                         }
-                    });
+                        break;
+                    case 'completed':
+                        if (completedApplyListArray.length == 0) {
+                            $completedApplyList.html('無被退回的請求。');
+                        } else {
+                            // 進行文憑列表分頁初始化渲染工作
+                            $completedPaginationContainer.pagination({
+                                dataSource: completedApplyListArray,
+                                pageSize: 10,
+                                callback: function(completedApplyListArray,pagination) {
+                                    _applyListTamplate(listType,completedApplyListArray, pagination.pageNumber);
+                                }
+                            });
+                        }
+                        break;
+                    case 'executed':
+                        if (executedApplyListArray.length == 0) {
+                            $executedApplyList.html('無被退回的請求。');
+                        } else {
+                            // 進行文憑列表分頁初始化渲染工作
+                            $executedPaginationContainer.pagination({
+                                dataSource: executedApplyListArray,
+                                pageSize: 10,
+                                callback: function(executedApplyListArray,pagination) {
+                                    _applyListTamplate(listType,executedApplyListArray, pagination.pageNumber);
+                                }
+                            });
+                        }
+                        break;
+                    case 'lock':
+                        if (lockApplyListArray.length == 0) {
+                            $lockApplyList.html('無被退回的請求。');
+                        } else {
+                            // 進行文憑列表分頁初始化渲染工作
+                            $lockPaginationContainer.pagination({
+                                dataSource: lockApplyListArray,
+                                pageSize: 10,
+                                callback: function(lockApplyListArray,pagination) {
+                                    _applyListTamplate(listType,lockApplyListArray, pagination.pageNumber);
+                                }
+                            });
+                        }
+                        break;
+                    case 'unlock':
+                        if (unlockApplyListArray.length == 0) {
+                            $unlockApplyList.html('無被退回的請求。');
+                        } else {
+                            // 進行文憑列表分頁初始化渲染工作
+                            $unlockPaginationContainer.pagination({
+                                dataSource: unlockApplyListArray,
+                                pageSize: 10,
+                                callback: function(unlockApplyListArray,pagination) {
+                                    _applyListTamplate(listType,unlockApplyListArray, pagination.pageNumber);
+                                }
+                            });
+                        }
+                        break;
                 }
                 stopLoading();
             })
@@ -81,9 +252,13 @@
     }
 
     // 請求列表轉換並渲染
-    function _applyListTamplate(datas,page) {
+    function _applyListTamplate(listType,datas,page) {
         // 渲染 請求列表
-        $applyList.html('');
+        $rejectApplyList.html('');
+        $completedApplyList.html('');
+        $executedApplyList.html('');
+        $lockApplyList.html('');
+        $unlockApplyList.html('');
         datas.forEach(function (data, index) {
             const schoolTitle = (data.school.title)? data.school.title: '';
             const schoolCode = (data.school.id)? data.school.id: '';
@@ -92,88 +267,28 @@
             const type = type_array[data.dept_type];
             const group = group_array[data.group_code];
             const deptTitle = (data.dept_title) ?data.dept_title:'';
-            const stage = (data.executed_at)? 'item-executed': ((data.verified_at)? 'item-verified': 0);
-            
+            const stage = (data.executed_at)? 'item-executed': ((data.verified_at)? 'item-verified': ((data.returned_at)? 'item-executed': 0));
+
             let listHtml = ``;
-        
-            // 判斷 stage， 然後再根據 stage 賦予 class 屬性和 不同的 icon
-            if (stage == 'item-executed') {
-                if (index % 2 === 0) {
-                    listHtml += `
-                <div class="row show-list odd">
-                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
-                    <label class="required-title-type">
-                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
-                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
-                        <i class="fas fa-check-circle required-title-type"></i>
-                    </label>
-                    `;
-                } else {
-                    listHtml += `
-                <div class="row show-list even">
-                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
-                    <label class="required-title-type">
-                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
-                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
-                        <i class="fas fa-check-circle required-title-type"></i>
-                    </label>
-                    `;
-                }
-            } else if (stage == 'item-verified') {
-                if (index % 2 === 0) {
-                    listHtml += `
-                <div class="row show-list odd">
-                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
-                    <label class="required-title-type">
-                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
-                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
-                        <i class="fas fa-lock required-title-type"></i>
-                    </label>
-                    
-                    `;
-                } else {
-                    listHtml += `
-                <div class="row show-list even">
-                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
-                    <label class="required-title-type">
-                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
-                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
-                        <i class="fas fa-lock required-title-type"></i>
-                    </label>
-                    
-                    `;
-                }
+
+            if (index % 2 === 0) {
+                listHtml += `
+                    <div class="row show-list odd">
+                `;
             } else {
-                if (index % 2 === 0) {
-                    listHtml += `
-                <div class="row show-list odd">
-                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
-                    <label class="required-title-type">
-                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
-                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
-                        <i class="fas fa-lock-open required-title-type"></i>
-                    </label>
-                    
-                    `;
-                } else {
-                    listHtml += `
-                <div class="row show-list even">
-                    <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
-                    <label class="required-title-type">
-                        <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
-                        <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
-                        <i class="fas fa-lock-open required-title-type"></i>
-                    </label>
-                    
-                    `;
-                }
+                listHtml += `
+                    <div class="row show-list even">
+                `;
             }
+
+            listHtml += `
+                <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
+                <label class="required-title-type">
+                    <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
+                    #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
+                    <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                </label>
+            `;
 
             listHtml += `
                     </h5>
@@ -190,7 +305,7 @@
                             <span class="info-label"> 系所類型 </span>
                             <input type="text" id="apply-info" class="form-control" style="width:130px;" maxlength ="191" value="${type}" disabled>
                         </div>
-                        
+
                         <div id="list-element">
                             <span class="info-label"> 核定系名 </span>
                             <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${deptTitle}" disabled>
@@ -229,12 +344,12 @@
                             <input type="text" id="apply-info" class="form-control v_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}">
                         </div><br>
                 `;
-            }        
+            }
 
             // 根據不同的請求賦予不同的屬性，好讓各請求使用不同的背景顏色做區分，可以更直觀的知道是什麼請求
             $(document).ready(function() {
                 var actions = $(".action-type");
-                
+
                 actions.each(function() {
                     var action = $(this).val().trim();
                     switch (action) {
@@ -363,17 +478,17 @@
                     `;
                     break;
             }
-        
+
             // 查看核定公文和顯示申請人資料改爲按鈕和 modal 的形式呈現
             listHtml += `
                     </div>
                     <div class="col-2">
             `;
-                    
+
             data.file.forEach(file => {
                 if (file) {
                     const fileType = _getFileType(file.split('.')[1]);
-            
+
                     if (fileType === 'img') {
                         listHtml += `
                         <button class="info-button btn btn-primary img-thumbnail"
@@ -412,7 +527,7 @@
                     `;
                 }
             });
-            
+
             // 退回原因和處理說明
             if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
                 if (stage == 'item-executed') {
@@ -466,7 +581,24 @@
                 `;
             }
 
-            $applyList.append(listHtml);
+            switch (listType){
+                case 'reject':
+                    $rejectApplyList.append(listHtml);
+                    break;
+                case 'completed':
+                    $completedApplyList.append(listHtml);
+                    break;
+                case 'executed':
+                    $executedApplyList.append(listHtml);
+                    break;
+                case 'lock':
+                    $lockApplyList.append(listHtml);
+                    break;
+                case 'unlock':
+                    $unlockApplyList.append(listHtml);
+                    break;
+            }
+
 
             if (data.verified_dept_type=="0" || data.verified_dept_type=="1" || data.verified_dept_type=="2") {
                 $(`.new_type[data-id='${data.id}']`).children(`[value=${data.verified_dept_type}]`).prop('selected', true);
@@ -483,7 +615,7 @@
             openLoading();
             let data = [];
             let cancelconfirm = 0; // 宣告多一個控制值，用以判斷是否沒有選取任何項目
-            
+
             for(let i=0; i<$('input[id=select-chk]').length; i++){
 
                 if ($('input[id=select-chk]')[i].checked) {
@@ -517,9 +649,9 @@
                                 }).catch(async (e) => {
                                     if (e == 'cancel') { // 抓取當檢查到例外情況出現再選擇取消後的操作
                                         await swal({
-                                            title: "已取消執行", 
-                                            type: 'success', 
-                                            confirmButtonText: "確定", 
+                                            title: "已取消執行",
+                                            type: 'success',
+                                            confirmButtonText: "確定",
                                             allowOutsideClick: false
                                         });
                                         cancelconfirm = 1;
@@ -630,13 +762,13 @@
                                 location.reload();
                                 stopLoading();
                                 return;
-                            }                            
+                            }
                         }).catch(async (err) => { // 當發現例外情況再選擇取消後的操作
                             if (err == 'cancel') {
                                 await swal({
-                                    title: "已取消執行", 
-                                    type: 'success', 
-                                    confirmButtonText: "確定", 
+                                    title: "已取消執行",
+                                    type: 'success',
+                                    confirmButtonText: "確定",
                                     allowOutsideClick: false
                                 });
                                 location.reload();
@@ -708,9 +840,9 @@
                                 }).catch(async (err) => {
                                     if (err == 'cancel') { // 當發現例外情況再選擇取消後的操作
                                         await swal({
-                                            title: "已取消執行", 
-                                            type: 'success', 
-                                            confirmButtonText: "確定", 
+                                            title: "已取消執行",
+                                            type: 'success',
+                                            confirmButtonText: "確定",
                                             allowOutsideClick: false
                                         });
                                         location.reload();
@@ -734,7 +866,7 @@
                     return;
                 });
             }
-            
+
             // 檢查例外
             School.updateApply(idSelected.toString())
             .then((res) => {

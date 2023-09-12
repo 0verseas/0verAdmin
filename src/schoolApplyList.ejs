@@ -2,26 +2,34 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <div>
     <h2 class="title">學校請求清單</h2>
-    
 
     <div class="row filter-and-handle" style="padding-top: 12px;">
         <div class="filter-type">
             <button class="btn btn-outline-secondary" id="select-btn">全選</button>&nbsp;
             <label class="filter-btn-type">
                 <input class="filter-btn" type="radio" name="target" value="all" checked>全部
-            </label>&nbsp;
-            <label class="filter-btn-type">
-                <input class="filter-btn" type="radio" name="target" value="not-verified">未鎖定
-            </label>&nbsp;
-            <label class="filter-btn-type">
-                <input class="filter-btn" type="radio" name="target" value="verified">已鎖定
-            </label>&nbsp;
-            <label class="filter-btn-type">
-                <input class="filter-btn" type="radio" name="target" value="executed">已執行
-            </label>&nbsp;
+            </label>
+            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="btn nav-link active handle-btn-type" id="unlock-tab" data-toggle="pill" data-target="#unlock" type="button" role="tab" aria-controls="unlock" aria-selected="true"><i class="fas fa-lock-open fa-fw text-secondary"></i> 未鎖定</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="btn nav-link handle-btn-type" id="lock-tab" data-toggle="pill" data-target="#lock" type="button" role="tab" aria-controls="lock" aria-selected="false"><i class="fas fa-lock fa-fw text-warning"></i> 已鎖定</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="btn nav-link handle-btn-type" id="executed-tab" data-toggle="pill" data-target="#executed" type="button" role="tab" aria-controls="executed" aria-selected="false"><i class="fas fa-check-circle fa-fw text-success"></i> 已執行</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="btn nav-link handle-btn-type" id="completed-tab" data-toggle="pill" data-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false"><i class="fas fa-tasks fa-fw text-primary"></i> 已完成</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="btn nav-link handle-btn-type" id="reject-tab" data-toggle="pill" data-target="#reject" type="button" role="tab" aria-controls="reject" aria-selected="false"><i class="fas fa-redo fa-fw text-danger"></i> 被退回</button>
+                </li>
+            </ul>
             <a title="操作說明" data-toggle="modal" data-target=".info-modal" style="cursor: pointer;">
                 <i class="far fa-question-circle" aria-hidden="true"></i>
             </a>
+
         </div>
         <div class="handle-type">
             <button class="btn btn-outline-secondary handle-btn-type" id="save-btn">儲存修正</button>
@@ -30,18 +38,71 @@
             <button class="btn btn-outline-info handle-btn-type" id="execute-btn"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button>
             <button class="btn btn-outline-success handle-btn-type" id="completed-btn"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
         </div>
-        
+
     </div>
 </div>
 <div class="col-12" id="form-addNewDepartmentApply">
     <hr>
-    <div id="apply-list"></div>
-    <div class="row">
-        <div class="col-12">
-            <table class="table table-hover">
-                <div id="pagination-container">
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="unlock" role="tabpanel" aria-labelledby="unlock-tab">
+            <div id="unlock-apply-list"></div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover">
+                        <div id="unlock-pagination-container">
+                        </div>
+                    </table>
                 </div>
-            </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="lock" role="tabpanel" aria-labelledby="lock-tab">
+            <div id="lock-apply-list"></div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover">
+                        <div id="lock-pagination-container">
+                        </div>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="executed" role="tabpanel" aria-labelledby="executed-tab">
+            <div id="executed-apply-list"></div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover">
+                        <div id="executed-pagination-container">
+                        </div>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+            <div id="completed-apply-list"></div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover">
+                        <div id="completed-pagination-container">
+                        </div>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="reject" role="tabpanel" aria-labelledby="reject-tab">
+            <div id="reject-apply-list"></div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover">
+                        <div id="reject-pagination-container">
+                        </div>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -66,7 +127,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">申請人資料</h5>
             </div>
-            <div class="modal-body" id="applicant-modal-body">    
+            <div class="modal-body" id="applicant-modal-body">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> 離開</button>
