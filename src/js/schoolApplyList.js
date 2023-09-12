@@ -408,10 +408,6 @@
                             <span class="info-label"> 新系所名稱 </span>
                             <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
                         </div><br>
-                        <div id="list-element">
-                            <span class="info-label"><span style="color:red;">修正</span> 新系所名稱 </span>
-                            <input type="text" id="apply-info" class="form-control new_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_new_dept_title)?data.verified_new_dept_title:''}" disabled>
-                        </div>
                         `;
                     } else {
                         listHtml += `
@@ -423,10 +419,6 @@
                             <span class="info-label"> 新系所名稱 </span>
                             <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
                         </div><br>
-                        <div id="list-element">
-                            <span class="info-label"><span style="color:red;">修正</span> 新系所名稱 </span>
-                            <input type="text" id="apply-info" class="form-control new_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_new_dept_title)?data.verified_new_dept_title:''}">
-                        </div>
                         `;
                     }
                     break;
