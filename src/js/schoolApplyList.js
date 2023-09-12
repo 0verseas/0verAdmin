@@ -11,7 +11,8 @@
 
     // 編輯模板上傳檔案相關物件
     const $imgModal = $('#img-modal');
-    const $imgModalBody= $('#img-modal-body');
+    const $imgModalBody = $('#img-modal-body');
+    const $applicantModalBody = $('#applicant-modal-body');
 
     // 中文名稱陣列 方便 代碼轉換
     const action_array = ['','新增系所','更改系名','更換類組','合併系所'];
@@ -31,6 +32,7 @@
     $verifiedBtn.on('click', _handleVerified); // 鎖定按鈕
     
     $('body').on('click', '.img-thumbnail', _handleShowFile);
+    $('body').on('click', '.applicant', _handleShowApplicant);
 
     init();
 
@@ -84,6 +86,7 @@
         $applyList.html('');
         datas.forEach(function (data, index) {
             const schoolTitle = (data.school.title)? data.school.title: '';
+            const schoolCode = (data.school.id)? data.school.id: '';
             const action = action_array[data.action_id];
             const system = system_array[data.system_id];
             const type = type_array[data.dept_type];
@@ -101,7 +104,7 @@
                     <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
                     <label class="required-title-type">
                         <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
                         <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
                         <i class="fas fa-check-circle required-title-type"></i>
                     </label>
@@ -112,7 +115,7 @@
                     <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
                     <label class="required-title-type">
                         <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
                         <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
                         <i class="fas fa-check-circle required-title-type"></i>
                     </label>
@@ -125,7 +128,7 @@
                     <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
                     <label class="required-title-type">
                         <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
                         <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
                         <i class="fas fa-lock required-title-type"></i>
                     </label>
@@ -137,7 +140,7 @@
                     <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
                     <label class="required-title-type">
                         <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
                         <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
                         <i class="fas fa-lock required-title-type"></i>
                     </label>
@@ -151,7 +154,7 @@
                     <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
                     <label class="required-title-type">
                         <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
                         <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
                         <i class="fas fa-lock-open required-title-type"></i>
                     </label>
@@ -163,7 +166,7 @@
                     <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
                     <label class="required-title-type">
                         <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle}
+                        #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
                         <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
                         <i class="fas fa-lock-open required-title-type"></i>
                     </label>
@@ -361,11 +364,10 @@
                     break;
             }
         
-            // 查看核定公文改爲按鈕和 modal 的形式呈現
+            // 查看核定公文和顯示申請人資料改爲按鈕和 modal 的形式呈現
             listHtml += `
                     </div>
                     <div class="col-2">
-                    <!--<button class="info-button btn btn-primary" data-toggle="modal" data-target="#authorized-official-documents-modal">查看核定公文</button>-->
             `;
                     
             data.file.forEach(file => {
@@ -383,7 +385,6 @@
                         data-filetype="img"
                         data-filelink="${env.baseUrl}/admins/school-apply-list/${data.id}-${file}/edit">
                             查看核定公文
-                            <!--<i class="fa fa-file-image-o" aria-hidden="true"></i>-->
                         </button>
                         `;
                     } else {
@@ -396,54 +397,27 @@
                         data-filetype="${fileType}"
                         data-icon="fa-file-${fileType}-o">
                             查看核定公文
-                            <!--<i class="fa fa-file-${fileType}-o" data-filename="${file}" data-icon="fa-file-${fileType}-o" aria-hidden="true"></i>-->
                         </button>
                         `;
                     }
+                    listHtml += `
+                        <button class="info-button btn btn-info applicant"
+                        data-toggle="modal"
+                        data-target=".applicant-info-modal"
+                        data-applicantname="${data.applicant_name}"
+                        data-applicantphone="${data.applicant_phone}"
+                        data-applicantemail="${data.applicant_email}">
+                            顯示申請人資料
+                        </button>
+                    `;
                 }
             });
-
-            // 申請人資料也改爲按鈕和 modal 的形式呈現
-            listHtml += `
-                        <button class="info-button btn btn-info" data-toggle="modal" data-target="#applicant-info-modal">顯示申請人資料</button>
-                    </div>
-                    
-                    <!-- Applicant Info Modal -->
-                    <div class="modal fade" id="applicant-info-modal" tabindex="-1" role="dialog" aria-labelledby="applicant-info-modal-label" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="applicant-info-modal-label">申請人資料</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div>
-                                        <span class="info-label"> 申請人姓名 </span>
-                                        <input type="text" id="applicant-name" class="form-control" maxlength="191" value="${data.applicant_name}" disabled style="width: 100%;">
-                                    </div><br>
-                                    <div>
-                                        <span class="info-label"> 申請人電話 </span>
-                                        <input type="text" id="applicant-phone" class="form-control" maxlength="191" value="${data.applicant_phone}" disabled style="width: 100%;">
-                                    </div><br>
-                                    <div>
-                                        <span class="info-label"> 申請人信箱 </span>
-                                        <input type="text" id="applicant-email" class="form-control" maxlength="191" value="${data.applicant_email}" disabled style="width: 100%;">
-                                    </div><br>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> 離開</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            `;
-
+            
             // 退回原因和處理說明
             if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
                 if (stage == 'item-executed') {
                     listHtml += `
+                    </div>
                     <div style="display:flex;" class="show-list handle-and-return col-12">
                         <div id="list-element" style="width: 400px;">
                             <span class="info-label"> 退回原因(上限1000字) </span>
@@ -459,6 +433,7 @@
                     `;
                 } else {
                     listHtml += `
+                    </div>
                     <div style="display:flex;" class="show-list handle-and-return col-12">
                         <div id="list-element" style="width: 400px;">
                             <span class="info-label"> 退回原因(上限1000字) </span>
@@ -475,6 +450,7 @@
                 }
             } else {
                 listHtml += `
+                    </div>
                     <div style="display:flex;" class="show-list handle-and-return col-12">
                         <div id="list-element" style="width: 400px;">
                             <span class="info-label"> 退回原因(上限1000字) </span>
@@ -811,6 +787,26 @@
 				</div>
 			`);
 		}
+    }
+
+    // 申請人資料顯示事件
+    function _handleShowApplicant() {
+		// 清空 modal 內容
+        $applicantModalBody.html('');
+        $applicantModalBody.html(`
+            <div>
+                <span class="info-label"> 申請人姓名 </span>
+                <input id="applicantname-modal-body" type="text" id="applicant-name" class="form-control" maxlength="191" value="${this.dataset.applicantname}" disabled style="width: 100%;">
+            </div><br>
+            <div>
+                <span class="info-label"> 申請人電話 </span>
+                <input id="applicantphone-modal-body" type="text" id="applicant-phone" class="form-control" maxlength="191" value="${this.dataset.applicantphone}" disabled style="width: 100%;">
+            </div><br>
+            <div>
+                <span class="info-label"> 申請人信箱 </span>
+                <input id="applicantemail-modal-body" type="text" id="applicant-email" class="form-control" maxlength="191" value="${this.dataset.applicantemail}" disabled style="width: 100%;">
+            </div><br>
+		`);
     }
 
     // 副檔名與檔案型態對應（回傳值須符合 font-awesome 規範）
