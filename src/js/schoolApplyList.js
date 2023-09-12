@@ -284,9 +284,17 @@
             listHtml += `
                 <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
                 <label class="required-title-type">
+            `;
+
+            if(data.returned_at == null && data.completed_at == null){
+                listHtml += `
                     <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                    #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
-                    <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                `;
+            }
+
+            listHtml += `
+                #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
+                <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
                 </label>
             `;
 
