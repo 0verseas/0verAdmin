@@ -29,7 +29,7 @@
     // 中文名稱陣列 方便 代碼轉換
     const action_array = ['','新增系所','更改系名','更換類組','合併系所'];
     const system_array = ['','學士班','港二技','碩士班','博士班'];
-    const type_array = ['一般系所','重點產業系所','國際專修班'];
+    const type_array = ['一般系所','重點產業系所','國際專修部'];
     const group_array = ['','第一類組','第二類組','第三類組'];
 
     let unlockApplyListArray = []; // 目前請求有哪些
