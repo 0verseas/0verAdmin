@@ -184,7 +184,7 @@
                         break;
                     case 'completed':
                         if (completedApplyListArray.length == 0) {
-                            $completedApplyList.html('無被退回的請求。');
+                            $completedApplyList.html('無已完成的請求。');
                         } else {
                             // 進行文憑列表分頁初始化渲染工作
                             $completedPaginationContainer.pagination({
@@ -198,7 +198,7 @@
                         break;
                     case 'executed':
                         if (executedApplyListArray.length == 0) {
-                            $executedApplyList.html('無被退回的請求。');
+                            $executedApplyList.html('無已執行的請求。');
                         } else {
                             // 進行文憑列表分頁初始化渲染工作
                             $executedPaginationContainer.pagination({
@@ -212,7 +212,7 @@
                         break;
                     case 'lock':
                         if (lockApplyListArray.length == 0) {
-                            $lockApplyList.html('無被退回的請求。');
+                            $lockApplyList.html('無已鎖定的請求。');
                         } else {
                             // 進行文憑列表分頁初始化渲染工作
                             $lockPaginationContainer.pagination({
@@ -226,7 +226,7 @@
                         break;
                     case 'unlock':
                         if (unlockApplyListArray.length == 0) {
-                            $unlockApplyList.html('無被退回的請求。');
+                            $unlockApplyList.html('無未鎖定的請求。');
                         } else {
                             // 進行文憑列表分頁初始化渲染工作
                             $unlockPaginationContainer.pagination({
