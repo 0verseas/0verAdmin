@@ -20,6 +20,7 @@
     const $rejectBtn = $('#reject-btn'); // 退還按鈕
     const $executeBtn = $('#execute-btn'); // 執行按鈕
     const $completedBtn = $('#completed-btn'); // 完成按鈕
+    const $refreshBtn = $('#refresh-btn'); // 刷新按鈕
 
     // 編輯模板上傳檔案相關物件
     const $imgModal = $('#img-modal');
@@ -37,7 +38,7 @@
     let executedApplyListArray = []; // 目前請求有哪些
     let completedApplyListArray = []; // 目前請求有哪些
     let rejectApplyListArray = []; // 目前請求有哪些
-    var username = ''; // 當前使用者帳號
+    let username = ''; // 當前使用者帳號
 
     $rejectBtn.on('click', _handleReject)
     $completedBtn.on('click', _handleCompleted);
@@ -47,81 +48,12 @@
     $saveBtn.on('click', _handleSave); // 暫存按鈕
     $verifiedBtn.on('click', _handleVerified); // 鎖定按鈕
 
-    $('#pills-tab button').on('click', function (event) {
+    $refreshBtn.on('click', _handleRefresh);
+
+    $('#pills-tab button').on('click', async function (event) {
         const listType = $(this).data('target').replace('#','');
-        console.log(listType);
-        switch (listType){
-            case 'reject':
-                if (rejectApplyListArray.length == 0) {
-                    $rejectApplyList.html('無被退回的請求。');
-                } else {
-                    // 進行文憑列表分頁初始化渲染工作
-                    $rejectPaginationContainer.pagination({
-                        dataSource: rejectApplyListArray,
-                        pageSize: 10,
-                        callback: function(rejectApplyListArray,pagination) {
-                            _applyListTamplate(listType,rejectApplyListArray, pagination.pageNumber);
-                        }
-                    });
-                }
-                break;
-            case 'completed':
-                if (completedApplyListArray.length == 0) {
-                    $completedApplyList.html('無已完成的請求。');
-                } else {
-                    // 進行文憑列表分頁初始化渲染工作
-                    $completedPaginationContainer.pagination({
-                        dataSource: completedApplyListArray,
-                        pageSize: 10,
-                        callback: function(completedApplyListArray,pagination) {
-                            _applyListTamplate(listType,completedApplyListArray, pagination.pageNumber);
-                        }
-                    });
-                }
-                break;
-            case 'executed':
-                if (executedApplyListArray.length == 0) {
-                    $executedApplyList.html('無已執行的請求。');
-                } else {
-                    // 進行文憑列表分頁初始化渲染工作
-                    $executedPaginationContainer.pagination({
-                        dataSource: executedApplyListArray,
-                        pageSize: 10,
-                        callback: function(executedApplyListArray,pagination) {
-                            _applyListTamplate(listType,executedApplyListArray, pagination.pageNumber);
-                        }
-                    });
-                }
-                break;
-            case 'lock':
-                if (lockApplyListArray.length == 0) {
-                    $lockApplyList.html('無已鎖定的請求。');
-                } else {
-                    // 進行文憑列表分頁初始化渲染工作
-                    $lockPaginationContainer.pagination({
-                        dataSource: lockApplyListArray,
-                        pageSize: 10,
-                        callback: function(lockApplyListArray,pagination) {
-                            _applyListTamplate(listType,lockApplyListArray, pagination.pageNumber);
-                        }
-                    });
-                }
-                break;
-            case 'unlock':
-                if (unlockApplyListArray.length == 0) {
-                    $unlockApplyList.html('無未鎖定的請求。');
-                } else {
-                    // 進行文憑列表分頁初始化渲染工作
-                    $unlockPaginationContainer.pagination({
-                        dataSource: unlockApplyListArray,
-                        pageSize: 10,
-                        callback: function(unlockApplyListArray,pagination) {
-                            _applyListTamplate(listType,unlockApplyListArray, pagination.pageNumber);
-                        }
-                    });
-                }
-                break;
-        }
+        await _getListArray();
+        _renderList(listType)
     })
 
     $('body').on('click', '.img-thumbnail', _handleShowFile);
@@ -166,79 +98,7 @@
                 });
             }).then(() => {
                 const listType = $("#pills-tab").find(`[aria-selected=true]`).data('target').replace('#','');
-
-                switch (listType){
-                    case 'reject':
-                        if (rejectApplyListArray.length == 0) {
-                            $rejectApplyList.html('無被退回的請求。');
-                        } else {
-                            // 進行文憑列表分頁初始化渲染工作
-                            $rejectPaginationContainer.pagination({
-                                dataSource: rejectApplyListArray,
-                                pageSize: 10,
-                                callback: function(rejectApplyListArray,pagination) {
-                                    _applyListTamplate(listType,rejectApplyListArray, pagination.pageNumber);
-                                }
-                            });
-                        }
-                        break;
-                    case 'completed':
-                        if (completedApplyListArray.length == 0) {
-                            $completedApplyList.html('無已完成的請求。');
-                        } else {
-                            // 進行文憑列表分頁初始化渲染工作
-                            $completedPaginationContainer.pagination({
-                                dataSource: completedApplyListArray,
-                                pageSize: 10,
-                                callback: function(completedApplyListArray,pagination) {
-                                    _applyListTamplate(listType,completedApplyListArray, pagination.pageNumber);
-                                }
-                            });
-                        }
-                        break;
-                    case 'executed':
-                        if (executedApplyListArray.length == 0) {
-                            $executedApplyList.html('無已執行的請求。');
-                        } else {
-                            // 進行文憑列表分頁初始化渲染工作
-                            $executedPaginationContainer.pagination({
-                                dataSource: executedApplyListArray,
-                                pageSize: 10,
-                                callback: function(executedApplyListArray,pagination) {
-                                    _applyListTamplate(listType,executedApplyListArray, pagination.pageNumber);
-                                }
-                            });
-                        }
-                        break;
-                    case 'lock':
-                        if (lockApplyListArray.length == 0) {
-                            $lockApplyList.html('無已鎖定的請求。');
-                        } else {
-                            // 進行文憑列表分頁初始化渲染工作
-                            $lockPaginationContainer.pagination({
-                                dataSource: lockApplyListArray,
-                                pageSize: 10,
-                                callback: function(lockApplyListArray,pagination) {
-                                    _applyListTamplate(listType,lockApplyListArray, pagination.pageNumber);
-                                }
-                            });
-                        }
-                        break;
-                    case 'unlock':
-                        if (unlockApplyListArray.length == 0) {
-                            $unlockApplyList.html('無未鎖定的請求。');
-                        } else {
-                            // 進行文憑列表分頁初始化渲染工作
-                            $unlockPaginationContainer.pagination({
-                                dataSource: unlockApplyListArray,
-                                pageSize: 10,
-                                callback: function(unlockApplyListArray,pagination) {
-                                    _applyListTamplate(listType,unlockApplyListArray, pagination.pageNumber);
-                                }
-                            });
-                        }
-                        break;
-                }
+                _renderList(listType);
                 stopLoading();
             })
             .catch((err) => {
@@ -1124,6 +984,121 @@
             stopLoading();
             return;
         })
+    }
+
+    async function _handleRefresh(){
+        await _getListArray();
+        const listType = $("#pills-tab").find(`[aria-selected=true]`).data('target').replace('#','');
+        _renderList(listType);
+        return;
+    }
+
+    async function _getListArray(){
+        let res = await User.isLogin();
+        if (res == true) {
+            openLoading();
+            const response = await School.getSchooApplyList();
+            const json = await response.json();
+            stopLoading();
+            rejectApplyListArray = [];
+            completedApplyListArray = [];
+            executedApplyListArray = [];
+            lockApplyListArray = [];
+            unlockApplyListArray = [];
+            if(response.ok){
+                await json.forEach(function (data, index) {
+                    if(data.returned_at != null){
+                        rejectApplyListArray.push(data);
+                    } else if(data.completed_at != null){
+                        completedApplyListArray.push(data);
+                    } else if(data.executed_at != null){
+                        executedApplyListArray.push(data);
+                    } else if(data.verified_at != null){
+                        lockApplyListArray.push(data);
+                    } else if(data.applied_at != null){
+                        unlockApplyListArray.push(data);
+                    }
+                });
+            } else {
+                await swal({title: '錯誤', text: json.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                location.reload();
+            }
+        }
+    }
+
+    function _renderList(listType){
+        switch (listType){
+            case 'reject':
+                if (rejectApplyListArray.length == 0) {
+                    $rejectApplyList.html('無被退回的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $rejectPaginationContainer.pagination({
+                        dataSource: rejectApplyListArray,
+                        pageSize: 10,
+                        callback: function(rejectApplyListArray,pagination) {
+                            _applyListTamplate(listType,rejectApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+            case 'completed':
+                if (completedApplyListArray.length == 0) {
+                    $completedApplyList.html('無已完成的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $completedPaginationContainer.pagination({
+                        dataSource: completedApplyListArray,
+                        pageSize: 10,
+                        callback: function(completedApplyListArray,pagination) {
+                            _applyListTamplate(listType,completedApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+            case 'executed':
+                if (executedApplyListArray.length == 0) {
+                    $executedApplyList.html('無已執行的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $executedPaginationContainer.pagination({
+                        dataSource: executedApplyListArray,
+                        pageSize: 10,
+                        callback: function(executedApplyListArray,pagination) {
+                            _applyListTamplate(listType,executedApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+            case 'lock':
+                if (lockApplyListArray.length == 0) {
+                    $lockApplyList.html('無已鎖定的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $lockPaginationContainer.pagination({
+                        dataSource: lockApplyListArray,
+                        pageSize: 10,
+                        callback: function(lockApplyListArray,pagination) {
+                            _applyListTamplate(listType,lockApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+            case 'unlock':
+                if (unlockApplyListArray.length == 0) {
+                    $unlockApplyList.html('無未鎖定的請求。');
+                } else {
+                    // 進行文憑列表分頁初始化渲染工作
+                    $unlockPaginationContainer.pagination({
+                        dataSource: unlockApplyListArray,
+                        pageSize: 10,
+                        callback: function(unlockApplyListArray,pagination) {
+                            _applyListTamplate(listType,unlockApplyListArray, pagination.pageNumber);
+                        }
+                    });
+                }
+                break;
+        }
     }
 
 })();
