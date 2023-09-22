@@ -343,6 +343,14 @@
             listHtml += `
                     </div>
                     <div class="col-2">
+                        <button class="info-button btn btn-info applicant"
+                            data-toggle="modal"
+                            data-target=".applicant-info-modal"
+                            data-applicantname="${data.applicant_name}"
+                            data-applicantphone="${data.applicant_phone}"
+                            data-applicantemail="${data.applicant_email}">
+                            顯示申請人資料
+                        </button>
             `;
 
             data.file.forEach(file => {
@@ -375,16 +383,6 @@
                         </button>
                         `;
                     }
-                    listHtml += `
-                        <button class="info-button btn btn-info applicant"
-                        data-toggle="modal"
-                        data-target=".applicant-info-modal"
-                        data-applicantname="${data.applicant_name}"
-                        data-applicantphone="${data.applicant_phone}"
-                        data-applicantemail="${data.applicant_email}">
-                            顯示申請人資料
-                        </button>
-                    `;
                 }
             });
 
@@ -515,7 +513,7 @@
                                             allowOutsideClick: false
                                         });
                                         cancelconfirm = 1;
-                                        location.reload();
+                                        // location.reload();
                                         stopLoading();
                                         return
                                     }
@@ -563,7 +561,7 @@
     async function _handleExecute() {
         if (username !== 'admin_IS') { // 更改爲資服組專用的帳號
             await swal({title: "無操作權限！", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
-            location.reload();
+            // location.reload();
             return;
         } else {
             if(await _confirmExec("確認要執行請求嗎？")) {
@@ -575,7 +573,7 @@
                             idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
                         } else {
                             await swal({title: "錯誤", text: "僅可執行已鎖定且未執行的請求！", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
-                            location.reload();
+                            // location.reload();
                             stopLoading();
                             return;
                         }
@@ -583,7 +581,7 @@
                 }
                 if (idSelected.length == 0){
                     await swal({title: "錯誤",text: "請選取至少一項已鎖定的請求！", type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
-                        location.reload();
+                        // location.reload();
                         stopLoading();
                         return;
                     });
@@ -619,7 +617,8 @@
                                 res = School.executeApply(idSelected.toString());
                                 $imgModal.modal('hide');
                                 await swal({title: "執行成功", type: 'success', confirmButtonText: "確定", allowOutsideClick: false});
-                                location.reload();
+                                // location.reload();
+                                _handleRefresh();
                                 stopLoading();
                                 return;
                             }
@@ -631,7 +630,7 @@
                                     confirmButtonText: "確定",
                                     allowOutsideClick: false
                                 });
-                                location.reload();
+                                // location.reload();
                                 stopLoading();
                                 return
                             }
@@ -643,7 +642,7 @@
                                 });
                             });
                         });
-                        location.reload();
+                        // location.reload();
                         stopLoading();
                         return;
                     } else { // 新增當沒有出現例外情況的操作
@@ -657,7 +656,8 @@
                                 confirmButtonText: '確定',
                                 allowOutsideClick: false
                             });
-                            location.reload();
+                            // location.reload();
+                            _handleRefresh();
                             stopLoading();
                         } else {
                             await swal({
@@ -705,7 +705,7 @@
                                             confirmButtonText: "確定",
                                             allowOutsideClick: false
                                         });
-                                        location.reload();
+                                        // location.reload();
                                         stopLoading();
                                         cancelconfirm = 1; // 確認還是有選擇項目
                                         return;
