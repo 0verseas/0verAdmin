@@ -2,13 +2,13 @@ version: '3.7'
 
 networks:
   bridge:
-    external:
-      name: ${NETWORKS}
+    external: true
+    name: ${NETWORKS}
 
 services:
   office:
     image: nginx:alpine
-    container_name: 0verOffice
+    container_name: ${CONTAINER_ONE_NAME}
     restart: unless-stopped
     tty: true
     environment:
@@ -19,7 +19,7 @@ services:
       - bridge
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.office.entrypoints=websecure"
+      - "traefik.http.routers.office.entrypoints=${ENTRYPOINTS}"
       - "traefik.http.routers.office.tls.certresolver=lets-encr"
       - "traefik.http.routers.office.rule=Host(`${DOMAIN_NAME}`)"
       - "traefik.http.routers.office.tls.options=default"
@@ -27,7 +27,7 @@ services:
 
   admin:
     image: nginx:alpine
-    container_name: 0verAdmin
+    container_name: ${CONTAINER_TWO_NAME}
     restart: unless-stopped
     tty: true
     environment:
@@ -39,8 +39,9 @@ services:
       - bridge
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.admin.entrypoints=websecure"
-      - "traefik.http.routers.admin.tls.certresolver=lets-encr"
-      - "traefik.http.routers.admin.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/admin`)"
-      - "traefik.http.routers.admin.tls.options=default"
-      - "traefik.http.routers.admin.middlewares=secure-headers@file"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=${ENTRYPOINTS}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=lets-encr"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/admin`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.options=default"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=secure-headers@file,traefik-compress@file"
+        #      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=ipwhitelist@file" # 禁止對外連接
