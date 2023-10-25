@@ -9,6 +9,8 @@ var estimateAdmissionCountFile = (function () {
     const $twoYear_has_english_taught_department = $('#twoYear-has-english-taught-department');
     const $master_has_english_taught_department = $('#master-has-english-taught-department');
     const $phd_has_english_taught_department = $('#phd-has-english-taught-department');
+    const $selection_school_departmest_list = $('#selection-school-departmest-list');
+    const $placement_school_departmest_list = $('#placement-school-departmest-list');
     const $admission_open_time_table = $('#open-time-table');
     /**
      * bind event
@@ -70,6 +72,8 @@ var estimateAdmissionCountFile = (function () {
         $twoYear_has_english_taught_department.attr('href', env.baseUrl + '/admins/all-english-department-list/twoYear');
         $master_has_english_taught_department.attr('href', env.baseUrl + '/admins/all-english-department-list/master');
         $phd_has_english_taught_department.attr('href', env.baseUrl + '/admins/all-english-department-list/phd');
+        $selection_school_departmest_list.attr('href', env.baseUrl + '/admins/bachelor-has-admission-list/selection');
+        $placement_school_departmest_list.attr('href', env.baseUrl + '/admins/bachelor-has-admission-list/placement');
 
     }
 
