@@ -1178,30 +1178,45 @@ var studentInfo = (function () {
         }
     }
 
-    function _reRenderSchoolType() {
+    async function _reRenderSchoolType() {
         // 處理該國籍是否需要選擇學校類型，以及學校類型 select bar 渲染工作
         // 學士班才需要學校類別
-        if (_systemId === 1) {
-            if (_schoolCountryId in _schoolType) {
-                let typeHTML = '';
-                _schoolType[_schoolCountryId].forEach((value, index) => {
-                    typeHTML += `<option value="${value}">${value}</option>`;
-                });
-                $schoolType.html(typeHTML);
-                if (_currentSchoolType !== "") {
-                    $schoolType.val(_currentSchoolType);
+        if (!!_schoolCountryId) {
+            if (_systemId === 1) {
+                const getSchoolTyperesponse = await Student.getSchoolType(_schoolCountryId);
+                const data = await getSchoolTyperesponse.json();
+                if(getSchoolTyperesponse.ok){
+                    let countryWithType = data;
+                    _schoolType = await countryWithType.reduce(function(obj, item) {
+                        obj[item.country_id] = obj[item.country_id] || [];
+                        obj[item.country_id].push({ type: item.school_type });
+                        return obj;
+                    }, {});
+                    if (_schoolCountryId in _schoolType) {
+                        let typeHTML = '';
+                        if(_currentSchoolType == ""){
+                            typeHTML = '<option value="-1" disabled selected hidden>請選擇</option>';
+                        }
+                        await data.forEach((value, index) => {
+                            typeHTML += `<option value="${value.id}">${value.school_type}</option>`;
+                        });
+                        await $schoolType.html(typeHTML);
+                        if (_currentSchoolType !== "") {
+                            await $schoolType.val(_currentSchoolType);
+                        }
+                        await $schoolTypeForm.fadeIn();
+                        _hasEduType = true;
+                    } else {
+                        await $schoolTypeForm.hide();
+                        _hasEduType = false;
+                    }
                 }
-                $schoolTypeForm.fadeIn();
-                _hasEduType = true;
             } else {
-                $schoolTypeForm.hide();
+                await $schoolTypeForm.hide();
                 _hasEduType = false;
-            }
-        } else {
-            $schoolTypeForm.hide();
-            _hasEduType = false;
+            };
+            await _reRenderSchoolLocation();
         }
-        _reRenderSchoolLocation();
     }
 
     function _chSchoolType() {

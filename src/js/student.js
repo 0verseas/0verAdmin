@@ -14,9 +14,16 @@ var Student = (function () {
         })
     }
 
+    function getSchoolType(countryId) {
+		return fetch(baseUrl + `/country-school-type?country_id=` + countryId, {
+			method: 'GET'
+		});
+	}
+
     return {
         getStudentList,
-        getStudentInfo
+        getStudentInfo,
+        getSchoolType
     };
 
 })();
