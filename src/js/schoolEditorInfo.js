@@ -4,11 +4,13 @@ var editorInfo = (function () {
      */
     var $schoolEditorList = $('#editor-list'); // school editor 列表
     var $schoolEditorFilterInput = $('#editor-filter-input'); // 搜尋欄
+    const $schoolEditorListDownloadBtn = $('#editor-list-download'); // 下載按鈕
 
     /**
      * bind event
      */
     $schoolEditorFilterInput.on('keyup', _filterSchoolEditorInput); // 系所列表篩選
+    $schoolEditorListDownloadBtn.on('click', _handleDownload); // 委員學校通訊錄下載
 
     /**
      * init
@@ -95,6 +97,10 @@ var editorInfo = (function () {
             }
         }
     }
+
+    function _handleDownload() {
+		window.open(env.baseUrl + `/admins/school-editors/download`, `_blank`);
+	}
 
     // 轉換一些敏感字元避免 XSS
     function encodeHtmlCharacters(bareString) {

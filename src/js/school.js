@@ -74,7 +74,7 @@ var School = (function () {
                 });
             }
         });
-        
+
     }
 
     return {
