@@ -536,7 +536,7 @@ var studentInfo = (function () {
         if(value.student_misc_data.not_for_medicine_dentist){
             progressListHTML +=`
                 <li>
-                    居留未滿八年，不得分發醫牙相關學系
+                    不得分發醫牙相關學系
                 </li>
             `;
         }
