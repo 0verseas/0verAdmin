@@ -12,6 +12,7 @@ var estimateAdmissionCountFile = (function () {
     const $selection_school_departmest_list = $('#selection-school-departmest-list');
     const $placement_school_departmest_list = $('#placement-school-departmest-list');
     const $admission_open_time_table = $('#open-time-table');
+    const $malaysia_student_transcript_list = $('#malaysia-student-transcript-list');
     /**
      * bind event
      */
@@ -74,6 +75,7 @@ var estimateAdmissionCountFile = (function () {
         $phd_has_english_taught_department.attr('href', env.baseUrl + '/admins/all-english-department-list/phd');
         $selection_school_departmest_list.attr('href', env.baseUrl + '/admins/bachelor-has-admission-list/selection');
         $placement_school_departmest_list.attr('href', env.baseUrl + '/admins/bachelor-has-admission-list/placement');
+        $malaysia_student_transcript_list.attr('href', env.baseUrl + '/admins/malaysia-student-transcript-list');
 
     }
 
