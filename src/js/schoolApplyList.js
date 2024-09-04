@@ -2,8 +2,8 @@
     const $unlockPaginationContainer = $('#unlock-pagination-container'); // 分頁器區域
     const $unlockApplyList = $('#unlock-apply-list'); // 請求列表
 
-    const $lockPaginationContainer = $('#lock-pagination-container'); // 分頁器區域
-    const $lockApplyList = $('#lock-apply-list'); // 請求列表
+    const $lockedPaginationContainer = $('#locked-pagination-container'); // 分頁器區域
+    const $lockedApplyList = $('#locked-apply-list'); // 請求列表
 
     const $executedPaginationContainer = $('#executed-pagination-container'); // 分頁器區域
     const $executedApplyList = $('#executed-apply-list'); // 請求列表
@@ -11,15 +11,15 @@
     const $completedPaginationContainer = $('#completed-pagination-container'); // 分頁器區域
     const $completedApplyList = $('#completed-apply-list'); // 請求列表
 
-    const $rejectPaginationContainer = $('#reject-pagination-container'); // 分頁器區域
-    const $rejectApplyList = $('#reject-apply-list'); // 請求列表
+    const $returnedPaginationContainer = $('#returned-pagination-container'); // 分頁器區域
+    const $returnedApplyList = $('#returned-apply-list'); // 請求列表
 
     const $selectBtn = $('#select-btn'); // 選取按鈕
     const $saveBtn = $('#save-btn'); // 儲存按鈕
-    const $verifiedBtn = $('#verified-btn'); // 鎖定按鈕
-    const $rejectBtn = $('#reject-btn'); // 退還按鈕
-    const $executeBtn = $('#execute-btn'); // 執行按鈕
-    const $completedBtn = $('#completed-btn'); // 完成按鈕
+    const $verifyBtn = $('#verify-btn'); // 鎖定按鈕
+    const $returnBtn = $('#return-btn'); // 退還按鈕
+    const $executeBtn = $('#execute-btn').hide(); // 執行按鈕
+    const $completeBtn = $('#complete-btn').hide(); // 完成按鈕
     const $refreshBtn = $('#refresh-btn'); // 刷新按鈕
 
     // 編輯模板上傳檔案相關物件
@@ -34,91 +34,106 @@
     const group_array = ['','第一類組','第二類組','第三類組'];
 
     let unlockApplyListArray = []; // 目前請求有哪些
-    let lockApplyListArray = []; // 目前請求有哪些
+    let lockedApplyListArray = []; // 目前請求有哪些
     let executedApplyListArray = []; // 目前請求有哪些
     let completedApplyListArray = []; // 目前請求有哪些
-    let rejectApplyListArray = []; // 目前請求有哪些
+    let returnedApplyListArray = []; // 目前請求有哪些
+
+    let selectedApplyListArray = []; // 目前選擇的請求有哪些
+
+    let listType = $('.handle-btn-type.active').data('target').replace('#', ''); // 取得當前的分類頁面
     let username = ''; // 當前使用者帳號
+    let currentListArray = [];
+    
 
-    $rejectBtn.on('click', _handleReject)
-    $completedBtn.on('click', _handleCompleted);
-    $executeBtn.on('click', _handleExecute);
-
-    $selectBtn.on('click', _handleSelect); // 全選按鈕
     $saveBtn.on('click', _handleSave); // 暫存按鈕
-    $verifiedBtn.on('click', _handleVerified); // 鎖定按鈕
-
-    $refreshBtn.on('click', _handleRefresh);
-
-    $('#pills-tab button').on('click', async function (event) {
-        const listType = $(this).data('target').replace('#','');
+    $verifyBtn.on('click', _handleVerify); // 鎖定按鈕
+    $returnBtn.on('click', _handleReturn) // 退回按鈕
+    $executeBtn.on('click', _handleExecute);  // 執行按鈕
+    $completeBtn.on('click', _handleComplete); // 完成按鈕
+    $refreshBtn.on('click', _handleRefresh); // 刷新按鈕
+    $selectBtn.on('click', async function (event) { // 全選按鈕
+        _handleSelectAllItem();
+    });
+    
+   
+    $('#pills-tab button').on('click', async function (event) { // 分類按鈕
+        $saveBtn.hide();
+        $verifyBtn.hide();
+        $returnBtn.hide();
+        $executeBtn.hide();
+        $completeBtn.hide();
+        $selectBtn.hide();
+        username = User.getUserInfo().username;
+        
+        selectedApplyListArray = [];
+        if ($('#select-btn').html() == "取消全選") {
+            $('#select-btn').html("全選");
+        }
+        listType = $(this).data('target').replace('#','');
+        switch (listType) {
+            case 'executed':
+                $completeBtn.show();
+                $selectBtn.show();
+                break;
+            case 'locked':
+                $returnBtn.show();
+                if (username === 'admin_IS') { // 更改爲資服組專用的帳號
+                    $executeBtn.show();
+                }
+                $selectBtn.show();
+                break;
+            case 'unlock':
+                $saveBtn.show();
+                $verifyBtn.show();
+                $returnBtn.show();
+                $selectBtn.show();
+                break;
+        }
         await _getListArray();
-        _renderList(listType)
+        _renderList();
     })
 
-    $('body').on('click', '.img-thumbnail', _handleShowFile);
-    $('body').on('click', '.applicant', _handleShowApplicant);
+    $('body').on('click', '.img-thumbnail', _handleShowFile); // 查看核定公文按鈕
+    $('body').on('click', '.applicant', _handleShowApplicant); // 顯示申請人資料按鈕
 
     init();
 
+    // 載入初始資料
     async function init() {
-        let res = await User.isLogin();
-        if (res == true) {
-            openLoading();
-            School.getSchooApplyList()
-            .then((res) => {
-                if(res.ok) {
-                    return res.json();
-                } else {
-                    throw res;
-                }
-            })
-            .then((json) => {
-                ;
-                // 只有admin_IS可以執行請求
-                username = User.getUserInfo().username;
-                if (username !== 'admin_IS') { // 更改爲資服組專用的帳號
-                    $executeBtn.hide();
-                }
-
-                console.log(json);
-
-                json.forEach(function (data, index) {
-                    if(data.returned_at != null){
-                        rejectApplyListArray.push(data);
-                    } else if(data.completed_at != null){
-                        completedApplyListArray.push(data);
-                    } else if(data.executed_at != null){
-                        executedApplyListArray.push(data);
-                    } else if(data.verified_at != null){
-                        lockApplyListArray.push(data);
-                    } else if(data.applied_at != null){
-                        unlockApplyListArray.push(data);
-                    }
-                });
-            }).then(() => {
-                const listType = $("#pills-tab").find(`[aria-selected=true]`).data('target').replace('#','');
-                _renderList(listType);
-                stopLoading();
-            })
-            .catch((err) => {
-                stopLoading();
-                err.json && err.json().then((data) => {
-                    swal({title: '錯誤', text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
-                    location.reload();
-                });
-            });
-        }
+        await _getListArray();
+        _renderList();
     }
 
     // 請求列表轉換並渲染
-    function _applyListTamplate(listType,datas,page) {
+    function _applyListTamplate(datas, page) {
         // 渲染 請求列表
-        $rejectApplyList.html('');
-        $completedApplyList.html('');
-        $executedApplyList.html('');
-        $lockApplyList.html('');
         $unlockApplyList.html('');
+        $lockedApplyList.html('');
+        $returnedApplyList.html('');
+        $executedApplyList.html('');
+        $completedApplyList.html('');
+        $(document).ready(function() {  // 監聽可以更改的欄位
+            $('.chkbox').on('change', function(event) {
+                _handleSelectItem(event);
+            });
+            $('.verified_dept_type').on('change', function(event) {
+                _handleTmpChange(event);
+            });
+            $('.verified_dept_title').on('change', function(event) {
+                _handleTmpChange(event);
+            });
+            $('.dept_id').on('change', function(event) {
+                _handleTmpChange(event);
+            });
+            $('.note').on('change', function(event) {
+                _handleTmpChange(event);
+            });
+            $('.return_reason').on('change', function(event) {
+                _handleTmpChange(event);
+            });
+        });
+        
         datas.forEach(function (data, index) {
             const schoolTitle = (data.school.title)? data.school.title: '';
             const schoolCode = (data.school.id)? data.school.id: '';
@@ -127,92 +142,7 @@
             const type = type_array[data.dept_type];
             const group = group_array[data.group_code];
             const deptTitle = (data.dept_title) ?data.dept_title:'';
-            const stage = (data.executed_at)? 'item-executed': ((data.verified_at)? 'item-verified': ((data.returned_at)? 'item-executed': 0));
-
-            let listHtml = ``;
-
-            if (index % 2 === 0) {
-                listHtml += `
-                    <div class="row show-list odd">
-                `;
-            } else {
-                listHtml += `
-                    <div class="row show-list even">
-                `;
-            }
-
-            listHtml += `
-                <h5 class="apply-title" style="margin:10px;" data-id=${data.id}>
-                <label class="required-title-type">
-            `;
-
-            if(data.returned_at == null && data.completed_at == null){
-                listHtml += `
-                    <input type="checkbox" id="select-chk" value="${stage}" data-id=${data.id}> &nbsp;
-                `;
-            }
-
-            listHtml += `
-                #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
-                <input type="text" id="apply-info" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
-                </label>
-            `;
-
-            listHtml += `
-                    </h5>
-                    <div class="col-10">
-                        <div id="list-element">
-                            <span class="info-label"> 系所學制 </span>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${system}" disabled>
-                        </div>
-                        <div id="list-element">
-                            <span class="info-label"> 系所類組 </span>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group}" disabled>
-                        </div>
-                        <div id="list-element">
-                            <span class="info-label"> 系所類型 </span>
-                            <input type="text" id="apply-info" class="form-control" style="width:130px;" maxlength ="191" value="${type}" disabled>
-                        </div>
-
-                        <div id="list-element">
-                            <span class="info-label"> 核定系名 </span>
-                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${deptTitle}" disabled>
-                        </div><br>
-            `;
-
-            if (stage == 'item-verified' || stage == 'item-executed') {
-                listHtml += `
-                        <div id="list-element">
-                            <span class="info-label"><span style="color:red;">修正</span> 系所類型 </span>
-                            <select class="form-control new_type" id="type-selector" data-id=${data.id} disabled>
-                                <option value=""></option>
-                                <option value="0">一般系所</option>
-                                <option value="1">重點產業系所</option>
-                                <option value="2">國際專修部</option>
-                            </select>
-                        </div><br>
-                        <div id="list-element">
-                            <span class="info-label"><span style="color:red;">修正</span> 核定系名 </span>
-                            <input type="text" id="apply-info" class="form-control v_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}" disabled>
-                        </div><br>
-                `;
-            } else {
-                listHtml += `
-                        <div id="list-element">
-                            <span class="info-label"><span style="color:red;">修正</span> 系所類型 </span>
-                            <select class="form-control new_type" id="type-selector" data-id=${data.id}>
-                                <option value=""></option>
-                                <option value="0">一般系所</option>
-                                <option value="1">重點產業系所</option>
-                                <option value="2">國際專修部</option>
-                            </select>
-                        </div><br>
-                        <div id="list-element">
-                            <span class="info-label"><span style="color:red;">修正</span> 核定系名 </span>
-                            <input type="text" id="apply-info" class="form-control v_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}">
-                        </div><br>
-                `;
-            }
+            const stage = (data.completed_at)? 'item-completed': ((data.executed_at)? 'item-executed': ((data.verified_at)? 'item-verified': ((data.returned_at)? 'item-returned': 'item-applied')));
 
             // 根據不同的請求賦予不同的屬性，好讓各請求使用不同的背景顏色做區分，可以更直觀的知道是什麼請求
             $(document).ready(function() {
@@ -233,69 +163,140 @@
                         case "合併系所":
                             $(this).addClass("action-merge");
                             break;
-                        default:
-                            break;
                     }
                 });
             });
 
+            let listHtml = ``;
+
+            if (index % 2 === 0) {
+                listHtml += `
+                    <div class="row show-list odd">
+                `;
+            } else {
+                listHtml += `
+                    <div class="row show-list even">
+                `;
+            }
+
+            listHtml += `
+                <h5 class="col-12 apply-title" data-id=${data.id}>
+                <label class="required-title-type" value=${stage}>
+            `;
+
+            if (data.returned_at == null && data.completed_at == null) {
+                const isChecked = data.status === 'checked';
+                listHtml += `
+                    <input type="checkbox" class="chkbox" num=#${index+1+((page-1)*10)} data-id=${data.id} status=${data.status} value=${stage} ${isChecked ? 'checked' : 'uncheck'}> &nbsp;
+                `;
+            }
+
+            listHtml += `
+                #${index+1+((page-1)*10)} &nbsp; ${schoolTitle} (${schoolCode})
+                <input type="text" class="form-control action-type" data-id=${data.id} maxlength="191" value="${action}" disabled>
+                </label>
+            `;
+
+            listHtml += `
+                    </h5>
+                    <div class="col-8">
+                        <div id="list-element">
+                            <span class="info-label"> 系所學制 </span>
+                            <input type="text" class="form-control apply-info" maxlength ="191" value="${system}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 系所類組 </span>
+                            <input type="text" class="form-control apply-info" maxlength ="191" value="${group}" disabled>
+                        </div>
+                        <div id="list-element">
+                            <span class="info-label"> 系所類型 </span>
+                            <input type="text" class="form-control apply-info" style="width:130px;" maxlength ="191" value="${type}" disabled>
+                        </div>
+
+                        <div id="list-element">
+                            <span class="info-label"> 核定系名 </span>
+                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${deptTitle}" disabled>
+                        </div><br>
+            `;
+
+            if (stage == 'item-applied') {
+                listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 系所類型 </span>
+                            <select class="form-control type-selector verified_dept_type" data-id=${data.id}>
+                                <option value=""></option>
+                                <option value="0">一般系所</option>
+                                <option value="1">重點產業系所</option>
+                                <option value="2">國際專修部</option>
+                            </select>
+                        </div><br>
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 核定系名 </span>
+                            <input type="text" class="form-control apply-info verified_dept_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}">
+                        </div><br>
+                `;
+            } else {
+                listHtml += `
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 系所類型 </span>
+                            <select class="form-control type-selector verified_dept_type" data-id=${data.id} disabled>
+                                <option value=""></option>
+                                <option value="0">一般系所</option>
+                                <option value="1">重點產業系所</option>
+                                <option value="2">國際專修部</option>
+                            </select>
+                        </div><br>
+                        <div id="list-element">
+                            <span class="info-label"><span style="color:red;">修正</span> 核定系名 </span>
+                            <input type="text" class="form-control apply-info verified_dept_title" data-id=${data.id} style="width:250px;" maxlength ="191" value="${(data.verified_dept_title)? data.verified_dept_title:''}" disabled>
+                        </div><br>
+                `;
+            }
+
             switch (data.action_id) {
                 case 1:
-                    if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
+                    if (stage == 'item-applied') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
                         listHtml += `
                         <div id="list-element">
                             <span class="info-label"><span style="color:red;"> 原系代碼</span>(選填) </span>
-                            <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}" disabled>
+                            <input type="text" class="form-control apply-info dept_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}">
                         </div>
                         `;
                     } else {
                         listHtml += `
                         <div id="list-element">
                             <span class="info-label"><span style="color:red;"> 原系代碼</span>(選填) </span>
-                            <input type="text" id="apply-info" class="form-control org_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}">
+                            <input type="text" class="form-control apply-info dept_id" data-id=${data.id} maxlength ="5" value="${(data.dept_id)? data.dept_id:''}" disabled>
                         </div>
                         `;
                     }
                     break;
                 case 2:
-                    if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
                         listHtml += `
                         <div id="list-element">
                             <span class="info-label"> 學系代碼 </span>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                            <input type="text" class="form-control apply-info" maxlength ="5" value="${data.dept_id}" disabled>
                         </div>
                         <div id="list-element">
                             <span class="info-label"> 新系所名稱 </span>
-                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
+                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
                         </div><br>
                         `;
-                    } else {
-                        listHtml += `
-                        <div id="list-element">
-                            <span class="info-label"> 學系代碼 </span>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
-                        </div>
-                        <div id="list-element">
-                            <span class="info-label"> 新系所名稱 </span>
-                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.new_dept_title}" disabled>
-                        </div><br>
-                        `;
-                    }
                     break;
                 case 3:
-                    if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
+                    if (stage == 'item-applied') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
                         listHtml += `
                         <div id="list-element">
                             <span class="info-label"> 學系代碼 </span>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                            <input type="text" class="form-control apply-info" maxlength ="5" value="${data.dept_id}" disabled>
                         </div>
                         <div id="list-element">
                             <span class="info-label"> 新系所類組 </span>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
+                            <input type="text" class="form-control apply-info" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
                         </div><br>
                         <div id="list-element">
                             <span class="info-label"><span style="color:red;">修正</span> 新系所類組 </span>
-                            <select class="form-control new_group" id="type-selector" data-id=${data.id} disabled>
+                            <select class="form-control type-selector verified_new_group_code" data-id=${data.id}>
                                 <option value=""></option>
                                 <option value="1">第一類組</option>
                                 <option value="2">第二類組</option>
@@ -307,15 +308,15 @@
                         listHtml += `
                         <div id="list-element">
                             <span class="info-label"> 學系代碼 </span>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="5" value="${data.dept_id}" disabled>
+                            <input type="text" class="form-control apply-info" maxlength ="5" value="${data.dept_id}" disabled>
                         </div>
                         <div id="list-element">
                             <span class="info-label"> 新系所類組 </span>
-                            <input type="text" id="apply-info" class="form-control" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
+                            <input type="text" class="form-control apply-info" maxlength ="191" value="${group_array[data.new_group_code]}" disabled>
                         </div><br>
                         <div id="list-element">
                             <span class="info-label"><span style="color:red;">修正</span> 新系所類組 </span>
-                            <select class="form-control new_group" id="type-selector" data-id=${data.id}>
+                            <select class="form-control type-selector verified_new_group_code" data-id=${data.id} disabled>
                                 <option value=""></option>
                                 <option value="1">第一類組</option>
                                 <option value="2">第二類組</option>
@@ -329,11 +330,11 @@
                     listHtml += `
                         <div id="list-element">
                             <span class="info-label"> 欲合併系所代碼1 </span>
-                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_1}" disabled>
+                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_1}" disabled>
                         </div>
                         <div id="list-element">
                             <span class="info-label"> 欲合併系所代碼2 </span>
-                            <input type="text" id="apply-info" class="form-control" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_2}" disabled>
+                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_2}" disabled>
                         </div>
                     `;
                     break;
@@ -342,7 +343,7 @@
             // 查看核定公文和顯示申請人資料改爲按鈕和 modal 的形式呈現
             listHtml += `
                     </div>
-                    <div class="col-2">
+                    <div class="col-4">
                         <button class="info-button btn btn-info applicant"
                             data-toggle="modal"
                             data-target=".applicant-info-modal"
@@ -387,18 +388,34 @@
             });
 
             // 退回原因和處理說明
-            if (stage == 'item-verified' || stage == 'item-executed') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
-                if (stage == 'item-executed') {
+            if (stage == 'item-applied') { // 加上已鎖定和已執行後可編輯的欄位判斷是否加以 disabled 屬性
+                listHtml += `
+                    </div>
+                    <div style="display:flex;" class="show-list handle-and-return col-12">
+                        <div id="list-element" style="width: 400px;">
+                            <span class="info-label"> 退回原因(上限1000字) </span>
+                            <textarea class="form-control apply-info return_reason" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因">${(data.return_reason)? data.return_reason:''}</textarea>
+                        </div><br>
+                        <div id="list-element" style="flex-grow: 1;">
+                            <span class="info-label"> 處理說明(上限2000字) </span>
+                            <textarea class="form-control apply-info note" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明">${(data.note)? data.note:''}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <hr class="hr-type">
+                `;
+            } else {
+                if (stage == 'item-verified') {
                     listHtml += `
                     </div>
                     <div style="display:flex;" class="show-list handle-and-return col-12">
                         <div id="list-element" style="width: 400px;">
                             <span class="info-label"> 退回原因(上限1000字) </span>
-                            <textarea class="form-control return_reason" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因" disabled>${(data.return_reason)? data.return_reason:''}</textarea>
+                            <textarea class="form-control apply-info return_reason" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因">${(data.return_reason)? data.return_reason:''}</textarea>
                         </div><br>
                         <div id="list-element" style="flex-grow: 1;">
                             <span class="info-label"> 處理說明(上限2000字) </span>
-                            <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明" disabled>${(data.note)? data.note:''}</textarea>
+                            <textarea class="form-control apply-info note" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明" disabled>${(data.note)? data.note:''}</textarea>
                         </div>
                     </div>
                 </div>
@@ -410,38 +427,22 @@
                     <div style="display:flex;" class="show-list handle-and-return col-12">
                         <div id="list-element" style="width: 400px;">
                             <span class="info-label"> 退回原因(上限1000字) </span>
-                            <textarea class="form-control return_reason" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因">${(data.return_reason)? data.return_reason:''}</textarea>
+                            <textarea class="form-control apply-info return_reason" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因" disabled>${(data.return_reason)? data.return_reason:''}</textarea>
                         </div><br>
                         <div id="list-element" style="flex-grow: 1;">
                             <span class="info-label"> 處理說明(上限2000字) </span>
-                            <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明" disabled>${(data.note)? data.note:''}</textarea>
+                            <textarea class="form-control apply-info note" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明" disabled>${(data.note)? data.note:''}</textarea>
                         </div>
                     </div>
                 </div>
                 <hr class="hr-type">
                     `;
                 }
-            } else {
-                listHtml += `
-                    </div>
-                    <div style="display:flex;" class="show-list handle-and-return col-12">
-                        <div id="list-element" style="width: 400px;">
-                            <span class="info-label"> 退回原因(上限1000字) </span>
-                            <textarea class="form-control return_reason" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入退回請求的原因">${(data.return_reason)? data.return_reason:''}</textarea>
-                        </div><br>
-                        <div id="list-element" style="flex-grow: 1;">
-                            <span class="info-label"> 處理說明(上限2000字) </span>
-                            <textarea class="form-control note" id="apply-info" data-id=${data.id} rows="3" style="width:100%; min-width:150px;" placeholder="請輸入處理說明">${(data.note)? data.note:''}</textarea>
-                        </div>
-                    </div>
-                </div>
-                <hr class="hr-type">
-                `;
             }
 
             switch (listType){
-                case 'reject':
-                    $rejectApplyList.append(listHtml);
+                case 'returned':
+                    $returnedApplyList.append(listHtml);
                     break;
                 case 'completed':
                     $completedApplyList.append(listHtml);
@@ -449,111 +450,165 @@
                 case 'executed':
                     $executedApplyList.append(listHtml);
                     break;
-                case 'lock':
-                    $lockApplyList.append(listHtml);
+                case 'locked':
+                    $lockedApplyList.append(listHtml);
                     break;
                 case 'unlock':
                     $unlockApplyList.append(listHtml);
                     break;
             }
-
-
             if (data.verified_dept_type=="0" || data.verified_dept_type=="1" || data.verified_dept_type=="2") {
-                $(`.new_type[data-id='${data.id}']`).children(`[value=${data.verified_dept_type}]`).prop('selected', true);
+                $(`.verified_dept_type[data-id='${data.id}']`).children(`[value=${data.verified_dept_type}]`).prop('selected', true);
             }
             if (data.verified_new_group_code) {
-                $(`.new_group[data-id='${data.id}']`).children(`[value=${data.verified_new_group_code}]`).prop('selected', true);
+                $(`.verified_new_group_code[data-id='${data.id}']`).children(`[value=${data.verified_new_group_code}]`).prop('selected', true);
             }
         });
     }
 
-    // 退回請求事件
-    async function _handleReject(){
-        if(await _confirmExec("確認要退回請求嗎？")) {
+    // 儲存修正事件
+    async function _handleSave() {
+        if(await _confirmExec("確認要儲存修改嗎？")) {
             openLoading();
-            let data = [];
-            let cancelconfirm = 0; // 宣告多一個控制值，用以判斷是否沒有選取任何項目
-
-            for(let i=0; i<$('input[id=select-chk]').length; i++){
-
-                if ($('input[id=select-chk]')[i].checked) {
-                    if($('input[id=select-chk]')[i].value == 'item-executed') {
-                        await swal({title: "錯誤", text: "已執行的請求無法被退回，請聯繫資服組人員或取消勾選", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
-                        location.reload();
-                        stopLoading();
-                        return;
-                    } else if ($(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val() == "" || $(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val() == 0) {
-                        await swal({title: "錯誤", text: "無法被退回，請填寫退回原因", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
-                        location.reload();
-                        stopLoading();
-                        return;
-                    } else if ($('input[id=select-chk]')[i].value == 'item-verified') {
-                        let label = $(`h5[data-id='${$('input[id=select-chk]')[i].getAttribute('data-id')}']`).html().split(' ');
-                        for (let j=0; j<label.length; j++) {
-                            if(label[j].includes('#')) {
-                                await swal({
-                                    title: `項目 ${label[j]} 已鎖定，確認要將此項目退回嗎？`,
-                                    type: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: "確認",
-                                    cancelButtonText: "取消",
-                                    reverseButtons: true,
-                                    allowOutsideClick: false
-                                }).then(() => {
-                                    data.push({
-                                        id: $('input[id=select-chk]')[i].getAttribute('data-id'),
-                                        reason: $(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val()
-                                    });
-                                }).catch(async (e) => {
-                                    if (e == 'cancel') { // 抓取當檢查到例外情況出現再選擇取消後的操作
-                                        await swal({
-                                            title: "已取消執行",
-                                            type: 'success',
-                                            confirmButtonText: "確定",
-                                            allowOutsideClick: false
-                                        });
-                                        cancelconfirm = 1;
-                                        // location.reload();
-                                        stopLoading();
-                                        return
-                                    }
-                                });
-                                break;
-                            }
-                        }
+            // 取要送往後端的資料
+            let data = await _validateForm(selectedApplyListArray);
+            if (data.length > 0) {
+                School.updateApply(data, 0)
+                .then((res) => {
+                    if (res.ok) {
+                        return res.json();
                     } else {
-                        data.push({
-                            id: $('input[id=select-chk]')[i].getAttribute('data-id'),
-                            reason: $(`.return_reason[data-id=${$('input[id=select-chk]')[i].getAttribute('data-id')}]`).val()
-                        });
+                        throw res;
+                    }
+                })
+                .then(async (json) => {
+                    await swal({title: "儲存成功", type: 'success', confirmButtonText: '確定'});
+                    location.reload();
+                    stopLoading();
+                })
+                .catch((err) => {
+                    err.json && err.json().then((data) => {
+                        swal({title: 'ERROR', text: data.messages[0], type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
+                    });
+                    stopLoading();
+                });
+            } else {
+                await swal({title: "錯誤", text: "請選擇至少一筆未鎖定/未執行的請求！", type: 'warning', confirmButtonText: "確定"});
+                stopLoading();
+                return;
+            }
+        }
+    }
+
+    // 確認鎖定事件
+    async function _handleVerify() {
+        if(await _confirmExec("確認要儲存修改並鎖定資料嗎？")) {
+            openLoading();
+            // 取要送往後端的資料
+            let data = await _validateForm(selectedApplyListArray);
+            if (data.length > 0) {
+                School.updateApply(data, 1)
+                .then((res) => {
+                    if (res.ok) {
+                        return res.json();
+                    } else {
+                        throw res;
+                    }
+                })
+                .then(async (json) => {
+                    await swal({title: "資料已鎖定！", type: 'success', confirmButtonText: "確定"});
+                    location.reload();
+                    stopLoading();
+                })
+                .catch((err) => {
+                    err.json && err.json().then((data) => {
+                        swal({title: 'ERROR', text: data.messages[0], type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
+                    });
+                    stopLoading();
+                });
+            } else {
+                await swal({title: "錯誤", text: "請選擇至少一筆未鎖定/未執行的請求！", type: 'warning', confirmButtonText: "確定"});
+                stopLoading();
+                return;
+            }
+        }
+    }
+
+    // 退回請求事件
+    async function _handleReturn(){
+        let msg = '';
+        let reason_empty = 0; // 計算有多少退回原因是空的
+        let data = selectedApplyListArray;
+
+        switch (listType) { // 根據分類頁面執行退回請求的時候對應不同的提示框標題
+            case 'unlock':
+                msg = "確認要退回請求嗎？";
+                break;
+            case 'locked':
+                msg = "這裏是已鎖定的請求項目。<br\>確定要退回嗎?";
+                break;
+        }
+        if(await _confirmExec(msg)) {
+            openLoading();
+            if (data.length > 0) { // 有勾選請求項目
+                // 計算沒填寫退回原因的請求項目
+                for (let i = 0; i < data.length; i++) { 
+                    if (data[i].return_reason == null || data[i].return_reason == '') {
+                        reason_empty++;
                     }
                 }
-            }
-            if (data.length == 0 && cancelconfirm == 0){ // 利用多一個控制值來判斷是否爲沒有選取任何項目
-                await swal({title: "錯誤", text: "請選擇至少一筆未鎖定/未執行的請求！", type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
-                    location.reload();
-                    stopLoading();
-                    return;
-                });
-            }
-            // 先儲存退回原因再退回請求
-            School.returnApply(data)
-            .then((res) => {
-                if(res.ok) {
-                    return res.json();
-                } else {
-                    throw res;
+
+                if (reason_empty > 0 && reason_empty != data.length) { // 所選請求項目裏有些沒填寫退回請求
+                    if (await _confirmExec("有請求沒有填寫退回原因。<br\>需要繼續進行退回請求嗎?")) {
+                        // 先儲存退回原因再退回請求
+                        School.returnApply(data)
+                        .then((res) => {
+                            if(res.ok) {
+                                return res.json();
+                            } else {
+                                throw res;
+                            }
+                        })
+                        .then((json) => {
+                            $imgModal.modal('hide');
+                            swal({title: json.messages[0], type: 'success', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
+                                location.reload();
+                                stopLoading();
+                                return;
+                            });
+                        });
+                    }
+                } else if (reason_empty == data.length){ // 所選的請求項目都沒有填退回原因
+                    await swal({title: "錯誤", text: "所選的請求都沒有填寫退回原因！", type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                        stopLoading();
+                        return;
+                    });
+                } else { // 所選項目都有填寫退回請求
+                    // 先儲存退回原因再退回請求
+                    School.returnApply(data)
+                    .then((res) => {
+                        if(res.ok) {
+                            return res.json();
+                        } else {
+                            throw res;
+                        }
+                    })
+                    .then((json) => {
+                        $imgModal.modal('hide');
+                        swal({title: json.messages[0], type: 'success', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
+                            location.reload();
+                            stopLoading();
+                            return;
+                        });
+                    });
                 }
-            })
-            .then((json) => {
-                $imgModal.modal('hide');
-                swal({title: json.messages[0], type: 'success', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
-                    location.reload();
+            } else { // 完全沒有勾選請求項目
+                await swal({title: "錯誤", text: "請選擇至少一筆未執行的請求！", type:"warning", confirmButtonText: '確定', allowOutsideClick: false}).then(() => {
+                    // location.reload();
                     stopLoading();
                     return;
                 });
-            })
-            ;
+            }
         }
     }
 
@@ -561,112 +616,107 @@
     async function _handleExecute() {
         if (username !== 'admin_IS') { // 更改爲資服組專用的帳號
             await swal({title: "無操作權限！", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
-            // location.reload();
             return;
         } else {
             if(await _confirmExec("確認要執行請求嗎？")) {
                 openLoading();
                 let idSelected = [];
-                for(let i=0; i<$('input[id=select-chk]').length; i++){
-                    if ($('input[id=select-chk]')[i].checked) {
-                        if($('input[id=select-chk]')[i].value == 'item-verified') {
-                            idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
-                        } else {
-                            await swal({title: "錯誤", text: "僅可執行已鎖定且未執行的請求！", type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
+
+                if (selectedApplyListArray.length == 0){
+                    await swal({title: "錯誤",text: "請選取至少一項已鎖定的請求！", type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
+                        stopLoading();
+                        return;
+                    });
+                } else {
+                    for (let i = 0; i < selectedApplyListArray.length; i++) { 
+                        idSelected.push(selectedApplyListArray[i].id);
+                    }
+
+                    // 檢查例外
+                    let res = await School.checkApply(idSelected.toString());
+                    if(res) {
+                        $imgModal.modal('hide');
+                        let errmsg = '';
+                        res.forEach(el => {
+                            let data = el.split(',');
+                            let label = [];
+                            for(let i = 0; i < selectedApplyListArray.length; i++) {
+                                if (selectedApplyListArray[i].id == data[0]) {
+                                    label.push(selectedApplyListArray[i].num);
+                                }
+                            }
+                            
+                            for (let i=0; i<label.length; i++) {
+                                if(label[i].includes('#')) {
+                                    errmsg += `${label[i]} ${data[1]}<br\>`;
+                                    break;
+                                }
+                            }
+                        });
+                        if(errmsg.length > 0) {
+                            await swal({
+                                title: "發現例外情況<br>" + errmsg + "是否要繼續執行？",
+                                type: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: "繼續",
+                                cancelButtonText: "取消",
+                                reverseButtons: true,
+                                allowOutsideClick: false
+                            }).then(async (result) => { // 調整成發現例外情況再選擇繼續後，直接執行操作
+                                if (result) {
+                                    res = School.executeApply(idSelected.toString());
+                                    $imgModal.modal('hide');
+                                    await swal({title: "執行成功", type: 'success', confirmButtonText: "確定", allowOutsideClick: false});
+                                    location.reload();
+                                    _handleRefresh();
+                                    stopLoading();
+                                    return;
+                                }
+                            }).catch(async (err) => { // 當發現例外情況再選擇取消後的操作
+                                if (err == 'cancel') {
+                                    await swal({
+                                        title: "已取消執行",
+                                        type: 'success',
+                                        confirmButtonText: "確定",
+                                        allowOutsideClick: false
+                                    });
+                                    // location.reload();
+                                    stopLoading();
+                                    return
+                                }
+                                err.json && err.json().then(async (data) => {
+                                    await swal({title: data.messages, type: 'error', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
+                                        // location.reload();
+                                        stopLoading();
+                                        return;
+                                    });
+                                });
+                            });
                             // location.reload();
                             stopLoading();
                             return;
-                        }
-                    }
-                }
-                if (idSelected.length == 0){
-                    await swal({title: "錯誤",text: "請選取至少一項已鎖定的請求！", type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
-                        // location.reload();
-                        stopLoading();
-                        return;
-                    });
-                }
-                // 檢查例外
-                let res = await School.checkApply(idSelected.toString());
-                if(res) {
-                    $imgModal.modal('hide');
-                    let errmsg = '';
-                    res.forEach(el => {
-                        let data = el.split(',');
-                        let label = $(`h5[data-id='${data[0]}']`).html().split(' ');
-                        if(errmsg.length > 0) errmsg += '，';
-                        for (let i=0; i<label.length; i++) {
-                            if(label[i].includes('#')) {
-                                errmsg += `${label[i]} ${data[1]}`;
-                                break;
-                            }
-                        }
-                    });
-                    if(errmsg.length > 0) {
-                        await swal({
-                            title: "發現例外情況",
-                            text: `${errmsg}。是否要繼續執行？`,
-                            type: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: "繼續",
-                            cancelButtonText: "取消",
-                            reverseButtons: true,
-                            allowOutsideClick: false
-                        }).then(async (result) => { // 調整成發現例外情況再選擇繼續後，直接執行操作
-                            if (result) {
-                                res = School.executeApply(idSelected.toString());
+                        } else { // 新增當沒有出現例外情況的操作
+                            res = await School.executeApply(idSelected.toString());
+                            if (res.ok) {
                                 $imgModal.modal('hide');
-                                await swal({title: "執行成功", type: 'success', confirmButtonText: "確定", allowOutsideClick: false});
-                                // location.reload();
-                                _handleRefresh();
-                                stopLoading();
-                                return;
-                            }
-                        }).catch(async (err) => { // 當發現例外情況再選擇取消後的操作
-                            if (err == 'cancel') {
                                 await swal({
-                                    title: "已取消執行",
-                                    type: 'success',
-                                    confirmButtonText: "確定",
+                                    title: '執行成功',
+                                    type: "success",
+                                    confirmButtonText: '確定',
                                     allowOutsideClick: false
                                 });
-                                // location.reload();
+                                location.reload();
+                                _handleRefresh();
                                 stopLoading();
-                                return
-                            }
-                            err.json && err.json().then(async (data) => {
-                                await swal({title: data.messages, type: 'error', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
-                                    location.reload();
-                                    stopLoading();
-                                    return;
+                            } else {
+                                await swal({
+                                    title: '執行途中發生錯誤',
+                                    type: "error",
+                                    confirmButtonText: '確定',
+                                    allowOutsideClick: false
                                 });
-                            });
-                        });
-                        // location.reload();
-                        stopLoading();
-                        return;
-                    } else { // 新增當沒有出現例外情況的操作
-                        res = await School.executeApply(idSelected.toString());
-                        //console.log(res);
-                        if (res.ok) {
-                            $imgModal.modal('hide');
-                            await swal({
-                                title: '執行成功',
-                                type: "success",
-                                confirmButtonText: '確定',
-                                allowOutsideClick: false
-                            });
-                            // location.reload();
-                            _handleRefresh();
-                            stopLoading();
-                        } else {
-                            await swal({
-                                title: '執行途中發生錯誤',
-                                type: "error",
-                                confirmButtonText: '確定',
-                                allowOutsideClick: false
-                            });
-                            stopLoading();
+                                stopLoading();
+                            }
                         }
                     }
                 }
@@ -675,85 +725,59 @@
     }
 
     // 完成請求事件
-    async function _handleCompleted() {
+    async function _handleComplete() {
         if(await _confirmExec("確認要完成請求嗎？")) {
             openLoading();
             let idSelected = [];
-            let cancelconfirm = 0; // 宣告多一個控制值，用以判斷是否沒有選取任何項目
-            for(let i=0; i<$('input[id=select-chk]').length; i++){
-                if ($('input[id=select-chk]')[i].checked) {
-                    if($('input[id=select-chk]')[i].value != 'item-executed') {
-                        let label = $(`h5[data-id='${$('input[id=select-chk]')[i].getAttribute('data-id')}']`).html().split(' ');
-                        for (let j=0; j<label.length; j++) {
-                            if(label[j].includes('#')) {
-                                await swal({
-                                    title: `項目 ${label[j]} 還未執行`,
-                                    text: "確認要將此項目標示為已完成嗎？",
-                                    type: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: "確認",
-                                    cancelButtonText: "取消",
-                                    reverseButtons: true,
-                                    allowOutsideClick: false
-                                }).then(() => {
-                                    idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
-                                }).catch(async (err) => {
-                                    if (err == 'cancel') { // 當發現例外情況再選擇取消後的操作
-                                        await swal({
-                                            title: "已取消執行",
-                                            type: 'success',
-                                            confirmButtonText: "確定",
-                                            allowOutsideClick: false
-                                        });
-                                        // location.reload();
-                                        stopLoading();
-                                        cancelconfirm = 1; // 確認還是有選擇項目
-                                        return;
-                                    }
-                                });
-                                continue;
-                            }
-                        }
-                    } else {
-                        idSelected.push($('input[id=select-chk]')[i].getAttribute('data-id'));
-                    }
-                }
-            }
-            if (idSelected.length == 0 && cancelconfirm == 0){ // 利用多一個控制值來判斷是否爲沒有選取任何項目
+            
+            if (selectedApplyListArray.length == 0){ // 利用多一個控制值來判斷是否爲沒有選取任何項目
                 await swal({title: "錯誤", text: "請選取至少一項請求！", type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                     location.reload();
                     stopLoading();
                     return;
                 });
-            }
-
-            // 檢查例外
-            School.updateApply(idSelected.toString())
-            .then((res) => {
-                if(res.ok) {
-                    return res.json();
-                } else {
-                    throw res;
+            } else {
+                for (let i = 0; i < selectedApplyListArray.length; i++) { 
+                    idSelected.push(selectedApplyListArray[i].id);
                 }
-            })
-            .then((json) => {
-                $imgModal.modal('hide');
-                swal({title: json.messages[0], type: 'success', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
-                    location.reload();
-                    stopLoading();
-                    return;
-                });
-            })
-            .catch((err) => {
-                err.json && err.json().then((data) => {
-                    swal({title: "錯誤", text: data.messages[0], type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
+                
+                // 檢查例外
+                School.completeApply(idSelected.toString())
+                .then((res) => {
+                    if(res.ok) {
+                        return res.json();
+                    } else {
+                        throw res;
+                    }
+                })
+                .then((json) => {
+                    $imgModal.modal('hide');
+                    swal({title: json.messages[0], type: 'success', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                         location.reload();
                         stopLoading();
                         return;
                     });
+                })
+                .catch((err) => {
+                    err.json && err.json().then((data) => {
+                        swal({title: "錯誤", text: data.messages[0], type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
+                            location.reload();
+                            stopLoading();
+                            return;
+                        });
+                    });
                 });
-            });
+            }
+
+            
         }
+    }
+
+    // 刷新清單事件
+    async function _handleRefresh(){
+        await _getListArray();
+        _renderList();
+        return;
     }
 
     // 檔案放大顯示事件
@@ -823,149 +847,230 @@
 		}
 	}
 
-    // 批次選取
-    function _handleSelect() {
-        if ($selectBtn.html() == "全選") {
-            $selectBtn.html("取消全選");
-            switch ($('input[name=target]:checked').val()) {
-                case 'all':
-                    $('input[id=select-chk]').prop('checked', true);
-                    break;
-                case 'not-verified': // 全選的部分新增未鎖定的條件
-                    $('input[value=0]').prop('checked', true);
-                    break;
-                case 'verified':
-                    $('input[value=item-verified]').prop('checked', true);
-                    break;
-                case 'executed':
-                    $('input[value=item-executed]').prop('checked', true);
-                    break;
+    // 暫存未刷新頁面的資料事件
+    function _handleTmpChange(event) {
+        switch (listType) {
+            case 'unlock':
+                currentListArray = unlockApplyListArray;
+                break;
+            case 'lock':
+                currentListArray = lockedApplyListArray;
+                break;
+            case 'executed':
+                currentListArray = executedApplyListArray;
+                break;
+        }
+        const itemId = $(event.target).data('id');
+        const itemIndex = currentListArray.findIndex(item => item.id === itemId);
+        let tmp_verified_dept_type = $(`.verified_dept_type[data-id=${$(event.target).data('id')}]`).find(':selected').val();
+        let tmp_verified_dept_title = $(`.verified_dept_title[data-id=${$(event.target).data('id')}]`).val();
+        let tmp_dept_id = $(`.dept_id[data-id=${$(event.target).data('id')}]`).val();
+        let tmp_new_dept_title = $(`.new_dept_title[data-id=${$(event.target).data('id')}]`).val();
+        let tmp_verified_new_group_code = $(`.verified_new_group_code[data-id=${$(event.target).data('id')}]`).find(':selected').val();
+        let tmp_note = $(`.note[data-id=${$(event.target).data('id')}]`).val();
+        let tmp_return_reason = $(`.return_reason[data-id=${$(event.target).data('id')}]`).val();
+        
+        if (itemIndex !== -1) {
+            currentListArray[itemIndex]['verified_dept_type'] = tmp_verified_dept_type;
+            currentListArray[itemIndex]['verified_dept_title'] = tmp_verified_dept_title;
+            currentListArray[itemIndex]['dept_id'] = tmp_dept_id;
+            currentListArray[itemIndex]['new_dept_title'] = tmp_new_dept_title;
+            currentListArray[itemIndex]['verified_new_group_code'] = tmp_verified_new_group_code;
+            currentListArray[itemIndex]['note'] = tmp_note;
+            currentListArray[itemIndex]['return_reason'] = tmp_return_reason;
+        }
+
+        switch (listType) {
+            case 'unlock':
+                unlockApplyListArray = currentListArray;
+                break;
+            case 'locked':
+                lockedApplyListArray = currentListArray;
+                break;
+            case 'executed':
+                executedApplyListArray = currentListArray;
+                break;
+        }
+    }
+
+    // 單選事件
+    function _handleSelectItem(event) {
+        switch (listType) {
+            case 'unlock':
+                currentListArray = unlockApplyListArray;
+                break;
+            case 'locked':
+                currentListArray = lockedApplyListArray;
+                break;
+            case 'executed':
+                currentListArray = executedApplyListArray;
+                break;
+        }
+
+        const num = $(event.target).attr('num');
+        const itemId = $(event.target).data('id');
+        const itemIndex = currentListArray.findIndex(item => item.id === itemId);
+        const status = $(event.target).prop('checked') ? 'checked' : 'uncheck';
+        
+        if (itemIndex !== -1) {
+            currentListArray[itemIndex]['status'] = status;
+        }
+
+        if ($(event.target).prop('checked')) {
+            $(event.target).attr('status', 'checked');
+            currentListArray[itemIndex].num = num;
+            selectedApplyListArray.push(currentListArray[itemIndex]);
+        } else {
+            $(event.target).attr('status', 'uncheck');
+            selectedApplyListArray = selectedApplyListArray.filter(item => item.id !== itemId);
+        }
+
+        switch (listType) {
+            case 'unlock':
+                unlockApplyListArray = currentListArray;
+                break;
+            case 'locked':
+                lockedApplyListArray = currentListArray;
+                break;
+            case 'executed':
+                executedApplyListArray = currentListArray;
+                break;
+        }
+    }
+
+    // 全選事件
+    async function _handleSelectAllItem() {
+        switch (listType) {
+            case 'unlock':
+                currentListArray = unlockApplyListArray;
+                break;
+            case 'locked':
+                currentListArray = lockedApplyListArray;
+                break;
+            case 'executed':
+                currentListArray = executedApplyListArray;
+                break;
+        }
+
+        // 其餘部分保持不變
+        if ($('#select-btn').html() == "全選") {
+            $('#select-btn').html("取消全選");
+            if (currentListArray.length == 0) {
+                await swal({title: '錯誤', text: '沒有可選取的項目', type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+                location.reload();
+            } else {
+                selectAllItems(currentListArray);
             }
         } else {
-            $selectBtn.html("全選");
-            $('input[id=select-chk]').prop('checked', false);
+            $('#select-btn').html("全選");
+            deselectAllItems(currentListArray);
         }
     }
 
-    // 儲存修正
-    async function _handleSave() {
-        if(await _confirmExec("確認要儲存修改嗎？")) {
-            openLoading();
-            // 取要送往後端的資料
-            let data = await _validateForm();
-            if (data.length > 0) {
-                School.updateModify(data, 0)
-                .then((res) => {
-                    if (res.ok) {
-                        return res.json();
-                    } else {
-                        throw res;
-                    }
-                })
-                .then(async (json) => {
-                    await swal({title: "儲存成功", type: 'success', confirmButtonText: '確定'});
-                    location.reload();
-                    stopLoading();
-                })
-                .catch((err) => {
-                    err.json && err.json().then((data) => {
-                        swal({title: 'ERROR', text: data.messages[0], type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
-                    });
-                    stopLoading();
-                });
-            } else {
-                await swal({title:"錯誤", text: "請選擇至少一筆未鎖定/未執行的請求！", type: 'error', confirmButtonText: "確定"});
-                location.reload();
-                stopLoading();
-                return;
-            }
+    // 選擇所有項目的複選框
+    function selectAllItems(dataArray) {
+        let currentListArray = dataArray;
+        selectedApplyListArray = [];
+        const num = $(event.target).attr('num');
+
+        for (let i = 0; i < currentListArray.length; i++) {
+            $(`.chkbox[data-id="${currentListArray[i].id}"]`).prop('checked', true);
+            $(`.chkbox[data-id="${currentListArray[i].id}"]`).attr('status', 'checked');
+            let num = i+1;
+            
+            // 當使用者勾選 checkbox 時，即時更新對應項目的 status
+            currentListArray[i]['status'] = 'checked';
+            currentListArray[i].num = '#' + num;
+            selectedApplyListArray.push(currentListArray[i]);
+        }
+        switch (listType) {
+            case 'unlock':
+                unlockApplyListArray = currentListArray;
+                break;
+            case 'locked':
+                lockedApplyListArray = currentListArray;
+                break;
+            case 'executed':
+                executedApplyListArray = currentListArray;
+                break;
+        }
+    }
+    
+    // 取消選擇所有項目的複選框
+    function deselectAllItems(dataArray) {
+        let currentListArray = dataArray;
+
+        for (let i = 0; i < currentListArray.length; i++) {
+            $(`.chkbox[data-id="${currentListArray[i].id}"]`).prop('checked', false);
+            $(`.chkbox[data-id="${currentListArray[i].id}"]`).attr('status', 'uncheck');
+            
+            currentListArray[i]['status'] = 'uncheck';
+            selectedApplyListArray = selectedApplyListArray.filter(item => item.id !== currentListArray[i].id);
+        }
+        switch (listType) {
+            case 'unlock':
+                unlockApplyListArray = currentListArray;
+                break;
+            case 'locked':
+                lockedApplyListArray = currentListArray;
+                break;
+            case 'executed':
+                executedApplyListArray = currentListArray;
+                break;
         }
     }
 
-    // 確認鎖定
-    async function _handleVerified() {
-        if(await _confirmExec("確認要儲存修改並鎖定資料嗎？")) {
-            openLoading();
-            // 取要送往後端的資料
-            let data = await _validateForm();
-            if (data.length < 1) {
-                await swal({title: "錯誤", text: "請選擇至少一筆未鎖定/未執行的請求！", type: 'error', confirmButtonText: "確定"});
-                location.reload();
-                stopLoading();
-                return;
-            }
-            School.updateModify(data, 1)
-            .then((res) => {
-                if (res.ok) {
-                    return res.json();
-                } else {
-                    throw res;
-                }
-            })
-            .then(async (json) => {
-                await swal({title: "資料已鎖定！", type: 'success', confirmButtonText: "確定"});
-                location.reload();
-                stopLoading();
-            })
-            .catch((err) => {
-                err.json && err.json().then((data) => {
-                    swal({title: 'ERROR', text: data.messages[0], type: 'error', confirmButtonText: "確定", allowOutsideClick: false});
-                });
-                stopLoading();
-            });
-        }
-    }
-
-    // 儲存前檢查
-    function _validateForm() {
+    // 修正和鎖定檢查
+    async function _validateForm(selectedItems) {
         // 取要送往後端的資料
         let data = [];
-        $('input[id=select-chk]').each(function (index){
-            if ($(this).prop('checked')) {
-                if($(this).val() != 'item-executed' && $(this).val() != 'item-verified') {
-                    switch ($(`.action-type[data-id=${$(this).data('id')}]`).val()) {
-                        case "新增系所":
+        switch (listType) {
+            case 'unlock':
+                for (let i = 0; i < selectedItems.length; i++) {
+                    switch (selectedItems[i].action_id) {
+                        case 1:
                             data.push({
-                                'id': $(this).data('id'),
-                                'verified_dept_type': $(`.new_type[data-id=${$(this).data('id')}]`).find(':selected').val(),
-                                'verified_dept_title': $(`.v_title[data-id=${$(this).data('id')}]`).val(),
-                                'dept_id': $(`.org_id[data-id=${$(this).data('id')}]`).val(),
-                                'note': $(`.note[data-id=${$(this).data('id')}]`).val()
+                                'id': selectedItems[i].id,
+                                'verified_dept_type': selectedItems[i].verified_dept_type,
+                                'verified_dept_title': selectedItems[i].verified_dept_title,
+                                'dept_id': selectedItems[i].dept_id,
+                                'note': selectedItems[i].note
                             });
                             break;
-                        case "更改系名":
+                        case 2:
                             data.push({
-                                'id': $(this).data('id'),
-                                'verified_dept_type': $(`.new_type[data-id=${$(this).data('id')}]`).find(':selected').val(),
-                                'verified_dept_title': $(`.v_title[data-id=${$(this).data('id')}]`).val(),
-                                'verified_new_dept_title': $(`.new_title[data-id=${$(this).data('id')}]`).val(),
-                                'note': $(`.note[data-id=${$(this).data('id')}]`).val()
+                                'id': selectedItems[i].id,
+                                'verified_dept_type': selectedItems[i].verified_dept_type,
+                                'verified_dept_title': selectedItems[i].verified_dept_title,
+                                'verified_new_dept_title': selectedItems[i].verified_new_dept_title,
+                                'note': selectedItems[i].note
                             });
                             break;
-                        case "更換類組":
+                        case 3:
                             data.push({
-                                'id': $(this).data('id'),
-                                'verified_dept_type': $(`.new_type[data-id=${$(this).data('id')}]`).find(':selected').val(),
-                                'verified_dept_title': $(`.v_title[data-id=${$(this).data('id')}]`).val(),
-                                'verified_new_group_code': $(`.new_group[data-id=${$(this).data('id')}]`).find(':selected').val(),
-                                'note': $(`.note[data-id=${$(this).data('id')}]`).val()
+                                'id': selectedItems[i].id,
+                                'verified_dept_type': selectedItems[i].verified_dept_type,
+                                'verified_dept_title': selectedItems[i].verified_dept_title,
+                                'verified_new_group_code': selectedItems[i].verified_new_group_code,
+                                'note': selectedItems[i].note
                             });
                             break;
-                        case "合併系所":
+                        case 4:
                             data.push({
-                                'id': $(this).data('id'),
-                                'verified_dept_type': $(`.new_type[data-id=${$(this).data('id')}]`).find(':selected').val(),
-                                'verified_dept_title': $(`.v_title[data-id=${$(this).data('id')}]`).val(),
-                                'note': $(`.note[data-id=${$(this).data('id')}]`).val()
+                                'id': selectedItems[i].id,
+                                'verified_dept_type': selectedItems[i].verified_dept_type,
+                                'verified_dept_title': selectedItems[i].verified_dept_title,
+                                'note': selectedItems[i].note
                             });
                             break;
                     }
                 }
-            }
-        });
+                break;
+        }
         return data;
     }
 
+    // 確認提示框
     async function _confirmExec(msg) {
         return swal({
             title: msg,
@@ -980,19 +1085,13 @@
         })
         .catch(async(err) => {
             await swal({title: "已取消執行", type: 'success', confirmButtonText: "確定", allowOutsideClick: false});
-            location.reload();
+            // location.reload();
             stopLoading();
             return;
         })
     }
 
-    async function _handleRefresh(){
-        await _getListArray();
-        const listType = $("#pills-tab").find(`[aria-selected=true]`).data('target').replace('#','');
-        _renderList(listType);
-        return;
-    }
-
+    // 取得請求列表
     async function _getListArray(){
         let res = await User.isLogin();
         if (res == true) {
@@ -1000,22 +1099,25 @@
             const response = await School.getSchooApplyList();
             const json = await response.json();
             stopLoading();
-            rejectApplyListArray = [];
+            returnedApplyListArray = [];
             completedApplyListArray = [];
             executedApplyListArray = [];
-            lockApplyListArray = [];
+            lockedApplyListArray = [];
             unlockApplyListArray = [];
             if(response.ok){
                 await json.forEach(function (data, index) {
                     if(data.returned_at != null){
-                        rejectApplyListArray.push(data);
+                        returnedApplyListArray.push(data);
                     } else if(data.completed_at != null){
                         completedApplyListArray.push(data);
                     } else if(data.executed_at != null){
+                        data.status = 'uncheck';
                         executedApplyListArray.push(data);
                     } else if(data.verified_at != null){
-                        lockApplyListArray.push(data);
+                        data.status = 'uncheck';
+                        lockedApplyListArray.push(data);
                     } else if(data.applied_at != null){
+                        data.status = 'uncheck';
                         unlockApplyListArray.push(data);
                     }
                 });
@@ -1025,19 +1127,20 @@
             }
         }
     }
-
-    function _renderList(listType){
+    
+    // 渲染請求列表
+    function _renderList(){
         switch (listType){
-            case 'reject':
-                if (rejectApplyListArray.length == 0) {
-                    $rejectApplyList.html('無被退回的請求。');
+            case 'returned':
+                if (returnedApplyListArray.length == 0) {
+                    $returnedApplyList.html('無被退回的請求。');
                 } else {
                     // 進行文憑列表分頁初始化渲染工作
-                    $rejectPaginationContainer.pagination({
-                        dataSource: rejectApplyListArray,
+                    $returnedPaginationContainer.pagination({
+                        dataSource: returnedApplyListArray,
                         pageSize: 10,
-                        callback: function(rejectApplyListArray,pagination) {
-                            _applyListTamplate(listType,rejectApplyListArray, pagination.pageNumber);
+                        callback: function(returnedApplyListArray,pagination) {
+                            _applyListTamplate(returnedApplyListArray, pagination.pageNumber);
                         }
                     });
                 }
@@ -1051,7 +1154,7 @@
                         dataSource: completedApplyListArray,
                         pageSize: 10,
                         callback: function(completedApplyListArray,pagination) {
-                            _applyListTamplate(listType,completedApplyListArray, pagination.pageNumber);
+                            _applyListTamplate(completedApplyListArray, pagination.pageNumber);
                         }
                     });
                 }
@@ -1065,21 +1168,21 @@
                         dataSource: executedApplyListArray,
                         pageSize: 10,
                         callback: function(executedApplyListArray,pagination) {
-                            _applyListTamplate(listType,executedApplyListArray, pagination.pageNumber);
+                            _applyListTamplate(executedApplyListArray, pagination.pageNumber);
                         }
                     });
                 }
                 break;
-            case 'lock':
-                if (lockApplyListArray.length == 0) {
-                    $lockApplyList.html('無已鎖定的請求。');
+            case 'locked':
+                if (lockedApplyListArray.length == 0) {
+                    $lockedApplyList.html('無已鎖定的請求。');
                 } else {
                     // 進行文憑列表分頁初始化渲染工作
-                    $lockPaginationContainer.pagination({
-                        dataSource: lockApplyListArray,
+                    $lockedPaginationContainer.pagination({
+                        dataSource: lockedApplyListArray,
                         pageSize: 10,
-                        callback: function(lockApplyListArray,pagination) {
-                            _applyListTamplate(listType,lockApplyListArray, pagination.pageNumber);
+                        callback: function(lockedApplyListArray,pagination) {
+                            _applyListTamplate(lockedApplyListArray, pagination.pageNumber);
                         }
                     });
                 }
@@ -1092,8 +1195,8 @@
                     $unlockPaginationContainer.pagination({
                         dataSource: unlockApplyListArray,
                         pageSize: 10,
-                        callback: function(unlockApplyListArray,pagination) {
-                            _applyListTamplate(listType,unlockApplyListArray, pagination.pageNumber);
+                        callback: function(unlockApplyListArray, pagination) {
+                            _applyListTamplate(unlockApplyListArray, pagination.pageNumber);
                         }
                     });
                 }

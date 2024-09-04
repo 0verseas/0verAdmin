@@ -1,49 +1,47 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.0.8/pagination.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-<div>
+<div class="col-12">
     <h2 class="title">學校請求清單</h2>
 
-    <div class="row filter-and-handle" style="padding-top: 12px;">
-        <div class="filter-type">
-            <button class="btn btn-outline-secondary" id="select-btn">全選</button>&nbsp;
-            <label class="filter-btn-type">
-                <input class="filter-btn" type="radio" name="target" value="all" checked>全部
-            </label>
+    <div class="row">
+        <div class="col-6 filter-type">
+            
+            <a title="操作說明" data-toggle="modal" data-target=".info-modal" style="cursor: pointer;">
+                <i class="far fa-question-circle guidebook" aria-hidden="true"></i>
+            </a>
             <ul class="nav nav-pills" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                  <button class="btn btn-outline-secondary nav-link active handle-btn-type" id="unlock-tab" data-toggle="pill" data-target="#unlock" type="button" role="tab" aria-controls="unlock" aria-selected="true"><i class="fas fa-lock-open fa-fw"></i> 未鎖定</button>
+                    <button class="btn btn-outline-secondary nav-link active handle-btn-type" id="unlock-tab" data-toggle="pill" data-target="#unlock" type="button" role="tab" aria-controls="unlock" aria-selected="true"><i class="fas fa-lock-open fa-fw"></i> 未鎖定</button>                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="btn btn-outline-warning nav-link handle-btn-type" id="locked-tab" data-toggle="pill" data-target="#locked" type="button" role="tab" aria-controls="locked" aria-selected="false"><i class="fas fa-lock fa-fw"></i> 已鎖定</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                  <button class="btn btn-outline-warning nav-link handle-btn-type" id="lock-tab" data-toggle="pill" data-target="#lock" type="button" role="tab" aria-controls="lock" aria-selected="false"><i class="fas fa-lock fa-fw"></i> 已鎖定</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="btn btn-outline-success nav-link handle-btn-type" id="executed-tab" data-toggle="pill" data-target="#executed" type="button" role="tab" aria-controls="executed" aria-selected="false"><i class="fas fa-check-square fa-fw"></i> 已執行</button>
+                    <button class="btn btn-outline-success nav-link handle-btn-type" id="executed-tab" data-toggle="pill" data-target="#executed" type="button" role="tab" aria-controls="executed" aria-selected="false"><i class="fas fa-check-square fa-fw"></i> 已執行</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="btn btn-outline-primary nav-link handle-btn-type" id="completed-tab" data-toggle="pill" data-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false"><i class="fas fa-tasks fa-fw"></i> 已完成</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="btn btn-outline-danger nav-link handle-btn-type" id="reject-tab" data-toggle="pill" data-target="#reject" type="button" role="tab" aria-controls="reject" aria-selected="false"><i class="fas fa-share-square fa-fw fa-flip-horizontal"></i> 被退回</button>
+                    <button class="btn btn-outline-danger nav-link handle-btn-type" id="returned-tab" data-toggle="pill" data-target="#returned" type="button" role="tab" aria-controls="returned" aria-selected="false"><i class="fas fa-share-square fa-fw fa-flip-horizontal"></i> 被退回</button>
                 </li>
             </ul>
-            <a title="操作說明" data-toggle="modal" data-target=".info-modal" style="cursor: pointer;">
-                <i class="far fa-question-circle" aria-hidden="true"></i>
-            </a>
+            
 
         </div>
-        <div class="handle-type">
+        <div class="col-6 handle-type">
+            <button class="btn btn-outline-secondary handle-btn-type" id="select-btn">全選</button>
             <button class="btn btn-outline-secondary handle-btn-type" id="save-btn">儲存修正</button>
-            <button class="btn btn-outline-secondary handle-btn-type" id="verified-btn">確認鎖定</button>
-            <button class="btn btn-outline-danger handle-btn-type" id="reject-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
+            <button class="btn btn-outline-secondary handle-btn-type" id="verify-btn">確認鎖定</button>
+            <button class="btn btn-outline-danger handle-btn-type" id="return-btn"><i class="fa fa-reply-all" aria-hidden="true"></i> 退回請求</button>
             <button class="btn btn-outline-info handle-btn-type" id="execute-btn"><i class="fa fa-cog" aria-hidden="true"></i> 執行請求</button>
-            <button class="btn btn-outline-success handle-btn-type" id="completed-btn"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
+            <button class="btn btn-outline-success handle-btn-type" id="complete-btn"><i class="fa fa-check-square" aria-hidden="true"></i> 完成請求</button>
             <button class="btn btn-outline-dark handle-btn-type" id="refresh-btn"><i class="fa fa-redo" aria-hidden="true"></i> 刷新清單</button>
         </div>
 
     </div>
 </div>
 <div class="col-12" id="form-addNewDepartmentApply">
-    <hr>
+    <hr class="hr-type">
 
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="unlock" role="tabpanel" aria-labelledby="unlock-tab">
@@ -58,12 +56,12 @@
             </div>
         </div>
 
-        <div class="tab-pane fade" id="lock" role="tabpanel" aria-labelledby="lock-tab">
-            <div id="lock-apply-list"></div>
+        <div class="tab-pane fade" id="locked" role="tabpanel" aria-labelledby="locked-tab">
+            <div id="locked-apply-list"></div>
             <div class="row">
                 <div class="col-12">
                     <table class="table table-hover">
-                        <div id="lock-pagination-container">
+                        <div id="locked-pagination-container">
                         </div>
                     </table>
                 </div>
@@ -94,12 +92,12 @@
             </div>
         </div>
 
-        <div class="tab-pane fade" id="reject" role="tabpanel" aria-labelledby="reject-tab">
-            <div id="reject-apply-list"></div>
+        <div class="tab-pane fade" id="returned" role="tabpanel" aria-labelledby="returned-tab">
+            <div id="returned-apply-list"></div>
             <div class="row">
                 <div class="col-12">
                     <table class="table table-hover">
-                        <div id="reject-pagination-container">
+                        <div id="returned-pagination-container">
                         </div>
                     </table>
                 </div>

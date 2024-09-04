@@ -9,27 +9,14 @@ var School = (function () {
         });
     }
 
-    function updateApply(id) {
-        return fetch(baseUrl + `/admins/school-apply-list/${id}`, {
-            method: 'PUT',
-            credentials: 'include'
-        });
-    }
-
-    function rejectApply(id) {
-        return fetch(baseUrl + `/admins/school-apply-list/${id}`, {
-            method: 'DELETE',
+    function updateApply(data, verified) {
+        return fetch(baseUrl + `/admins/update-school-apply?verified=${verified}`, {
+            method: 'POST',
             credentials: 'include',
             headers: {
-				'Content-Type': 'application/json'
-			}
-        });
-    }
-
-    function executeApply(id) {
-        return fetch(baseUrl + `/admins/execute-school-apply?id=${id}`, {
-            method: 'GET',
-            credentials: 'include'
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         });
     }
 
@@ -44,14 +31,17 @@ var School = (function () {
         });
     }
 
-    function updateModify(data, verified) {
-        return fetch(baseUrl + `/admins/execute-school-apply?verified=${verified}`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+    function executeApply(id) {
+        return fetch(baseUrl + `/admins/execute-school-apply?id=${id}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+    }
+
+    function completeApply(id) {
+        return fetch(baseUrl + `/admins/complete-school-apply?id=${id}`, {
+            method: 'GET',
+            credentials: 'include'
         });
     }
 
@@ -79,10 +69,9 @@ var School = (function () {
 
     return {
         getSchooApplyList,
-        updateApply,
-        rejectApply,
+        completeApply,
         executeApply,
-        updateModify,
+        updateApply,
         returnApply,
         checkApply
     };
