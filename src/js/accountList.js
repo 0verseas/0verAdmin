@@ -14,16 +14,9 @@ var AccountList = (function () {
         });
     }
 
-    function getSchoolReviewerList() {
-        return fetch(baseUrl + `/admins/school-reviewers`, {
-            credentials: 'include'
-        });
-    }
-
     return {
         getOfficeList,
-        getSchoolEditorList,
-        getSchoolReviewerList
+        getSchoolEditorList
     };
 
 })();
