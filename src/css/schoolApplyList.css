@@ -10,8 +10,8 @@
 }
 
 .chkbox {
-	width: 20px;   
-    height: 20px;  
+	width: 20px;
+    height: 20px;
 }
 
 .guidebook {
@@ -112,7 +112,7 @@
 	display: inline-block;
     width: 110px;
 	min-width: 110px;
-    margin: 0 10px; 
+    margin: 0 10px;
 }
 
 #list-element {
@@ -175,6 +175,30 @@ span.info-label {
 	margin-left: auto;
 }
 
+.nav-pills .nav-link.btn-outline-warning {
+    background: transparent; /* 或 initial */
+    border: 1px solid #ffc107;
+    color: #ffc107;
+}
+
+.nav-pills .nav-link.btn-outline-success {
+    background: transparent; /* 或 initial */
+    border: 1px solid #28a745;
+    color: #28a745;
+}
+
+.nav-pills .nav-link.btn-outline-primary {
+    background: transparent; /* 或 initial */
+    border: 1px solid #007bff;
+    color: #007bff;
+}
+
+.nav-pills .nav-link.btn-outline-danger {
+    background: transparent; /* 或 initial */
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
+
 @media screen {
 	#apply-list {
 		height: 700px;
@@ -210,3 +234,6 @@ span.info-label {
 	    padding: 0 20px;
     }
 }
+
+
+
