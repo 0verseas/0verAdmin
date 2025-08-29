@@ -584,8 +584,15 @@ var studentInfo = (function () {
                 } else{
                     school_title = value.student_misc_data.department_data.school.title;
                     department_title = value.student_misc_data.department_data.title;
-                    if(value.student_misc_data.distribution_list_memo === '(特輔班)'){
+                    distribution_list_memo = value.student_misc_data.distribution_list_memo;
+                    school_id = value.student_misc_data.department_data.school.id;
+                    if(/特輔班/.test(distribution_list_memo) && school_id == 'FF'){
                         department_title += '(特輔班)';
+                    }else if (/特別輔導班/.test(distribution_list_memo) && school_id == 'FF'){
+                        department_title += '（特別輔導班）<br/>（首年於暨大就讀）';  // 特別輔導班備取要在系所名稱上註記
+                    } else if (/備取/.test(distribution_list_memo) && school_id == 'FF'){
+                        department_title = '';
+                        school_title = distribution_list_memo;
                     }
                 }
             }
