@@ -334,7 +334,7 @@
                         </div>
                         <div id="list-element">
                             <span class="info-label"> 欲合併系所代碼 </span>
-                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${data.conbine_dept_ids}" disabled>
+                            <input type="text" class="form-control apply-info" style="width:500px;" maxlength ="191" value="${data.conbine_dept_ids}" disabled>
                         </div>
                     `;
                     break;
