@@ -44,7 +44,7 @@
     let listType = $('.handle-btn-type.active').data('target').replace('#', ''); // 取得當前的分類頁面
     let username = ''; // 當前使用者帳號
     let currentListArray = [];
-    
+
 
     $saveBtn.on('click', _handleSave); // 暫存按鈕
     $verifyBtn.on('click', _handleVerify); // 鎖定按鈕
@@ -55,8 +55,8 @@
     $selectBtn.on('click', async function (event) { // 全選按鈕
         _handleSelectAllItem();
     });
-    
-   
+
+
     $('#pills-tab button').on('click', async function (event) { // 分類按鈕
         $saveBtn.hide();
         $verifyBtn.hide();
@@ -65,7 +65,7 @@
         $completeBtn.hide();
         $selectBtn.hide();
         username = User.getUserInfo().username;
-        
+
         selectedApplyListArray = [];
         if ($('#select-btn').html() == "取消全選") {
             $('#select-btn').html("全選");
@@ -133,7 +133,7 @@
                 _handleTmpChange(event);
             });
         });
-        
+
         datas.forEach(function (data, index) {
             const schoolTitle = (data.school.title)? data.school.title: '';
             const schoolCode = (data.school.id)? data.school.id: '';
@@ -329,12 +329,12 @@
                 case 4:
                     listHtml += `
                         <div id="list-element">
-                            <span class="info-label"> 欲合併系所代碼1 </span>
-                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_1}" disabled>
+                            <span class="info-label"> 主要合併系所代碼 </span>
+                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${data.conbine_main_dept_id}" disabled>
                         </div>
                         <div id="list-element">
-                            <span class="info-label"> 欲合併系所代碼2 </span>
-                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${data.conbine_dept_id_2}" disabled>
+                            <span class="info-label"> 欲合併系所代碼 </span>
+                            <input type="text" class="form-control apply-info" style="width:250px;" maxlength ="191" value="${data.conbine_dept_ids}" disabled>
                         </div>
                     `;
                     break;
@@ -552,7 +552,7 @@
             openLoading();
             if (data.length > 0) { // 有勾選請求項目
                 // 計算沒填寫退回原因的請求項目
-                for (let i = 0; i < data.length; i++) { 
+                for (let i = 0; i < data.length; i++) {
                     if (data[i].return_reason == null || data[i].return_reason == '') {
                         reason_empty++;
                     }
@@ -628,7 +628,7 @@
                         return;
                     });
                 } else {
-                    for (let i = 0; i < selectedApplyListArray.length; i++) { 
+                    for (let i = 0; i < selectedApplyListArray.length; i++) {
                         idSelected.push(selectedApplyListArray[i].id);
                     }
 
@@ -645,7 +645,7 @@
                                     label.push(selectedApplyListArray[i].num);
                                 }
                             }
-                            
+
                             for (let i=0; i<label.length; i++) {
                                 if(label[i].includes('#')) {
                                     errmsg += `${label[i]} ${data[1]}<br\>`;
@@ -729,7 +729,7 @@
         if(await _confirmExec("確認要完成請求嗎？")) {
             openLoading();
             let idSelected = [];
-            
+
             if (selectedApplyListArray.length == 0){ // 利用多一個控制值來判斷是否爲沒有選取任何項目
                 await swal({title: "錯誤", text: "請選取至少一項請求！", type: 'warning', confirmButtonText: "確定", allowOutsideClick: false}).then(() => {
                     location.reload();
@@ -737,10 +737,10 @@
                     return;
                 });
             } else {
-                for (let i = 0; i < selectedApplyListArray.length; i++) { 
+                for (let i = 0; i < selectedApplyListArray.length; i++) {
                     idSelected.push(selectedApplyListArray[i].id);
                 }
-                
+
                 // 檢查例外
                 School.completeApply(idSelected.toString())
                 .then((res) => {
@@ -769,7 +769,7 @@
                 });
             }
 
-            
+
         }
     }
 
@@ -869,7 +869,7 @@
         let tmp_verified_new_group_code = $(`.verified_new_group_code[data-id=${$(event.target).data('id')}]`).find(':selected').val();
         let tmp_note = $(`.note[data-id=${$(event.target).data('id')}]`).val();
         let tmp_return_reason = $(`.return_reason[data-id=${$(event.target).data('id')}]`).val();
-        
+
         if (itemIndex !== -1) {
             currentListArray[itemIndex]['verified_dept_type'] = tmp_verified_dept_type;
             currentListArray[itemIndex]['verified_dept_title'] = tmp_verified_dept_title;
@@ -911,7 +911,7 @@
         const itemId = $(event.target).data('id');
         const itemIndex = currentListArray.findIndex(item => item.id === itemId);
         const status = $(event.target).prop('checked') ? 'checked' : 'uncheck';
-        
+
         if (itemIndex !== -1) {
             currentListArray[itemIndex]['status'] = status;
         }
@@ -977,7 +977,7 @@
             $(`.chkbox[data-id="${currentListArray[i].id}"]`).prop('checked', true);
             $(`.chkbox[data-id="${currentListArray[i].id}"]`).attr('status', 'checked');
             let num = i+1;
-            
+
             // 當使用者勾選 checkbox 時，即時更新對應項目的 status
             currentListArray[i]['status'] = 'checked';
             currentListArray[i].num = '#' + num;
@@ -995,7 +995,7 @@
                 break;
         }
     }
-    
+
     // 取消選擇所有項目的複選框
     function deselectAllItems(dataArray) {
         let currentListArray = dataArray;
@@ -1003,7 +1003,7 @@
         for (let i = 0; i < currentListArray.length; i++) {
             $(`.chkbox[data-id="${currentListArray[i].id}"]`).prop('checked', false);
             $(`.chkbox[data-id="${currentListArray[i].id}"]`).attr('status', 'uncheck');
-            
+
             currentListArray[i]['status'] = 'uncheck';
             selectedApplyListArray = selectedApplyListArray.filter(item => item.id !== currentListArray[i].id);
         }
@@ -1127,7 +1127,7 @@
             }
         }
     }
-    
+
     // 渲染請求列表
     function _renderList(){
         switch (listType){
